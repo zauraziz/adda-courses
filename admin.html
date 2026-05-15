@@ -1094,17 +1094,26 @@ document.addEventListener('click', e => {
 });
 
 function updateSidebarCounts() {
-  setText($('#cnt-courses'), DB.get(KEYS.COURSES, []).length);
-  setText($('#cnt-regs'), DB.get(KEYS.REGS, []).length);
+  setText($('#cnt-courses'), backendCoursesCache.length);
+  setText($('#cnt-regs'), backendRegsCache.length);
 }
 
 function statusLabel(s) { return { pending:'Gözləyir', approved:'Təsdiqlənib', rejected:'Rədd edilib', contacted:'Əlaqə saxlanıldı' }[s] || s; }
 
-function renderDashboard() {
-  const courses = DB.get(KEYS.COURSES, []);
-  const regs = DB.get(KEYS.REGS, []);
+async function renderDashboard() {
+  if (backendRegsCache.length === 0) {
+    const data = await fetchBackendStudents();
+    if (data) { backendRegsCache = data; updateSidebarCounts(); }
+  }
+  if (backendCoursesCache.length === 0) {
+    const data = await fetchBackendCourses();
+    if (data) { backendCoursesCache = data; updateSidebarCounts(); }
+  }
+
+  const regs = backendRegsCache;
+  const courses = backendCoursesCache;
   const weekAgo = Date.now() - 7*86400000;
-  const recent = regs.filter(r => r.timestamp > weekAgo).length;
+  const recent = regs.filter(r => r.created_at && new Date(r.created_at).getTime() > weekAgo).length;
   const pending = regs.filter(r => r.status === 'pending').length;
   const approved = regs.filter(r => r.status === 'approved').length;
 
@@ -1131,7 +1140,7 @@ function renderDashboard() {
     </div>
   `;
 
-  const recentList = regs.slice().sort((a,b) => b.timestamp - a.timestamp).slice(0, 10);
+  const recentList = regs.slice().sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
   if (recentList.length === 0) {
     $('#dashRecent').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg><p>Hələ qeydiyyat yoxdur</p><small>İlk ərizə daxil olduqda burada görünəcək</small></div></td></tr></tbody></table>`;
   } else {
@@ -1139,27 +1148,24 @@ function renderDashboard() {
         <thead><tr><th>№</th><th>Ad-Soyad</th><th>Kurs</th><th>Tarix</th><th>Status</th></tr></thead>
         <tbody>${recentList.map(r => `
           <tr>
-            <td class="col-num">${escapeHtml(r.id)}</td>
-            <td>${escapeHtml(r.fullname)}</td>
-            <td><span class="tag tag--primary">${escapeHtml(r.course)}</span></td>
-            <td class="text-muted">${escapeHtml(relTime(r.timestamp))}</td>
+            <td class="col-num">${escapeHtml(String(r.id))}</td>
+            <td>${escapeHtml(r.student_name)}</td>
+            <td><span class="tag tag--primary">${escapeHtml(r.course_name)}</span></td>
+            <td class="text-muted">${escapeHtml(relTime(new Date(r.created_at).getTime()))}</td>
             <td><span class="badge badge--${escapeHtml(r.status)}">${escapeHtml(statusLabel(r.status))}</span></td>
           </tr>`).join('')}</tbody>
       </table>`;
   }
 
   const counts = {};
-  courses.forEach(c => counts[c.id] = 0);
-  regs.forEach(r => {
-    const c = courses.find(x => x.name + ' (' + x.level + ')' === r.course);
-    if (c) counts[c.id] = (counts[c.id] || 0) + 1;
-  });
+  courses.forEach(c => { counts[c.name] = 0; });
+  regs.forEach(r => { if (r.course_name && Object.prototype.hasOwnProperty.call(counts, r.course_name)) counts[r.course_name]++; });
   const max = Math.max(1, ...Object.values(counts));
   if (courses.length === 0) {
     $('#dashChart').innerHTML = '<div class="empty-state">Kurslar əlavə edilməyib</div>';
   } else {
     $('#dashChart').innerHTML = courses.map(c => {
-      const count = counts[c.id] || 0;
+      const count = counts[c.name] || 0;
       const pct = (count / max) * 100;
       return `
         <div style="margin-bottom:14px">
@@ -1170,14 +1176,18 @@ function renderDashboard() {
           <div style="height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden">
             <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;transition:width .5s"></div>
           </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px">${escapeHtml(c.level)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px">${escapeHtml(c.level || '')}</div>
         </div>`;
     }).join('');
   }
 }
 
-function renderCourses() {
-  const courses = DB.get(KEYS.COURSES, []).slice().sort((a,b) => (a.order||0) - (b.order||0));
+async function renderCourses() {
+  if (backendCoursesCache.length === 0) {
+    const data = await fetchBackendCourses();
+    if (data) { backendCoursesCache = data; updateSidebarCounts(); }
+  }
+  const courses = backendCoursesCache.slice();
 
   if (courses.length === 0) {
     $('#coursesTable').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>Hələ kurs əlavə edilməyib</p><small>"Yeni kurs əlavə et" düyməsindən istifadə edin</small></div></td></tr></tbody></table>`;
@@ -1195,50 +1205,25 @@ function renderCourses() {
           <th>Müddət</th>
           <th>Qiymət</th>
           <th>Status</th>
-          <th class="col-actions">Əməliyyatlar</th>
         </tr>
       </thead>
       <tbody>
         ${courses.map((c, idx) => `
-          <tr data-id="${escapeHtml(c.id)}">
+          <tr data-id="${escapeHtml(String(c.id))}">
             <td class="col-num">${idx + 1}</td>
             <td>
               <div style="font-weight:600">${escapeHtml(c.name)}</div>
               <div style="font-size:12px;color:var(--muted);margin-top:2px">${escapeHtml(c.subtitle || '')}</div>
             </td>
-            <td><span class="tag tag--accent">${escapeHtml(c.level)}</span></td>
+            <td><span class="tag tag--accent">${escapeHtml(c.level || '—')}</span></td>
             <td class="text-mono">${escapeHtml(c.stcw || '—')}</td>
-            <td>${escapeHtml(c.duration || '—')} · ${escapeHtml(String(c.hours || 0))} saat</td>
-            <td style="font-weight:600;font-family:Fraunces,serif;color:var(--primary)">${escapeHtml(String(c.price))} ${escapeHtml(c.currency)}</td>
+            <td>${c.duration_weeks ? escapeHtml(String(c.duration_weeks)) + ' həftə' : '—'} · ${escapeHtml(String(c.hours || 0))} saat</td>
+            <td style="font-weight:600;font-family:Fraunces,serif;color:var(--primary)">${c.price != null ? escapeHtml(String(c.price)) + ' ' + escapeHtml(c.currency || '') : '—'}</td>
             <td><span class="badge badge--${c.active ? 'active' : 'inactive'}">${c.active ? 'Aktiv' : 'Deaktiv'}</span></td>
-            <td class="col-actions">
-              <div class="row-actions">
-                <button class="icon-btn icon-btn--primary" data-action="move-up" data-id="${escapeHtml(c.id)}" title="Yuxarı" ${idx === 0 ? 'disabled style="opacity:.3"' : ''}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-                </button>
-                <button class="icon-btn icon-btn--primary" data-action="move-down" data-id="${escapeHtml(c.id)}" title="Aşağı" ${idx === courses.length - 1 ? 'disabled style="opacity:.3"' : ''}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <button class="icon-btn ${c.active ? 'icon-btn--success' : 'icon-btn--primary'}" data-action="toggle" data-id="${escapeHtml(c.id)}" title="${c.active ? 'Deaktiv et' : 'Aktiv et'}">
-                  ${c.active
-                    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>'
-                    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg>'}
-                </button>
-                <button class="icon-btn icon-btn--primary" data-action="edit" data-id="${escapeHtml(c.id)}" title="Redaktə et">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-                <button class="icon-btn icon-btn--danger" data-action="delete" data-id="${escapeHtml(c.id)}" title="Sil">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-                </button>
-              </div>
-            </td>
           </tr>`).join('')}
       </tbody>
     </table>`;
 
-  $$('#coursesTable [data-action]').forEach(btn => {
-    btn.addEventListener('click', () => courseAction(btn.dataset.action, btn.dataset.id));
-  });
 }
 
 function courseAction(action, id) {
@@ -1456,6 +1441,21 @@ $('#addCourseBtn').addEventListener('click', () => openCourseModal(null));
 let regFilters = { q: '', status: '' };
 
 let backendRegsCache = [];
+let backendCoursesCache = [];
+
+async function fetchBackendCourses() {
+  try {
+    const response = await fetch('/api/courses');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!Array.isArray(data)) throw new Error('Serverdən düzgün cavab alınmadı.');
+    return data;
+  } catch (err) {
+    console.warn('Backend courses fetch failed:', err);
+    toast({ kind:'danger', title:'Bağlantı xətası', msg:'Kurslar yüklənmədi: ' + err.message });
+    return null;
+  }
+}
 
 async function renderRegistrations() {
   $('#regsTable').innerHTML = `<div style="padding:32px;text-align:center;color:var(--muted)">Yüklənir…</div>`;
@@ -1783,14 +1783,14 @@ $('#regStatusFilter').addEventListener('change', e => { regFilters.status = e.ta
 $('#regCourseFilter').addEventListener('change', e => { regFilters.course = e.target.value; applyBackendFilters(); });
 
 $('#exportCsvBtn').addEventListener('click', () => {
-  const regs = DB.get(KEYS.REGS, []);
+  const regs = backendRegsCache;
   if (regs.length === 0) { toast({ kind:'warn', title:'Boş', msg:'İxrac üçün qeydiyyat yoxdur.' }); return; }
-  const headers = ['Qeydiyyat №','Tarix','Ad-Soyad','FİN','Telefon','Email','Kurs','Status','Qeyd'];
+  const headers = ['Qeydiyyat №','Tarix','Ad-Soyad','FİN','Telefon','Email','Kurs','Kurs kodu','Status'];
   const escCsv = v => {
     const s = String(v == null ? '' : v);
     return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   };
-  const rows = regs.map(r => [r.id, fmtDateTime(r.timestamp), r.fullname, r.fin, r.phone, r.email, r.course, statusLabel(r.status), r.note || '']);
+  const rows = regs.map(r => [r.id, fmtDateTime(r.created_at), r.student_name, r.fin, r.phone, r.email, r.course_name, r.course_code, statusLabel(r.status)]);
   const csv = '\ufeff' + [headers, ...rows].map(row => row.map(escCsv).join(';')).join('\r\n');
   const blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -1804,20 +1804,7 @@ $('#exportCsvBtn').addEventListener('click', () => {
 });
 
 $('#clearRegsBtn').addEventListener('click', () => {
-  const count = DB.get(KEYS.REGS, []).length;
-  if (count === 0) { toast({ kind:'warn', title:'Boş', msg:'Silinəcək qeydiyyat yoxdur.' }); return; }
-  confirmAction({
-    title: 'Bütün qeydiyyatları sil',
-    msg: `${count} qeyd silinəcək. Bu əməliyyat geri qaytarıla bilməz. Davam edirsiniz?`,
-    confirmText: 'Bəli, hamısını sil',
-    onConfirm: () => {
-      DB.set(KEYS.REGS, []);
-      audit('Bütün qeydiyyatlar silindi', `${count} qeyd`);
-      toast({ kind:'success', title:'Silindi', msg:`${count} qeyd silindi.` });
-      renderRegsList();
-      updateSidebarCounts();
-    }
-  });
+  toast({ kind:'warn', title:'Dəstəklənmir', msg:'Qeydiyyatları silmək üçün birbaşa verilənlər bazasına müraciət edin.' });
 });
 
 function renderSettings() {
@@ -2257,6 +2244,8 @@ function showApp() {
   $('#loginOverlay').hidden = true;
   $('#adminApp').hidden = false;
   seedDefaults();
+  fetchBackendStudents().then(data => { if (data) { backendRegsCache = data; updateSidebarCounts(); } });
+  fetchBackendCourses().then(data => { if (data) { backendCoursesCache = data; updateSidebarCounts(); } });
   go('dashboard');
   startSessionTimer();
 }
@@ -2369,32 +2358,7 @@ $('#sidebarBackdrop').addEventListener('click', () => {
     showLogin();
   }
 })();
-// Səhifə yüklənən kimi məlumatları gətir
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/enrollments');
-        const enrollments = await response.json();
-        
-        // Fərz edirik ki, cədvəlin `<tbody>` hissəsinin id-si "tableBody"-dir
-        const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = ''; // Əvvəlcə içini təmizlə
-        
-        enrollments.forEach((item, index) => {
-            const row = `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.student_name}</td>
-                    <td>${item.phone}</td>
-                    <td>${item.course_name}</td>
-                    <td>${new Date(item.enrollment_date).toLocaleString()}</td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-    } catch (error) {
-        console.error('Məlumatı yükləmək mümkün olmadı:', error);
-    }
-});
+
 </script>
 </body>
 </html>
