@@ -327,7 +327,7 @@ a{color:var(--primary);text-decoration:none}
         </button>
       </form>
       <div class="security-note">
-        <strong>Təhlükəsizlik qeydi:</strong> Bu admin paneli yalnız brauzerdə işləyir (frontend prototip). Bütün məlumatlar bu cihazın <code>localStorage</code>-ında saxlanılır. Real təşkilati istifadə üçün backend (server, verilənlər bazası, HTTPS) tələb olunur.
+        <strong>Təhlükəsizlik qeydi:</strong> Bu admin paneli backend API ilə işləyir. Qeydiyyat məlumatları verilənlər bazasında saxlanılır. Giriş şifrəsi yalnız bu brauzerdə saxlanılır.
       </div>
     </div>
 
@@ -422,7 +422,7 @@ a{color:var(--primary);text-decoration:none}
       <div class="topbar__title-wrap">
         <div>
           <h1 class="topbar__title" id="pageTitle">Ana səhifə</h1>
-          <span class="badge badge--active" id="syncBadge" title="Məlumatlar bu brauzerdə saxlanılır">localStorage</span>
+          <span class="badge badge--active" id="syncBadge" title="Məlumatlar verilənlər bazasında saxlanılır">DATABASE</span>
         </div>
         <div class="topbar__subtitle" id="pageSubtitle">Sistemin ümumi vəziyyəti və son hadisələr</div>
       </div>
