@@ -177,6 +177,8 @@ a{color:var(--primary);text-decoration:none}
 .badge--approved::before{background:var(--success)}
 .badge--rejected{background:var(--danger-soft);color:#7a0e0e;border-color:#fecdca}
 .badge--rejected::before{background:var(--danger)}
+.badge--contacted{background:var(--info-soft);color:#0d3b8e;border-color:#b2ddff}
+.badge--contacted::before{background:var(--info)}
 .badge--active{background:var(--success-soft);color:#085d39;border-color:#abefc6}
 .badge--active::before{background:var(--success)}
 .badge--inactive{background:var(--surface-3);color:var(--muted);border-color:var(--border)}
@@ -506,6 +508,7 @@ a{color:var(--primary);text-decoration:none}
               <option value="pending">Gözləyir</option>
               <option value="approved">Təsdiqlənib</option>
               <option value="rejected">Rədd edilib</option>
+              <option value="contacted">Əlaqə saxlanıldı</option>
             </select>
             <select id="regCourseFilter">
               <option value="">Bütün kurslar</option>
@@ -830,7 +833,6 @@ function relTime(ts) {
 }
 
 const STORAGE_PREFIX = 'adda_';
-const BACKEND_URL = 'http://127.0.0.1:8000';
 const KEYS = { AUTH:'auth', COURSES:'courses', REGS:'registrations', SETTINGS:'settings', AUDIT:'audit', SESSION:'session' };
 
 const DB = {
@@ -1096,7 +1098,7 @@ function updateSidebarCounts() {
   setText($('#cnt-regs'), DB.get(KEYS.REGS, []).length);
 }
 
-function statusLabel(s) { return { pending:'Gözləyir', approved:'Təsdiqlənib', rejected:'Rədd edilib' }[s] || s; }
+function statusLabel(s) { return { pending:'Gözləyir', approved:'Təsdiqlənib', rejected:'Rədd edilib', contacted:'Əlaqə saxlanıldı' }[s] || s; }
 
 function renderDashboard() {
   const courses = DB.get(KEYS.COURSES, []);
@@ -1451,31 +1453,43 @@ function openCourseModal(course) {
 
 $('#addCourseBtn').addEventListener('click', () => openCourseModal(null));
 
-let regFilters = { q: '', status: '', course: '' };
+let regFilters = { q: '', status: '' };
 
 let backendRegsCache = [];
 
 async function renderRegistrations() {
-  const courses = DB.get(KEYS.COURSES, []);
-  const select = $('#regCourseFilter');
-  const cur = select.value;
-  select.innerHTML = '<option value="">Bütün kurslar</option>' +
-    courses.map(c => `<option value="${escapeHtml(c.name)} (${escapeHtml(c.level)})">${escapeHtml(c.name)} · ${escapeHtml(c.level)}</option>`).join('');
-  select.value = cur;
-
-  const backendRegs = await fetchBackendStudents();
-  if (backendRegs) {
-    backendRegsCache = backendRegs;
-    renderBackendRegsList(backendRegs);
-    return;
+  $('#regsTable').innerHTML = `<div style="padding:32px;text-align:center;color:var(--muted)">Yüklənir…</div>`;
+  const data = await fetchBackendStudents();
+  if (data) {
+    backendRegsCache = data;
+    // populate course filter
+    const select = $('#regCourseFilter');
+    const cur = select.value;
+    const courses = [...new Set(data.map(r => r.course_name).filter(Boolean))];
+    select.innerHTML = '<option value="">Bütün kurslar</option>' +
+      courses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    select.value = cur;
   }
+  applyBackendFilters();
+}
 
-  renderRegsList();
+function applyBackendFilters() {
+  let list = backendRegsCache.slice();
+  if (regFilters.status) list = list.filter(r => r.status === regFilters.status);
+  if (regFilters.course) list = list.filter(r => r.course_name === regFilters.course);
+  if (regFilters.q) {
+    const q = regFilters.q.toLowerCase();
+    list = list.filter(r => [r.id, r.student_name, r.fin, r.phone, r.email, r.course_name, r.course_code]
+      .map(v => String(v == null ? '' : v)).join(' ').toLowerCase().includes(q));
+  }
+  renderBackendRegsList(list);
 }
 
 function renderBackendRegsList(regs) {
   if (!Array.isArray(regs) || regs.length === 0) {
-    $('#regsTable').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg><p>Bazadan tələb yoxdur</p><small>Yeni qeydiyyatlar /students endpoint vasitəsilə yüklənir.</small></div></td></tr></tbody></table>`;
+    const msg = backendRegsCache.length > 0 ? 'Filtrə uyğun nəticə yoxdur' : 'Hələ qeydiyyat yoxdur';
+    const sub = backendRegsCache.length > 0 ? 'Filtrləri dəyişməyə cəhd edin' : 'İctimai formada qeydiyyat olunduqda burada görünəcək';
+    $('#regsTable').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg><p>${msg}</p><small>${sub}</small></div></td></tr></tbody></table>`;
     return;
   }
 
@@ -1484,61 +1498,114 @@ function renderBackendRegsList(regs) {
       <thead>
         <tr>
           <th>№</th>
+          <th>Tarix</th>
           <th>Ad-Soyad</th>
-          <th>Telefon</th>
+          <th>FİN</th>
+          <th>Əlaqə</th>
           <th>Kurs</th>
-          <th class="col-actions">Əməliyyatlar</th>
+          <th>Status</th>
+          <th>Sənədlər</th>
+          <th class="col-actions">Status dəyiş</th>
         </tr>
       </thead>
       <tbody>
-        ${regs.map((r, idx) => `
-          <tr>
-            <td class="col-num">${escapeHtml(r.id)}</td>
-            <td><strong>${escapeHtml(r.name)}</strong></td>
-            <td>${escapeHtml(r.phone)}</td>
-            <td><span class="tag tag--primary">${escapeHtml(r.course_name)}</span></td>
-            <td class="col-actions">
-              <button class="icon-btn icon-btn--primary" data-view-files="${idx}" title="Sənədləri gör">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              </button>
+        ${regs.map(r => `
+          <tr data-reg-id="${escapeHtml(String(r.id))}">
+            <td class="col-num">${escapeHtml(String(r.id))}</td>
+            <td class="text-muted" style="white-space:nowrap;font-size:12px">${escapeHtml(r.created_at ? new Date(r.created_at).toLocaleString('az-AZ',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—')}</td>
+            <td><strong>${escapeHtml(r.student_name || '—')}</strong></td>
+            <td class="text-mono" style="font-size:12.5px">${escapeHtml(r.fin || '—')}</td>
+            <td>
+              <div style="font-size:12.5px">${escapeHtml(r.phone || '—')}</div>
+              <div style="font-size:12px;color:var(--muted)">${escapeHtml(r.email || '—')}</div>
             </td>
-          </tr>
-        `).join('')}
+            <td>
+              <span class="tag tag--primary">${escapeHtml(r.course_name || '—')}</span>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px">${escapeHtml(r.course_code || '')}</div>
+            </td>
+            <td><span class="badge badge--${escapeHtml(r.status || 'pending')}">${escapeHtml(statusLabel(r.status || 'pending'))}</span></td>
+            <td>${renderFileLinks(r.files || {})}</td>
+            <td class="col-actions">
+              <select class="status-select" data-reg-id="${escapeHtml(String(r.id))}" style="padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:12.5px;background:var(--surface)">
+                <option value="pending"   ${r.status==='pending'   ?'selected':''}>Gözləyir</option>
+                <option value="approved"  ${r.status==='approved'  ?'selected':''}>Təsdiqlənib</option>
+                <option value="rejected"  ${r.status==='rejected'  ?'selected':''}>Rədd edilib</option>
+                <option value="contacted" ${r.status==='contacted' ?'selected':''}>Əlaqə saxlanıldı</option>
+              </select>
+            </td>
+          </tr>`).join('')}
       </tbody>
     </table>`;
 
-  $$('#regsTable [data-view-files]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.dataset.viewFiles);
-      const reg = backendRegsCache[idx];
-      if (reg) {
-        showFilesModal(reg.files || {}, reg.name);
+  $$('#regsTable .status-select').forEach(sel => {
+    sel.addEventListener('change', async () => {
+      const id = Number(sel.dataset.regId);
+      const newStatus = sel.value;
+      sel.disabled = true;
+      try {
+        await updateEnrollmentStatus(id, newStatus);
+        const rec = backendRegsCache.find(r => r.id === id);
+        if (rec) rec.status = newStatus;
+        const badge = sel.closest('tr').querySelector('.badge');
+        if (badge) {
+          badge.className = `badge badge--${newStatus}`;
+          badge.textContent = statusLabel(newStatus);
+        }
+        toast({ kind:'success', title:'Status dəyişdi', msg:`#${id} → ${statusLabel(newStatus)}` });
+      } catch (err) {
+        toast({ kind:'danger', title:'Xəta', msg: err.message });
+        sel.value = backendRegsCache.find(r => r.id === id)?.status || 'pending';
+      } finally {
+        sel.disabled = false;
       }
     });
   });
 }
 
+function renderFileLinks(files) {
+  const entries = Object.entries(files || {}).filter(([, url]) => url && url.startsWith('http'));
+  if (entries.length === 0) return '<span style="color:var(--muted);font-size:12px">—</span>';
+  const labels = { id_file:'Şəxs.', diploma_file:'Diplom', work_file:'İş dip.', medical_file:'Tibbi', application_file:'Ərizə', receipt_file:'Çek' };
+  return entries.map(([key, url]) =>
+    `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:11px;margin:2px 2px 2px 0">${escapeHtml(labels[key] || key)}</a>`
+  ).join('');
+}
+
+async function updateEnrollmentStatus(id, status) {
+  const res = await fetch(`/api/enrollments/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.detail || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
 function showFilesModal(files, studentName) {
-  const fileList = Object.entries(files || {}).map(([key, path]) => {
-    const fileName = path.split('/').pop();
-    const fileUrl = `${BACKEND_URL}/uploads/${path}`;
+  const labels = { id_file:'Şəxsiyyət vəsiqəsi', diploma_file:'Diplom', work_file:'İşçi diplomu', medical_file:'Tibbi kitabça', application_file:'Ərizə', receipt_file:'Ödəniş çeki' };
+  const entries = Object.entries(files || {}).filter(([, url]) => url);
+  const fileList = entries.map(([key, url]) => {
+    const label = labels[key] || key;
+    const isBlob = url.startsWith('http');
     return `
       <div style="margin-bottom:12px;padding:10px;background:var(--surface-2);border-radius:6px;display:flex;align-items:center;justify-content:space-between;gap:10px">
         <div style="display:flex;align-items:center;gap:8px;min-width:0">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;color:var(--primary);flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <span style="font-size:13px;color:var(--ink);word-break:break-all">${escapeHtml(fileName)}</span>
+          <span style="font-size:13px;color:var(--ink);word-break:break-all">${escapeHtml(label)}</span>
         </div>
-        <a href="${fileUrl}" target="_blank" class="icon-btn icon-btn--primary" title="Aç">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </a>
-      </div>
-    `;
+        ${isBlob
+          ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Aç</a>`
+          : `<span style="font-size:12px;color:var(--muted)">URL yoxdur</span>`}
+      </div>`;
   }).join('');
 
   openModal({
     title: 'Sənədlər',
     subtitle: `${escapeHtml(studentName)} tərəfindən yüklənən fayllar`,
-    body: fileList.length > 0 
+    body: fileList.length > 0
       ? `<div style="max-height:400px;overflow-y:auto">${fileList}</div>`
       : '<p style="text-align:center;color:var(--muted);padding:20px">Fayl yüklənməyib</p>',
     footer: '<button class="btn btn-ghost" id="closeFilesModal">Bağla</button>',
@@ -1550,13 +1617,14 @@ function showFilesModal(files, studentName) {
 
 async function fetchBackendStudents() {
   try {
-    const response = await fetch(`${BACKEND_URL}/students`);
+    const response = await fetch('/api/students');
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error('Serverdən düzgün cavab alınmadı.');
     return data;
   } catch (err) {
     console.warn('Backend student fetch failed:', err);
+    toast({ kind:'danger', title:'Bağlantı xətası', msg:'Serverdən məlumat yüklənmədi: ' + err.message });
     return null;
   }
 }
@@ -1710,9 +1778,9 @@ function regAction(action, id) {
   }
 }
 
-$('#regSearch').addEventListener('input', e => { regFilters.q = e.target.value; renderRegsList(); });
-$('#regStatusFilter').addEventListener('change', e => { regFilters.status = e.target.value; renderRegsList(); });
-$('#regCourseFilter').addEventListener('change', e => { regFilters.course = e.target.value; renderRegsList(); });
+$('#regSearch').addEventListener('input', e => { regFilters.q = e.target.value; applyBackendFilters(); });
+$('#regStatusFilter').addEventListener('change', e => { regFilters.status = e.target.value; applyBackendFilters(); });
+$('#regCourseFilter').addEventListener('change', e => { regFilters.course = e.target.value; applyBackendFilters(); });
 
 $('#exportCsvBtn').addEventListener('click', () => {
   const regs = DB.get(KEYS.REGS, []);

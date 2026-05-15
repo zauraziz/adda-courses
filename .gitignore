@@ -37,6 +37,19 @@ build/
 *.zip
 *.rar
 
+# Python
+__pycache__/
+*.py[cod]
+
+# Local uploads (replaced by Vercel Blob)
+uploads/
+
+# Vercel local cache
+.vercel/
+
+# Local env override
+.env.local
+
 # Loglar və müvəqqəti
 *.log
 tmp/
