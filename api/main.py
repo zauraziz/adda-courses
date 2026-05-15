@@ -13,7 +13,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("adda")
 
-app = FastAPI(title="ADDA Enrollment API")
+app = FastAPI(title="ADDA Enrollment API", root_path="/api")
 
 app.add_middleware(
     CORSMiddleware,
