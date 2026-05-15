@@ -1718,7 +1718,10 @@ form.addEventListener('submit', async e => {
   const payload = new FormData();
   payload.append('name', data['Ad-Soyad']);
   payload.append('phone', data['Telefon']);
+  payload.append('fin', document.getElementById('fin').value.trim());
+  payload.append('email', document.getElementById('email').value.trim());
   payload.append('course_name', data['Kurs']);
+  payload.append('course_code', course.id.replace('r-', ''));
 
   // Faylları əlavə et
   const fileInputs = form.querySelectorAll('input[type="file"]');
@@ -1735,7 +1738,7 @@ form.addEventListener('submit', async e => {
 
   try {
     console.log('Payload gönderiliyor:', Array.from(payload.entries()));
-    const response = await fetch('http://127.0.0.1:8000/enroll', {
+    const response = await fetch('/api/enroll', {
       method: 'POST',
       body: payload
     });
