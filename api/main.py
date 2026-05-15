@@ -147,10 +147,11 @@ async def students():
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT id, created_at, student_name, fin, phone, email,
-                   course_name, course_code, status, files
-            FROM enrollments
-            ORDER BY id DESC
+SELECT id, code, title, level, stcw_code, description,
+                   duration, hours, price_amount, is_active
+            FROM courses
+            WHERE is_active = true
+            ORDER BY id ASC
             """
         )
         rows = cur.fetchall()
@@ -165,15 +166,15 @@ async def students():
                     files_data = {}
             result.append({
                 "id": row[0],
-                "created_at": row[1].isoformat() if row[1] else None,
-                "student_name": row[2],
-                "fin": row[3],
-                "phone": row[4],
-                "email": row[5],
-                "course_name": row[6],
-                "course_code": row[7],
-                "status": row[8],
-                "files": files_data,
+                "code": row[1],
+                "name": row[2],
+                "level": row[3],
+                "stcw": row[4],
+                "subtitle": row[5],
+                "duration_weeks": row[6],
+                "hours": row[7],
+                "price": float(row[8]) if row[8] is not None else None,
+                "active": row[9],
             })
         return result
     except Exception as e:
