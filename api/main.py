@@ -147,11 +147,11 @@ async def students():
         cur = conn.cursor()
         cur.execute(
             """
-SELECT id, code, title, level, stcw_code, description,
-                   duration, hours, price_amount, is_active
+SELECT id, code, name, level, stcw, subtitle,
+                   duration_weeks, hours, price, currency, price_note, active, sort_order
             FROM courses
-            WHERE is_active = true
-            ORDER BY id ASC
+            WHERE active = true
+            ORDER BY sort_order ASC
             """
         )
         rows = cur.fetchall()
@@ -165,16 +165,19 @@ SELECT id, code, title, level, stcw_code, description,
                 except Exception:
                     files_data = {}
             result.append({
-                "id": row[0],
-                "code": row[1],
-                "name": row[2],
-                "level": row[3],
-                "stcw": row[4],
-                "subtitle": row[5],
-                "duration_weeks": row[6],
-                "hours": row[7],
-                "price": float(row[8]) if row[8] is not None else None,
-                "active": row[9],
+"id": row[0],
+"code": row[1],
+"name": row[2],
+"level": row[3],
+"stcw": row[4],
+"subtitle": row[5],
+"duration_weeks": row[6],
+"hours": row[7],
+"price": float(row[8]) if row[8] is not None else None,
+"currency": row[9],
+"price_note": row[10],
+"active": row[11],
+"sort_order": row[12],
             })
         return result
     except Exception as e:
