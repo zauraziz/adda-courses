@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="description" content="Azərbaycan Dövlət Dəniz Akademiyası — İyun 2026 təkmilləşdirilmə kurslarına onlayn qeydiyyat. STCW konvensiyası tələblərinə uyğun.">
+<meta name="theme-color" content="#003b6f">
+<title>Təkmilləşdirilmə Kursları · Qeydiyyat 2026 — ADDA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============= TOKENS ============= */
+:root{
+  --bg:#fafaf6;
+  --surface:#ffffff;
+  --surface-2:#f4f1ea;
+  --ink:#0c1a2b;
+  --ink-soft:#3a4a5e;
+  --muted:#6b7785;
+  --border:#e6e1d6;
+  --border-strong:#d3cdbf;
+  --primary:#003b6f;        /* Akademiya göyü */
+  --primary-700:#002a52;
+  --primary-50:#eaf1f9;
+  --accent:#b88746;         /* Qızılı vurğu */
+  --accent-soft:#e9d9bf;
+  --success:#0e7c4a;
+  --warn:#b54708;
+  --danger:#b42318;
+  --radius-sm:6px;
+  --radius:10px;
+  --radius-lg:18px;
+  --shadow-sm:0 1px 2px rgba(12,26,43,.04),0 1px 3px rgba(12,26,43,.06);
+  --shadow:0 6px 22px -8px rgba(12,26,43,.18),0 2px 6px rgba(12,26,43,.06);
+  --shadow-lg:0 24px 60px -20px rgba(12,26,43,.28);
+  --maxw:1200px;
+  --transition:cubic-bezier(.22,.61,.36,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:'Manrope',system-ui,sans-serif;
+  font-weight:400;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.container{max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(16px,4vw,40px)}
+
+/* ============= HEADER ============= */
+.topbar{
+  background:var(--primary);
+  color:#fff;
+  font-size:13px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.topbar__inner{
+  display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;justify-content:space-between;
+  padding-block:8px;
+}
+.topbar a{color:#cfe0f2;text-decoration:none}
+.topbar a:hover{color:#fff}
+.topbar__right{display:flex;gap:18px;flex-wrap:wrap}
+.topbar__right span{display:inline-flex;align-items:center;gap:6px}
+
+header.site-header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(250,250,246,.92);
+  backdrop-filter:saturate(160%) blur(10px);
+  -webkit-backdrop-filter:saturate(160%) blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.site-header__inner{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding-block:14px;
+}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}
+.brand__mark{
+  width:50px;height:50px;flex:0 0 50px;
+  display:grid;place-items:center;
+  background:var(--primary);
+  border-radius:50%;
+  position:relative;
+  box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--accent);
+}
+.brand__mark svg{width:30px;height:30px}
+.brand__text{display:flex;flex-direction:column;line-height:1.1}
+.brand__name{font-family:'Fraunces',serif;font-weight:600;font-size:17px;letter-spacing:.2px}
+.brand__sub{font-size:11.5px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;margin-top:3px}
+
+.nav{display:flex;gap:6px;align-items:center}
+.nav a{
+  color:var(--ink-soft);font-weight:500;font-size:14px;
+  padding:8px 14px;border-radius:var(--radius-sm);
+  transition:.2s var(--transition);text-decoration:none;
+}
+.nav a:hover{background:var(--surface-2);color:var(--ink)}
+.nav__cta{background:var(--primary)!important;color:#fff!important;padding:10px 18px!important}
+.nav__cta:hover{background:var(--primary-700)!important;text-decoration:none}
+
+.nav-toggle{display:none;width:42px;height:42px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+.nav-toggle svg{width:22px;height:22px}
+
+@media (max-width:880px){
+  .nav{
+    position:absolute;left:16px;right:16px;top:calc(100% + 8px);
+    flex-direction:column;align-items:stretch;gap:2px;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:10px;box-shadow:var(--shadow);
+    display:none;
+  }
+  .nav.is-open{display:flex}
+  .nav a{padding:12px 14px}
+  .nav-toggle{display:grid;place-items:center}
+}
+
+/* ============= HERO ============= */
+.hero{
+  position:relative;overflow:hidden;
+  padding-block:clamp(50px,8vw,90px);
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(0,59,111,.08), transparent 60%),
+    radial-gradient(900px 400px at -10% 110%, rgba(184,135,70,.10), transparent 60%),
+    var(--bg);
+  border-bottom:1px solid var(--border);
+}
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(to right, rgba(12,26,43,.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(12,26,43,.04) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 80% at 50% 30%, black, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 80% at 50% 30%, black, transparent 75%);
+}
+.hero__grid{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:center;
+}
+@media (max-width:980px){.hero__grid{grid-template-columns:1fr;gap:36px}}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:7px 14px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--border-strong);
+  font-size:12.5px;letter-spacing:.7px;text-transform:uppercase;
+  color:var(--ink-soft);font-weight:600;
+  box-shadow:var(--shadow-sm);
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+
+.hero h1{
+  font-family:'Fraunces',serif;font-weight:500;
+  font-size:clamp(36px,5.5vw,62px);line-height:1.04;letter-spacing:-.02em;
+  margin:22px 0 18px;color:var(--ink);
+}
+.hero h1 em{font-style:italic;color:var(--primary);font-weight:500}
+.hero h1 .accent-line{
+  display:inline-block;position:relative;
+}
+.hero h1 .accent-line::after{
+  content:"";position:absolute;left:0;right:0;bottom:6px;height:10px;
+  background:var(--accent-soft);z-index:-1;border-radius:2px;
+}
+
+.hero__lead{
+  font-size:17.5px;color:var(--ink-soft);max-width:560px;margin-bottom:30px;
+}
+
+.hero__cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px}
+
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 24px;border-radius:var(--radius);
+  font-weight:600;font-size:15px;letter-spacing:.1px;
+  transition:transform .15s var(--transition),box-shadow .2s var(--transition),background .2s;
+  white-space:nowrap;
+}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:var(--shadow-sm)}
+.btn-primary:hover{background:var(--primary-700);text-decoration:none;box-shadow:var(--shadow);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--border-strong)}
+.btn-ghost:hover{background:var(--surface-2);text-decoration:none}
+.btn svg{width:18px;height:18px}
+
+.hero__meta{display:flex;flex-wrap:wrap;gap:28px;margin-top:8px}
+.hero__meta-item{display:flex;align-items:flex-start;gap:12px}
+.hero__meta-item svg{width:20px;height:20px;color:var(--primary);flex:0 0 20px;margin-top:2px}
+.hero__meta-item dt{font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.hero__meta-item dd{margin:2px 0 0;font-weight:600;color:var(--ink);font-size:14.5px}
+
+/* Countdown card */
+.countdown{
+  background:var(--surface);
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-lg);
+  padding:30px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.countdown::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+}
+.countdown__label{
+  font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;
+  font-weight:700;color:var(--accent);margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+.countdown__label::before{
+  content:"";width:24px;height:1px;background:var(--accent);
+}
+.countdown__title{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin:0 0 4px;color:var(--ink)}
+.countdown__date{color:var(--ink-soft);font-size:14px;margin-bottom:22px}
+.countdown__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.countdown__cell{
+  background:var(--surface-2);border-radius:var(--radius-sm);
+  padding:14px 8px;text-align:center;
+}
+.countdown__num{
+  font-family:'Fraunces',serif;font-size:clamp(24px,5vw,34px);
+  font-weight:600;color:var(--primary);line-height:1;font-variant-numeric:tabular-nums;
+}
+.countdown__unit{
+  font-size:10px;letter-spacing:.7px;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin-top:6px;
+}
+.countdown__note{
+  margin-top:18px;padding-top:18px;border-top:1px dashed var(--border);
+  font-size:13px;color:var(--ink-soft);display:flex;gap:10px;align-items:flex-start;
+}
+.countdown__note svg{width:16px;height:16px;flex:0 0 16px;color:var(--warn);margin-top:2px}
+
+/* ============= STATS BAR ============= */
+.stats{
+  background:var(--primary);color:#fff;
+  padding-block:24px;
+}
+.stats__grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;
+  align-items:center;
+}
+.stats__item{display:flex;align-items:center;gap:14px}
+.stats__icon{
+  width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.12);display:grid;place-items:center;flex:0 0 42px;
+}
+.stats__icon svg{width:22px;height:22px}
+.stats__num{font-family:'Fraunces',serif;font-size:24px;font-weight:600;line-height:1}
+.stats__lbl{font-size:13px;color:#cfe0f2;margin-top:3px}
+
+/* ============= SECTION ============= */
+section{padding-block:clamp(60px,8vw,90px)}
+.section-head{max-width:780px;margin-bottom:46px}
+.section-head .eyebrow{margin-bottom:14px}
+.section-head h2{
+  font-family:'Fraunces',serif;font-weight:500;
+  font-size:clamp(28px,4vw,44px);line-height:1.1;letter-spacing:-.015em;
+  margin:0 0 14px;color:var(--ink);
+}
+.section-head p{font-size:17px;color:var(--ink-soft);margin:0}
+
+/* ============= COURSES ============= */
+.courses{background:var(--surface)}
+.courses__grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:22px;
+}
+
+.course-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:26px;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  transition:.25s var(--transition);
+}
+.course-card::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--primary);transform:scaleX(0);transform-origin:left;
+  transition:transform .35s var(--transition);
+}
+.course-card:hover{
+  border-color:var(--border-strong);
+  box-shadow:var(--shadow-lg);
+  transform:translateY(-3px);
+}
+.course-card:hover::after{transform:scaleX(1)}
+.course-card[data-level="management"]::after{background:linear-gradient(90deg,var(--primary),var(--accent))}
+
+.course-card__head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+  margin-bottom:18px;
+}
+.course-card__icon{
+  width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
+  background:var(--primary-50);color:var(--primary);flex:0 0 46px;
+}
+.course-card__icon svg{width:24px;height:24px}
+.course-card[data-level="management"] .course-card__icon{
+  background:linear-gradient(135deg,var(--primary-50),var(--accent-soft));
+}
+.course-card__badge{
+  font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;
+  padding:5px 10px;border-radius:999px;
+  background:var(--surface-2);color:var(--ink-soft);
+  border:1px solid var(--border);
+  white-space:nowrap;
+}
+.course-card[data-level="management"] .course-card__badge{
+  background:#fdf6e8;color:#8a5a18;border-color:var(--accent-soft);
+}
+
+.course-card h3{
+  font-family:'Fraunces',serif;font-weight:600;
+  font-size:21px;line-height:1.2;margin:0 0 6px;color:var(--ink);
+}
+.course-card__sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+
+.course-card__topics{
+  list-style:none;padding:0;margin:0 0 22px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.course-card__topics li{
+  display:flex;align-items:flex-start;gap:9px;
+  font-size:13.5px;color:var(--ink-soft);
+}
+.course-card__topics li::before{
+  content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);
+  margin-top:8px;flex:0 0 5px;
+}
+
+.course-card__meta{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+  padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  margin-bottom:18px;
+}
+.course-card__meta dt{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:3px}
+.course-card__meta dd{margin:0;font-weight:600;color:var(--ink);font-size:14.5px}
+
+.course-card__price{
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  margin-bottom:18px;
+}
+.course-card__price-val{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:var(--primary);line-height:1}
+.course-card__price-currency{font-size:16px;color:var(--ink-soft);margin-left:4px;font-weight:500}
+.course-card__price-note{font-size:11.5px;color:var(--muted);text-align:right}
+
+.course-card__cta{
+  width:100%;justify-content:center;margin-top:auto;
+  background:var(--ink);color:#fff;
+  padding:13px 18px;border-radius:var(--radius);
+  font-weight:600;font-size:14.5px;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:.2s var(--transition);
+}
+.course-card__cta:hover{background:var(--primary)}
+.course-card__cta svg{width:16px;height:16px;transition:transform .2s}
+.course-card__cta:hover svg{transform:translateX(3px)}
+
+/* Disclaimer */
+.price-disclaimer{
+  margin-top:32px;padding:14px 18px;
+  background:var(--surface-2);border-radius:var(--radius);
+  font-size:13px;color:var(--ink-soft);
+  display:flex;gap:10px;align-items:flex-start;
+}
+.price-disclaimer svg{width:18px;height:18px;color:var(--accent);flex:0 0 18px;margin-top:2px}
+
+/* ============= DOCUMENTS ============= */
+.docs{background:var(--bg)}
+.docs__grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;
+}
+.doc-item{
+  display:flex;gap:14px;
+  padding:18px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);
+  transition:.2s var(--transition);
+}
+.doc-item:hover{border-color:var(--border-strong);box-shadow:var(--shadow-sm)}
+.doc-item__num{
+  width:32px;height:32px;flex:0 0 32px;
+  border-radius:8px;background:var(--primary);color:#fff;
+  display:grid;place-items:center;font-weight:700;font-size:14px;
+  font-family:'Fraunces',serif;
+}
+.doc-item[data-optional="true"] .doc-item__num{background:var(--accent)}
+.doc-item h4{font-size:14.5px;margin:0 0 4px;color:var(--ink);font-weight:600}
+.doc-item p{font-size:12.5px;margin:0;color:var(--muted)}
+.doc-item__pill{
+  display:inline-block;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;
+  font-weight:600;padding:2px 8px;border-radius:999px;margin-top:8px;
+  background:var(--primary-50);color:var(--primary);
+}
+.doc-item[data-optional="true"] .doc-item__pill{background:#fdf6e8;color:#8a5a18}
+
+/* ============= REGISTRATION FORM ============= */
+.register{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.register__layout{
+  display:grid;grid-template-columns:280px 1fr;gap:50px;align-items:flex-start;
+}
+@media (max-width:960px){
+  .register__layout{grid-template-columns:1fr;gap:30px}
+}
+
+.register__aside{position:sticky;top:90px}
+@media (max-width:960px){.register__aside{position:static}}
+
+.steps{
+  display:flex;flex-direction:column;gap:0;
+  padding:0;margin:0;list-style:none;
+  border-left:2px solid var(--border);
+}
+.steps li{
+  position:relative;padding:14px 0 14px 26px;
+  font-size:14px;color:var(--muted);
+  transition:.2s var(--transition);
+}
+.steps li::before{
+  content:"";position:absolute;left:-7px;top:18px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--border-strong);
+}
+.steps li.is-active{color:var(--ink);font-weight:600}
+.steps li.is-active::before{background:var(--primary);border-color:var(--primary)}
+.steps li.is-done::before{background:var(--success);border-color:var(--success)}
+.steps li small{display:block;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+
+.form-card{
+  background:var(--surface);
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-lg);
+  padding:clamp(24px,4vw,40px);
+  box-shadow:var(--shadow-sm);
+}
+
+.form-section{margin-bottom:42px}
+.form-section:last-of-type{margin-bottom:0}
+.form-section__head{
+  display:flex;align-items:center;gap:12px;
+  padding-bottom:12px;border-bottom:1px solid var(--border);
+  margin-bottom:24px;
+}
+.form-section__num{
+  width:30px;height:30px;flex:0 0 30px;border-radius:50%;
+  background:var(--primary);color:#fff;
+  display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:600;font-size:14px;
+}
+.form-section__head h3{
+  font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin:0;color:var(--ink);
+}
+.form-section__head p{font-size:13.5px;color:var(--muted);margin:2px 0 0}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:600px){.field-grid{grid-template-columns:1fr}}
+.field-grid--full{grid-template-columns:1fr}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:5px}
+.field label .req{color:var(--danger);font-weight:700}
+.field__hint{font-size:12px;color:var(--muted)}
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="tel"],
+.field select{
+  width:100%;padding:12px 14px;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  font-size:15px;color:var(--ink);
+  transition:.15s var(--transition);
+}
+.field input:focus,.field select:focus{
+  outline:0;border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(0,59,111,.10);
+}
+.field input.is-invalid,.field select.is-invalid{border-color:var(--danger);background:#fef3f2}
+.field__error{font-size:12px;color:var(--danger);font-weight:600;display:none;margin-top:2px}
+.field.has-error .field__error{display:block}
+
+.field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230c1a2b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+
+/* Course selection (radio cards) */
+.course-radio-group{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.course-radio-group{grid-template-columns:1fr}}
+.course-radio{position:relative}
+.course-radio input{position:absolute;opacity:0;pointer-events:none}
+.course-radio label{
+  display:flex;flex-direction:column;gap:4px;cursor:pointer;
+  padding:14px 16px;border-radius:var(--radius);
+  border:1.5px solid var(--border);background:var(--surface);
+  transition:.15s var(--transition);
+  font-weight:500;
+}
+.course-radio label:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.course-radio input:checked + label{
+  border-color:var(--primary);
+  background:var(--primary-50);
+  box-shadow:0 0 0 3px rgba(0,59,111,.08);
+}
+.course-radio input:checked + label::after{
+  content:"";position:absolute;top:14px;right:14px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center/14px no-repeat;
+}
+.course-radio__name{font-size:14.5px;color:var(--ink);font-weight:600;padding-right:24px}
+.course-radio__lvl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.course-radio input:checked + label .course-radio__lvl{color:var(--primary)}
+
+/* File uploads */
+.upload{display:flex;flex-direction:column;gap:8px}
+.upload__zone{
+  position:relative;
+  display:flex;align-items:center;gap:14px;
+  padding:16px;border:1.5px dashed var(--border-strong);
+  border-radius:var(--radius);background:var(--bg);
+  transition:.15s var(--transition);cursor:pointer;
+}
+.upload__zone:hover{border-color:var(--primary);background:var(--primary-50)}
+.upload__zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.upload__icon{
+  width:42px;height:42px;border-radius:10px;flex:0 0 42px;
+  background:var(--surface);border:1px solid var(--border);
+  display:grid;place-items:center;color:var(--primary);
+}
+.upload__icon svg{width:22px;height:22px}
+.upload__text{flex:1;min-width:0}
+.upload__title{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:2px}
+.upload__desc{font-size:12px;color:var(--muted)}
+.upload__btn{
+  font-size:12.5px;padding:7px 14px;border-radius:var(--radius-sm);
+  background:var(--primary);color:#fff;font-weight:600;
+  white-space:nowrap;
+}
+.upload__zone.has-file{border-style:solid;border-color:var(--success);background:#ecfdf3}
+.upload__zone.has-file .upload__icon{background:var(--success);color:#fff;border-color:var(--success)}
+.upload__zone.has-file .upload__btn{background:var(--success)}
+.upload-remove{
+  background:transparent;color:var(--danger);font-size:12px;font-weight:600;
+  padding:4px 8px;border-radius:6px;border:1px solid var(--danger);
+  margin-left:auto;
+}
+.upload-remove:hover{background:var(--danger);color:#fff}
+
+/* Consent */
+.consent{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:18px;background:var(--surface-2);border-radius:var(--radius);
+  font-size:13.5px;color:var(--ink-soft);
+}
+.consent input{width:18px;height:18px;flex:0 0 18px;margin-top:2px;accent-color:var(--primary)}
+.consent label{cursor:pointer;line-height:1.55}
+.consent a{color:var(--primary);font-weight:600}
+
+/* Submit row */
+.form-submit{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+  margin-top:24px;padding-top:24px;border-top:1px solid var(--border);
+}
+.form-submit__note{font-size:12.5px;color:var(--muted);max-width:340px}
+.btn-submit{
+  background:var(--primary);color:#fff;padding:15px 32px;font-size:15.5px;
+  border-radius:var(--radius);font-weight:700;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:.2s var(--transition);box-shadow:var(--shadow-sm);
+}
+.btn-submit:hover:not(:disabled){background:var(--primary-700);transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+.btn-submit svg{width:18px;height:18px}
+
+/* ============= PAYMENT INFO ============= */
+.payment{background:var(--bg)}
+.payment__grid{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:flex-start}
+@media (max-width:880px){.payment__grid{grid-template-columns:1fr}}
+
+.payment__card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-sm);
+}
+.payment__card h3{font-family:'Fraunces',serif;font-size:22px;margin:0 0 8px;color:var(--ink);font-weight:600}
+.payment__card p{color:var(--ink-soft);margin:0 0 20px;font-size:14.5px}
+
+.payment-list{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:14px;
+}
+.payment-list li{
+  display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center;
+  padding:12px 0;border-bottom:1px dashed var(--border);
+}
+.payment-list li:last-child{border-bottom:0}
+.payment-list dt{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin:0}
+.payment-list dd{margin:0;font-weight:500;color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums;word-break:break-all}
+
+.payment-aside{
+  background:var(--primary);color:#fff;border-radius:var(--radius-lg);
+  padding:32px;position:relative;overflow:hidden;
+}
+.payment-aside::before{
+  content:"";position:absolute;right:-50px;top:-50px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(184,135,70,.18),transparent 70%);
+}
+.payment-aside h4{font-family:'Fraunces',serif;font-size:18px;margin:0 0 12px;font-weight:600;position:relative}
+.payment-aside ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;position:relative}
+.payment-aside li{display:flex;gap:10px;font-size:14px;color:#dce8f4;line-height:1.55}
+.payment-aside li svg{width:18px;height:18px;flex:0 0 18px;margin-top:2px;color:var(--accent)}
+
+/* ============= FAQ ============= */
+.faq__list{display:flex;flex-direction:column;gap:10px}
+.faq-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  transition:.2s var(--transition);
+}
+.faq-item[open]{border-color:var(--border-strong);box-shadow:var(--shadow-sm)}
+.faq-item summary{
+  list-style:none;cursor:pointer;
+  padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px;
+  font-weight:600;color:var(--ink);font-size:15.5px;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{
+  content:"";width:14px;height:14px;flex:0 0 14px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230c1a2b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") center/contain no-repeat;
+  transition:.2s var(--transition);
+}
+.faq-item[open] summary::after{transform:rotate(180deg)}
+.faq-item p{padding:0 22px 22px;margin:0;color:var(--ink-soft);font-size:14.5px;line-height:1.65}
+
+/* ============= FOOTER ============= */
+footer{
+  background:var(--ink);color:#a8b3c2;
+  padding-block:48px 26px;
+  margin-top:auto;
+}
+.footer__grid{
+  display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:36px;
+  padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);
+}
+@media (max-width:760px){.footer__grid{grid-template-columns:1fr}}
+.footer__brand .brand__name{color:#fff}
+.footer__brand .brand__sub{color:#7c8a9d}
+.footer__brand p{font-size:13.5px;margin-top:14px;line-height:1.6;max-width:380px}
+.footer__col h5{font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:#fff;margin:0 0 14px;font-weight:700}
+.footer__col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.footer__col a{color:#a8b3c2;font-size:13.5px;text-decoration:none}
+.footer__col a:hover{color:#fff}
+.footer__col li{display:flex;gap:9px;align-items:flex-start;font-size:13.5px}
+.footer__col li svg{width:15px;height:15px;color:var(--accent);flex:0 0 15px;margin-top:3px}
+.footer__bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:22px;font-size:12.5px;color:#7c8a9d}
+
+/* ============= MODAL ============= */
+.modal{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(12,26,43,.55);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+  animation:fade .25s var(--transition);
+}
+.modal.is-open{display:flex}
+.modal__content{
+  background:var(--surface);border-radius:var(--radius-lg);
+  padding:36px;max-width:520px;width:100%;
+  box-shadow:var(--shadow-lg);
+  animation:pop .35s var(--transition);
+  text-align:center;
+}
+.modal__icon{
+  width:68px;height:68px;margin:0 auto 18px;
+  border-radius:50%;background:#ecfdf3;color:var(--success);
+  display:grid;place-items:center;
+}
+.modal__icon svg{width:36px;height:36px}
+.modal h3{font-family:'Fraunces',serif;font-size:26px;font-weight:600;margin:0 0 10px;color:var(--ink)}
+.modal p{color:var(--ink-soft);margin:0 0 22px;font-size:15px}
+.modal__details{
+  background:var(--surface-2);border-radius:var(--radius);
+  padding:16px 20px;margin-bottom:22px;text-align:left;
+  font-size:13.5px;display:flex;flex-direction:column;gap:6px;
+}
+.modal__details strong{color:var(--ink)}
+.modal__close{margin:0 auto;background:var(--primary);color:#fff;padding:12px 28px;border-radius:var(--radius);font-weight:600}
+
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ============= UTILITIES ============= */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Animate-in on scroll (subtle) */
+[data-reveal]{opacity:0;transform:translateY(16px);transition:opacity .7s var(--transition),transform .7s var(--transition)}
+[data-reveal].in-view{opacity:1;transform:none}
+
+/* Print */
+@media print{.site-header,.topbar,footer,.register{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP CONTACT BAR ===== -->
+<div class="topbar">
+  <div class="container topbar__inner">
+    <span>Beynəlxalq Dəniz Təşkilatı (IMO) qeydiyyatı: <strong style="color:#fff">012</strong></span>
+    <div class="topbar__right">
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <a href="tel:+994124214503" data-bind="phone">(+994 12) 421-45-03</a>
+      </span>
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <a href="mailto:info@adda.edu.az" data-bind="email">info@adda.edu.az</a>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="#" class="brand" aria-label="Azərbaycan Dövlət Dəniz Akademiyası">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v20M2 12h20"/>
+          <path d="M5 5l14 14M19 5L5 19" opacity=".4"/>
+        </svg>
+      </span>
+      <span class="brand__text">
+        <span class="brand__name">Dəniz Akademiyası</span>
+        <span class="brand__sub">ADDA · Azərbaycan</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="mainNav" aria-label="Əsas naviqasiya">
+      <a href="#kurslar">Kurslar</a>
+      <a href="#senedler">Sənədlər</a>
+      <a href="#qeydiyyat">Qeydiyyat</a>
+      <a href="#odenis">Ödəniş</a>
+      <a href="#sual">Sual & Cavab</a>
+      <a class="nav__cta" href="#qeydiyyat">İndi qeydiyyatdan keç</a>
+    </nav>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Menyu" aria-expanded="false" aria-controls="mainNav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero__grid">
+      <div data-reveal>
+        <span class="eyebrow"><span class="dot"></span>İyun 2026 · Onlayn qeydiyyat açıqdır</span>
+        <h1>Dənizçilər üçün <em>təkmilləşdirilmə</em> <span class="accent-line">kursları</span></h1>
+        <p class="hero__lead">
+          STCW konvensiyasının tələblərinə uyğun ixtisasartırma proqramları —
+          gəmi sürücüləri, mexanikləri və elektromexanikləri üçün idarəetmə və istismar səviyyəsində.
+          Onlayn qeydiyyatdan keçərək kursunuzu seçin və lazımi sənədləri yükləyin.
+        </p>
+
+        <div class="hero__cta">
+          <a class="btn btn-primary" href="#qeydiyyat">
+            Qeydiyyat formasını aç
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#kurslar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Kurslara bax
+          </a>
+        </div>
+
+        <dl class="hero__meta">
+          <div class="hero__meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div><dt>Tədris dövrü</dt><dd>İyun 2026</dd></div>
+          </div>
+          <div class="hero__meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div><dt>Yer</dt><dd>ADDA, Bakı şəh.</dd></div>
+          </div>
+          <div class="hero__meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <div><dt>Format</dt><dd>Auditoriya + Simulyator</dd></div>
+          </div>
+        </dl>
+      </div>
+
+      <aside class="countdown" data-reveal aria-live="polite">
+        <div class="countdown__label">Qeydiyyatın bitməsinə qalıb</div>
+        <div class="countdown__title">31 May 2026 — saat 18:00</div>
+        <div class="countdown__date">Sənəd qəbulu son tarix</div>
+        <div class="countdown__grid">
+          <div class="countdown__cell"><div class="countdown__num" id="cdDays">--</div><div class="countdown__unit">Gün</div></div>
+          <div class="countdown__cell"><div class="countdown__num" id="cdHours">--</div><div class="countdown__unit">Saat</div></div>
+          <div class="countdown__cell"><div class="countdown__num" id="cdMins">--</div><div class="countdown__unit">Dəqiqə</div></div>
+          <div class="countdown__cell"><div class="countdown__num" id="cdSecs">--</div><div class="countdown__unit">Saniyə</div></div>
+        </div>
+        <p class="countdown__note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Son tarixdən sonra ərizələr qəbul edilməyəcək. Sənədləri vaxtında yükləməyiniz xahiş olunur.
+        </p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<div class="stats">
+  <div class="container stats__grid">
+    <div class="stats__item">
+      <span class="stats__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+      <div><div class="stats__num">5</div><div class="stats__lbl">İxtisas istiqaməti</div></div>
+    </div>
+    <div class="stats__item">
+      <span class="stats__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <div><div class="stats__num">2-4</div><div class="stats__lbl">Həftəlik dövr</div></div>
+    </div>
+    <div class="stats__item">
+      <span class="stats__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L3 7v6c0 5 4 9 9 11 5-2 9-6 9-11V7l-9-5z"/></svg></span>
+      <div><div class="stats__num">STCW</div><div class="stats__lbl">Konvensiyaya uyğun</div></div>
+    </div>
+    <div class="stats__item">
+      <span class="stats__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+      <div><div class="stats__num">100%</div><div class="stats__lbl">Onlayn qeydiyyat</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COURSES ===== -->
+<section class="courses" id="kurslar">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow"><span class="dot"></span>Kurs kataloqu</span>
+      <h2>İyun 2026 üzrə təkmilləşdirilmə proqramları</h2>
+      <p>Hər ixtisas üzrə kurslar STCW konvensiyasının A-II və A-III bölmələrinin müvafiq qaydalarına və ADDA-nın təsdiqlənmiş tədris planlarına uyğun aparılır. Kursu seçin — qeydiyyat formasında ixtisas avtomatik seçiləcək.</p>
+    </div>
+
+    <div class="courses__grid">
+
+      <!-- 1 -->
+      <article class="course-card" data-level="management" data-reveal data-course="ngm" data-name="Gəmi sürücülüyü (İdarəetmə səviyyəsi)">
+        <div class="course-card__head">
+          <span class="course-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 14 12 12 22 10 12Z"/><path d="M2 12 12 14 22 12 12 10Z"/></svg>
+          </span>
+          <span class="course-card__badge">İdarəetmə səviyyəsi</span>
+        </div>
+        <h3>Gəmi sürücülüyü</h3>
+        <p class="course-card__sub">STCW A-II/2 · Kapitan və baş köməkçi üçün</p>
+        <ul class="course-card__topics">
+          <li>Reys planlaşdırılması və naviqasiya təhlükəsizliyi</li>
+          <li>ECDIS və müasir naviqasiya sistemləri</li>
+          <li>Gəminin idarə edilməsi və manevr</li>
+          <li>Yük əməliyyatları və gəminin dayanıqlığı</li>
+        </ul>
+        <dl class="course-card__meta">
+          <div><dt>Müddət</dt><dd>4 həftə</dd></div>
+          <div><dt>Saat</dt><dd>140 saat</dd></div>
+        </dl>
+        <div class="course-card__price">
+          <div><span class="course-card__price-val">450</span><span class="course-card__price-currency">AZN</span></div>
+          <div class="course-card__price-note">ASCO əməkdaşları<br>üçün güzəştli</div>
+        </div>
+        <button class="course-card__cta" data-register="ngm">
+          Bu kursa qeydiyyat
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </article>
+
+      <!-- 2 -->
+      <article class="course-card" data-level="operational" data-reveal data-course="ngo" data-name="Gəmi sürücülüyü (İstismar səviyyəsi)">
+        <div class="course-card__head">
+          <span class="course-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <span class="course-card__badge">İstismar səviyyəsi</span>
+        </div>
+        <h3>Gəmi sürücülüyü</h3>
+        <p class="course-card__sub">STCW A-II/1 · Növbə zabiti üçün</p>
+        <ul class="course-card__topics">
+          <li>Naviqasiya növbəsinin aparılması</li>
+          <li>GMDSS rabitə əməliyyatları</li>
+          <li>Hava şəraiti və okeanoqrafiya</li>
+          <li>Beynəlxalq COLREG qaydaları</li>
+        </ul>
+        <dl class="course-card__meta">
+          <div><dt>Müddət</dt><dd>3 həftə</dd></div>
+          <div><dt>Saat</dt><dd>108 saat</dd></div>
+        </dl>
+        <div class="course-card__price">
+          <div><span class="course-card__price-val">320</span><span class="course-card__price-currency">AZN</span></div>
+          <div class="course-card__price-note">Tam kurs<br>+ simulyator</div>
+        </div>
+        <button class="course-card__cta" data-register="ngo">
+          Bu kursa qeydiyyat
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </article>
+
+      <!-- 3 -->
+      <article class="course-card" data-level="management" data-reveal data-course="mem" data-name="Gəmi mexanikləri (İdarəetmə səviyyəsi)">
+        <div class="course-card__head">
+          <span class="course-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </span>
+          <span class="course-card__badge">İdarəetmə səviyyəsi</span>
+        </div>
+        <h3>Gəmi mexanikləri</h3>
+        <p class="course-card__sub">STCW A-III/2 · Baş mexanik və 2-ci mexanik</p>
+        <ul class="course-card__topics">
+          <li>Gəmi enerji qurğularının idarə edilməsi</li>
+          <li>Mühərrik və yardımçı mexanizmlərin texniki istismarı</li>
+          <li>Yanacaq, yağ və sistem analizi</li>
+          <li>Gəmi heyətinin idarə edilməsi və risk təhlili</li>
+        </ul>
+        <dl class="course-card__meta">
+          <div><dt>Müddət</dt><dd>4 həftə</dd></div>
+          <div><dt>Saat</dt><dd>140 saat</dd></div>
+        </dl>
+        <div class="course-card__price">
+          <div><span class="course-card__price-val">450</span><span class="course-card__price-currency">AZN</span></div>
+          <div class="course-card__price-note">Mühərrik otağı<br>simulyatoru daxil</div>
+        </div>
+        <button class="course-card__cta" data-register="mem">
+          Bu kursa qeydiyyat
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </article>
+
+      <!-- 4 -->
+      <article class="course-card" data-level="operational" data-reveal data-course="meo" data-name="Gəmi mexanikləri (İstismar səviyyəsi)">
+        <div class="course-card__head">
+          <span class="course-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </span>
+          <span class="course-card__badge">İstismar səviyyəsi</span>
+        </div>
+        <h3>Gəmi mexanikləri</h3>
+        <p class="course-card__sub">STCW A-III/1 · Növbə mexaniki üçün</p>
+        <ul class="course-card__topics">
+          <li>Mexaniki növbənin aparılması qaydaları</li>
+          <li>Gəmi mühərriki və köməkçi sistemlər</li>
+          <li>Avtomatlaşdırılmış idarəetmə sistemləri</li>
+          <li>Texniki təhlükəsizlik və yanğından mühafizə</li>
+        </ul>
+        <dl class="course-card__meta">
+          <div><dt>Müddət</dt><dd>3 həftə</dd></div>
+          <div><dt>Saat</dt><dd>108 saat</dd></div>
+        </dl>
+        <div class="course-card__price">
+          <div><span class="course-card__price-val">320</span><span class="course-card__price-currency">AZN</span></div>
+          <div class="course-card__price-note">Praktiki məşğələ<br>+ test imtahanı</div>
+        </div>
+        <button class="course-card__cta" data-register="meo">
+          Bu kursa qeydiyyat
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </article>
+
+      <!-- 5 -->
+      <article class="course-card" data-level="management" data-reveal data-course="eem" data-name="Gəmi elektromexanikləri (İdarəetmə səviyyəsi)">
+        <div class="course-card__head">
+          <span class="course-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </span>
+          <span class="course-card__badge">İdarəetmə səviyyəsi</span>
+        </div>
+        <h3>Gəmi elektromexanikləri</h3>
+        <p class="course-card__sub">STCW A-III/6 · Elektrotexniki zabit üçün</p>
+        <ul class="course-card__topics">
+          <li>Gəmi elektrik təchizatı sistemləri</li>
+          <li>Yüksəkgərginlikli avadanlıq və idarəetmə</li>
+          <li>Elektronika və avtomatlaşdırma</li>
+          <li>Texniki təhlükəsizlik və qoruyucu vasitələr</li>
+        </ul>
+        <dl class="course-card__meta">
+          <div><dt>Müddət</dt><dd>4 həftə</dd></div>
+          <div><dt>Saat</dt><dd>140 saat</dd></div>
+        </dl>
+        <div class="course-card__price">
+          <div><span class="course-card__price-val">480</span><span class="course-card__price-currency">AZN</span></div>
+          <div class="course-card__price-note">İxtisaslaşmış<br>laboratoriya daxil</div>
+        </div>
+        <button class="course-card__cta" data-register="eem">
+          Bu kursa qeydiyyat
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </article>
+
+      <!-- 6 (Konsultasiya kartı – ümumi məlumat) -->
+      <article class="course-card" style="background:linear-gradient(135deg,#f7f3ea,#fcfaf4);border-color:var(--accent-soft)" data-reveal>
+        <div class="course-card__head">
+          <span class="course-card__icon" style="background:#fff;color:var(--accent)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <span class="course-card__badge" style="background:var(--accent);color:#fff;border-color:var(--accent)">Məsləhət</span>
+        </div>
+        <h3>İxtisasınızdan əmin deyilsiniz?</h3>
+        <p class="course-card__sub">Tədris şöbəsi sizə uyğun proqramı seçməkdə kömək edəcək.</p>
+        <ul class="course-card__topics">
+          <li>Cari diplomunuza əsasən kurs seçimi</li>
+          <li>Sertifikatların müddəti və yenilənməsi</li>
+          <li>STCW tələblərinə uyğunluğun yoxlanması</li>
+          <li>İş yerinizlə (ASCO və s.) əlaqəli güzəştlər</li>
+        </ul>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:auto">
+          <a class="course-card__cta" style="background:var(--accent);justify-content:center" href="tel:+994124214503">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Tədris şöbəsi ilə əlaqə
+          </a>
+          <a href="mailto:tedris@adda.edu.az" data-bind="tedrisEmail" style="font-size:13px;color:var(--ink-soft);text-align:center">tedris@adda.edu.az</a>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="price-disclaimer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span>Yuxarıdakı kurs qiymətləri ADDA-nın 2026-cı il üçün təsdiqlənmiş tarif cədvəlinə əsasən göstərilmişdir. Final qiymətlər seçilən kursun proqramına və əlavə xidmətlərə (simulyator saatları, fərdi məsləhət və s.) görə dəyişə bilər. ASCO əməkdaşları üçün ödəniş xidmət müqaviləsinə əsasən tənzimlənir.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== DOCUMENTS ===== -->
+<section class="docs" id="senedler">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow"><span class="dot"></span>Lazımi sənədlər</span>
+      <h2>Qeydiyyat üçün hansı sənədlər tələb olunur?</h2>
+      <p>Bütün sənədlər <strong>PDF</strong> formatında yüklənməlidir. Hər sənəd üçün ayrıca yer ayrılıb. ASCO əməkdaşları üçün ödəniş çeki tələb olunmur.</p>
+    </div>
+
+    <div class="docs__grid">
+      <div class="doc-item" data-reveal>
+        <div class="doc-item__num">1</div>
+        <div>
+          <h4>Şəxsiyyət vəsiqəsi</h4>
+          <p>Şəxsiyyət vəsiqəsinin oxunaqlı surəti.</p>
+          <span class="doc-item__pill">PDF · 100 MB-a qədər</span>
+        </div>
+      </div>
+      <div class="doc-item" data-reveal>
+        <div class="doc-item__num">2</div>
+        <div>
+          <h4>Təhsil haqqında sənəd</h4>
+          <p>Diplom (bakalavr / magistratura).</p>
+          <span class="doc-item__pill">PDF · 100 MB-a qədər</span>
+        </div>
+      </div>
+      <div class="doc-item" data-reveal>
+        <div class="doc-item__num">3</div>
+        <div>
+          <h4>İşçi diplomu</h4>
+          <p>İşçi diplomu və əlavəsi (qeyd vərəqi ilə).</p>
+          <span class="doc-item__pill">PDF · 100 MB-a qədər</span>
+        </div>
+      </div>
+      <div class="doc-item" data-reveal>
+        <div class="doc-item__num">4</div>
+        <div>
+          <h4>Tibbi kitabça</h4>
+          <p>Tibbi kitabçanın ilk və son vərəqi.</p>
+          <span class="doc-item__pill">PDF · 100 MB-a qədər</span>
+        </div>
+      </div>
+      <div class="doc-item" data-reveal>
+        <div class="doc-item__num">5</div>
+        <div>
+          <h4>Ərizə</h4>
+          <p>Akademiyanın forması üzrə ərizə nümunəsi.</p>
+          <span class="doc-item__pill">PDF · 100 MB-a qədər</span>
+        </div>
+      </div>
+      <div class="doc-item" data-optional="true" data-reveal>
+        <div class="doc-item__num">6</div>
+        <div>
+          <h4>Ödəniş çeki <span style="font-weight:400;color:var(--muted)">(istəyə bağlı)</span></h4>
+          <p>ASCO əməkdaşları istisna olmaqla.</p>
+          <span class="doc-item__pill">PDF · 10 MB-a qədər</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REGISTRATION FORM ===== -->
+<section class="register" id="qeydiyyat">
+  <div class="container">
+    <div class="section-head" data-reveal style="text-align:center;margin-inline:auto">
+      <span class="eyebrow" style="margin-inline:auto;display:inline-flex"><span class="dot"></span>Qeydiyyat</span>
+      <h2>Onlayn qeydiyyat forması</h2>
+      <p style="margin-inline:auto">Aşağıdakı forma vasitəsilə kursa qeydiyyatdan keçə bilərsiniz. Bütün sahələri (<span style="color:var(--danger)">*</span> ilə işarələnmiş sahələr məcburidir) doldurduqdan sonra göndərin.</p>
+    </div>
+
+    <div class="register__layout">
+      <aside class="register__aside" data-reveal>
+        <ol class="steps" id="formSteps">
+          <li class="is-active" data-step="1"><small>Mərhələ 1</small>Şəxsi məlumatlar</li>
+          <li data-step="2"><small>Mərhələ 2</small>İxtisas seçimi</li>
+          <li data-step="3"><small>Mərhələ 3</small>Sənədlərin yüklənməsi</li>
+          <li data-step="4"><small>Mərhələ 4</small>Təsdiq və göndərmə</li>
+        </ol>
+      </aside>
+
+      <form class="form-card" id="registerForm" enctype="multipart/form-data" novalidate data-reveal>
+
+        <!-- Step 1: Personal info -->
+        <div class="form-section" data-step-section="1">
+          <div class="form-section__head">
+            <span class="form-section__num">1</span>
+            <div>
+              <h3>Şəxsi məlumatlar</h3>
+              <p>Sənədlərinizdə yazıldığı kimi dəqiq şəkildə doldurun.</p>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="field" style="grid-column:1 / -1">
+              <label for="fullname">Soyad, Ad, Ata adı <span class="req">*</span></label>
+              <input type="text" id="fullname" name="fullname" placeholder="Məs.: Əliyev Əli Vəli oğlu" required autocomplete="name">
+              <span class="field__error">Bu sahə tələb olunur.</span>
+            </div>
+
+            <div class="field">
+              <label for="fin">FİN kod <span class="req">*</span></label>
+              <input type="text" id="fin" name="fin" placeholder="7 simvol" maxlength="7" required pattern="[A-Za-z0-9]{7}" autocomplete="off">
+              <span class="field__hint">Şəxsiyyət vəsiqəsindəki 7 simvol</span>
+              <span class="field__error">Düzgün FİN kod daxil edin (7 simvol).</span>
+            </div>
+
+            <div class="field">
+              <label for="phone">Telefon nömrəsi <span class="req">*</span></label>
+              <input type="tel" id="phone" name="phone" placeholder="+994 XX XXX XX XX" required autocomplete="tel">
+              <span class="field__error">Düzgün telefon nömrəsi daxil edin.</span>
+            </div>
+
+            <div class="field" style="grid-column:1 / -1">
+              <label for="email">Email ünvanı <span class="req">*</span></label>
+              <input type="email" id="email" name="email" placeholder="ad.soyad@example.com" required autocomplete="email">
+              <span class="field__hint">Bütün bildirişlər və təlimatlar bu ünvana göndəriləcək.</span>
+              <span class="field__error">Düzgün email ünvanı daxil edin.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Specialty -->
+        <div class="form-section" data-step-section="2">
+          <div class="form-section__head">
+            <span class="form-section__num">2</span>
+            <div>
+              <h3>İxtisasınız</h3>
+              <p>Qeydiyyatdan keçəcəyiniz proqramı seçin.</p>
+            </div>
+          </div>
+
+          <div class="course-radio-group" role="radiogroup" aria-required="true">
+            <div class="course-radio">
+              <input type="radio" name="course" id="r-ngm" value="Gəmi sürücülüyü (İdarəetmə səviyyəsi)" required>
+              <label for="r-ngm">
+                <span class="course-radio__lvl">İdarəetmə</span>
+                <span class="course-radio__name">Gəmi sürücülüyü</span>
+              </label>
+            </div>
+            <div class="course-radio">
+              <input type="radio" name="course" id="r-ngo" value="Gəmi sürücülüyü (İstismar səviyyəsi)" required>
+              <label for="r-ngo">
+                <span class="course-radio__lvl">İstismar</span>
+                <span class="course-radio__name">Gəmi sürücülüyü</span>
+              </label>
+            </div>
+            <div class="course-radio">
+              <input type="radio" name="course" id="r-mem" value="Gəmi mexanikləri (İdarəetmə səviyyəsi)" required>
+              <label for="r-mem">
+                <span class="course-radio__lvl">İdarəetmə</span>
+                <span class="course-radio__name">Gəmi mexanikləri</span>
+              </label>
+            </div>
+            <div class="course-radio">
+              <input type="radio" name="course" id="r-meo" value="Gəmi mexanikləri (İstismar səviyyəsi)" required>
+              <label for="r-meo">
+                <span class="course-radio__lvl">İstismar</span>
+                <span class="course-radio__name">Gəmi mexanikləri</span>
+              </label>
+            </div>
+            <div class="course-radio" style="grid-column:1 / -1">
+              <input type="radio" name="course" id="r-eem" value="Gəmi elektromexanikləri (İdarəetmə səviyyəsi)" required>
+              <label for="r-eem">
+                <span class="course-radio__lvl">İdarəetmə</span>
+                <span class="course-radio__name">Gəmi elektromexanikləri</span>
+              </label>
+            </div>
+          </div>
+          <span class="field__error" id="courseError" style="margin-top:10px">İxtisasınızı seçin.</span>
+        </div>
+
+        <!-- Step 3: Documents -->
+        <div class="form-section" data-step-section="3">
+          <div class="form-section__head">
+            <span class="form-section__num">3</span>
+            <div>
+              <h3>Sənədlərin yüklənməsi</h3>
+              <p>Hər sənəd ayrıca PDF faylı kimi yüklənməlidir.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="upload">
+              <label class="upload__zone" data-required="true">
+                <input type="file" name="doc-id" accept="application/pdf" data-name="Şəxsiyyət vəsiqəsi" data-max="100">
+                <span class="upload__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span>
+                <span class="upload__text">
+                  <span class="upload__title">Şəxsiyyət vəsiqəsi <span class="req" style="color:var(--danger)">*</span></span>
+                  <span class="upload__desc">PDF · maks. 100 MB</span>
+                </span>
+                <span class="upload__btn">Fayl seç</span>
+              </label>
+            </div>
+
+            <div class="upload">
+              <label class="upload__zone" data-required="true">
+                <input type="file" name="doc-diploma" accept="application/pdf" data-name="Diplom" data-max="100">
+                <span class="upload__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+                <span class="upload__text">
+                  <span class="upload__title">Təhsil haqqında sənəd (Diplom) <span class="req" style="color:var(--danger)">*</span></span>
+                  <span class="upload__desc">PDF · maks. 100 MB</span>
+                </span>
+                <span class="upload__btn">Fayl seç</span>
+              </label>
+            </div>
+
+            <div class="upload">
+              <label class="upload__zone" data-required="true">
+                <input type="file" name="doc-work" accept="application/pdf" data-name="İşçi diplomu" data-max="100">
+                <span class="upload__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span>
+                <span class="upload__text">
+                  <span class="upload__title">İşçi diplomu (əlavəsi ilə) <span class="req" style="color:var(--danger)">*</span></span>
+                  <span class="upload__desc">PDF · maks. 100 MB</span>
+                </span>
+                <span class="upload__btn">Fayl seç</span>
+              </label>
+            </div>
+
+            <div class="upload">
+              <label class="upload__zone" data-required="true">
+                <input type="file" name="doc-medical" accept="application/pdf" data-name="Tibbi kitabça" data-max="100">
+                <span class="upload__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+                <span class="upload__text">
+                  <span class="upload__title">Tibbi kitabça (ilk və son vərəq) <span class="req" style="color:var(--danger)">*</span></span>
+                  <span class="upload__desc">PDF · maks. 100 MB</span>
+                </span>
+                <span class="upload__btn">Fayl seç</span>
+              </label>
+            </div>
+
+            <div class="upload">
+              <label class="upload__zone" data-required="true">
+                <input type="file" name="doc-application" accept="application/pdf" data-name="Ərizə" data-max="100">
+                <span class="upload__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+                <span class="upload__text">
+                  <span class="upload__title">Ərizə <span class="req" style="color:var(--danger)">*</span></span>
+                  <span class="upload__desc">PDF · maks. 100 MB · <a href="#" onclick="alert('Ərizə nümunəsi tezliklə yüklənəcək. Tədris şöbəsi ilə əlaqə saxlayın.');return false;" style="color:var(--primary);font-weight:600">Nümunəni yüklə</a></span>
+                </span>
+                <span class="upload__btn">Fayl seç</span>
+              </label>
+            </div>
+
+            <div class="upload">
+              <label class="upload__zone">
+                <input type="file" name="doc-receipt" accept="application/pdf" data-name="Ödəniş çeki" data-max="10">
+                <span class="upload__icon" style="color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                <span class="upload__text">
+                  <span class="upload__title">Ödəniş çeki <span style="font-weight:400;color:var(--muted)">(istəyə bağlı)</span></span>
+                  <span class="upload__desc">PDF · maks. 10 MB · ASCO əməkdaşları istisna olmaqla</span>
+                </span>
+                <span class="upload__btn">Fayl seç</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Confirm -->
+        <div class="form-section" data-step-section="4">
+          <div class="form-section__head">
+            <span class="form-section__num">4</span>
+            <div>
+              <h3>Təsdiq</h3>
+              <p>Məlumatların doğruluğunu və şərtləri təsdiq edin.</p>
+            </div>
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" id="consent" required>
+            <span>
+              Daxil etdiyim məlumatların və yüklədiyim sənədlərin <strong>doğru və düzgün</strong> olduğunu təsdiq edirəm.
+              ADDA-nın <a href="#">qeydiyyat qaydaları</a> və <a href="#">şəxsi məlumatların işlənməsi siyasəti</a> ilə tanış olduğumu və razı olduğumu bildirirəm.
+            </span>
+          </label>
+        </div>
+
+        <div class="form-submit">
+          <p class="form-submit__note">
+            Formu göndərdikdən sonra qeydiyyat nömrəsi sizin email ünvanınıza göndəriləcək.
+          </p>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            Qeydiyyatı tamamla
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAYMENT INFO ===== -->
+<section class="payment" id="odenis">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow"><span class="dot"></span>Ödəniş</span>
+      <h2>Ödəniş üçün təlimat və rekvizitlər</h2>
+      <p>Ödənişi qeydiyyatdan əvvəl həyata keçirə bilərsiniz. Ödəniş çekini PDF formatında qeydiyyat formasına əlavə etməyiniz xahiş olunur.</p>
+    </div>
+
+    <div class="payment__grid">
+      <div class="payment__card" data-reveal>
+        <h3>Bank rekvizitləri</h3>
+        <p>Ödəniş təyinatında <strong>"İyun 2026 təkmilləşdirilmə kursu"</strong>, ad-soyad və FİN kod qeyd edilməlidir.</p>
+        <ul class="payment-list">
+          <li><dt>Müəssisə</dt><dd data-bind="bankCompany">"Azərbaycan Dövlət Dəniz Akademiyası" PHŞ</dd></li>
+          <li><dt>VÖEN</dt><dd data-bind="bankVoen">1234567890</dd></li>
+          <li><dt>Bank</dt><dd data-bind="bankName">Mərkəzi Bank</dd></li>
+          <li><dt>Hesab №</dt><dd data-bind="bankAccount">AZ00NABZ00000000000000000000</dd></li>
+          <li><dt>SWIFT</dt><dd data-bind="bankSwift">NABZAZ2C</dd></li>
+          <li><dt>Təyinat</dt><dd data-bind="bankPurpose">Təkmilləşdirilmə kursu üzrə xidmət haqqı</dd></li>
+        </ul>
+      </div>
+
+      <aside class="payment-aside" data-reveal>
+        <h4>Vacib qeydlər</h4>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> ASCO və DDLA əməkdaşları üçün ödəniş təşkilatlararası müqaviləyə əsasən tənzimlənir.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Ödəniş çeki PDF formatında, oxunaqlı şəkildə yüklənməlidir.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Banklarla əlavə komissiya haqqı tələbatçı tərəfindən ödənilir.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Qeydiyyat təsdiqləndikdən sonra geri qaytarılma şərtləri tədris şöbəsi tərəfindən rəsmi cavabla bildirilir.</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="sual" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow"><span class="dot"></span>Sual & Cavab</span>
+      <h2>Tez-tez verilən suallar</h2>
+      <p>Cavabını tapa bilmədiyiniz suallar üçün <a href="mailto:tedris@adda.edu.az">tedris@adda.edu.az</a> ünvanına yaza bilərsiniz.</p>
+    </div>
+
+    <div class="faq__list" data-reveal>
+      <details class="faq-item">
+        <summary>Qeydiyyat necə təsdiq olunur?</summary>
+        <p>Forma göndərildikdən sonra sistem avtomatik olaraq qeydiyyat nömrəsi formalaşdırır və email ünvanınıza göndərir. Sənədlərin yoxlanması 3 iş günü ərzində aparılır və nəticə email vasitəsilə bildirilir.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Hansı kursu seçəcəyimə əmin deyiləm. Necə kömək ala bilərəm?</summary>
+        <p>Tədris şöbəsi ilə (+994 12) 421-45-03 və ya tedris@adda.edu.az vasitəsilə əlaqə saxlaya bilərsiniz. Mövcud diplomunuz və işçi diplomunuza əsasən sizə uyğun proqram təklif olunacaq.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Mən ASCO əməkdaşıyam. Hansı sənədləri yükləməliyəm?</summary>
+        <p>ASCO əməkdaşları ödəniş çeki istisna olmaqla bütün məcburi sənədləri yükləməlidirlər. Ödəniş təşkilatlararası razılaşmaya əsasən tənzimlənir.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Sənədlər PDF-dən başqa formatda qəbul olunurmu?</summary>
+        <p>Xeyr. Bütün sənədlər yalnız PDF formatında qəbul edilir. Şəkillər (JPG, PNG) və ya Word sənədləri yüklənmir. Sənədlərinizi PDF-ə çevirməyiniz xahiş olunur.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Son tarixdən sonra qeydiyyatdan keçə bilərəmmi?</summary>
+        <p>Son tarix 31 may 2026-cı il, saat 18:00-dır. Bu vaxtdan sonra forma avtomatik bağlanır və ərizələr qəbul edilmir. Növbəti dövrlər üçün ADDA-nın rəsmi saytında elanları izləyin.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Kursun proqramını və qrafikini necə alacam?</summary>
+        <p>Qeydiyyatınız təsdiqləndikdən sonra dəqiq cədvəl, auditoriya və müəllim heyəti haqqında məlumat email vasitəsilə göndəriləcək. Adətən bu, kursun başlamasına 7-10 gün qalmış həyata keçirilir.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="#" class="brand">
+          <span class="brand__mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg></span>
+          <span class="brand__text">
+            <span class="brand__name">Azərbaycan Dövlət Dəniz Akademiyası</span>
+            <span class="brand__sub">Public Legal Entity · IMO 012</span>
+          </span>
+        </a>
+        <p>1881-ci ildən Azərbaycanda dənizçi hazırlığı. STCW konvensiyası tələblərinə uyğun beynəlxalq səviyyəli təhsil və təkmilləşdirilmə proqramları.</p>
+      </div>
+
+      <div class="footer__col">
+        <h5>Bölmələr</h5>
+        <ul>
+          <li><a href="#kurslar">Kurs kataloqu</a></li>
+          <li><a href="#senedler">Lazımi sənədlər</a></li>
+          <li><a href="#qeydiyyat">Qeydiyyat forması</a></li>
+          <li><a href="#odenis">Ödəniş təlimatı</a></li>
+          <li><a href="#sual">Sual & Cavab</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h5>Əlaqə</h5>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> <span data-bind="address">Bakı şəhəri, Azərbaycan</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <span data-bind="phone">(+994 12) 421-45-03</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> <span data-bind="email">info@adda.edu.az</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2026 Azərbaycan Dövlət Dəniz Akademiyası PHŞ. Bütün hüquqlar qorunur.</span>
+      <span>v 1.0 · Onlayn qeydiyyat sistemi</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== SUCCESS MODAL ===== -->
+<div class="modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal__content">
+    <div class="modal__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 id="modalTitle">Qeydiyyatınız qəbul edildi!</h3>
+    <p>Qeydiyyat nömrəniz email ünvanınıza göndərildi. Sənədlər 3 iş günü ərzində yoxlanılacaq.</p>
+    <div class="modal__details" id="modalDetails"></div>
+    <button class="modal__close" id="modalCloseBtn">Bağla</button>
+  </div>
+</div>
+
+<script>
+/* ============= MOBILE NAV ============= */
+const navToggle=document.getElementById('navToggle');
+const mainNav=document.getElementById('mainNav');
+navToggle.addEventListener('click',()=>{
+  const open=mainNav.classList.toggle('is-open');
+  navToggle.setAttribute('aria-expanded',open);
+});
+mainNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mainNav.classList.remove('is-open')));
+
+/* ============= ADMIN SYNC LAYER ============= */
+/* Reads settings from admin panel (localStorage) and overrides defaults */
+const ADMIN_STORAGE_PREFIX = 'adda_';
+function readAdminData(key, fallback) {
+  try {
+    const raw = localStorage.getItem(ADMIN_STORAGE_PREFIX + key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) { return fallback; }
+}
+const adminSettings = readAdminData('settings', null);
+
+/* Apply admin-controlled hero text, contacts, bank info, FAQ if available */
+(function applyAdminSettings() {
+  if (!adminSettings) return;
+  const safeSet = (sel, value) => {
+    if (!value) return;
+    document.querySelectorAll(sel).forEach(el => { el.textContent = value; });
+  };
+  // Hero title — replace inside .hero h1
+  if (adminSettings.heroTitle) {
+    const h1 = document.querySelector('.hero h1');
+    if (h1) h1.textContent = adminSettings.heroTitle;
+  }
+  safeSet('.hero__lead', adminSettings.heroLead);
+  // Period label in eyebrow
+  if (adminSettings.periodLabel) {
+    const eyebrow = document.querySelector('.hero .eyebrow');
+    if (eyebrow) {
+      const dot = eyebrow.querySelector('.dot');
+      eyebrow.textContent = ' ' + adminSettings.periodLabel + ' · Onlayn qeydiyyat açıqdır';
+      if (dot) eyebrow.insertBefore(dot, eyebrow.firstChild);
+    }
+  }
+  // Countdown title text update
+  if (adminSettings.deadline) {
+    const cdTitle = document.querySelector('.countdown__title');
+    if (cdTitle) {
+      const dt = new Date(adminSettings.deadline);
+      const months = ['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
+      cdTitle.textContent = `${dt.getDate()} ${months[dt.getMonth()]} ${dt.getFullYear()} — saat ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
+    }
+  }
+  // Contacts
+  safeSet('[data-bind="phone"]', adminSettings.phone);
+  safeSet('[data-bind="email"]', adminSettings.email);
+  safeSet('[data-bind="tedrisEmail"]', adminSettings.tedrisEmail);
+  safeSet('[data-bind="address"]', adminSettings.address);
+  // Bank
+  safeSet('[data-bind="bankCompany"]', adminSettings.bankCompany);
+  safeSet('[data-bind="bankVoen"]', adminSettings.bankVoen);
+  safeSet('[data-bind="bankName"]', adminSettings.bankName);
+  safeSet('[data-bind="bankAccount"]', adminSettings.bankAccount);
+  safeSet('[data-bind="bankSwift"]', adminSettings.bankSwift);
+  safeSet('[data-bind="bankPurpose"]', adminSettings.bankPurpose);
+})();
+
+/* ============= COUNTDOWN ============= */
+const deadlineISO = (adminSettings && adminSettings.deadline)
+  ? adminSettings.deadline + ':00+04:00'
+  : '2026-05-31T18:00:00+04:00';
+const deadline=new Date(deadlineISO).getTime();
+function tick(){
+  const diff=deadline-Date.now();
+  const e=(id,v)=>document.getElementById(id).textContent=String(Math.max(0,v)).padStart(2,'0');
+  if(diff<=0){
+    e('cdDays',0);e('cdHours',0);e('cdMins',0);e('cdSecs',0);
+    return;
+  }
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff%86400000/3600000);
+  const m=Math.floor(diff%3600000/60000);
+  const s=Math.floor(diff%60000/1000);
+  e('cdDays',d);e('cdHours',h);e('cdMins',m);e('cdSecs',s);
+}
+tick();setInterval(tick,1000);
+
+/* ============= SCROLL REVEAL ============= */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target);}});
+},{rootMargin:'0px 0px -8% 0px',threshold:0.05});
+document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+
+/* ============= COURSE CARD → FORM ============= */
+const courseMap={
+  'ngm':'r-ngm','ngo':'r-ngo','mem':'r-mem','meo':'r-meo','eem':'r-eem'
+};
+document.querySelectorAll('[data-register]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const id=courseMap[btn.dataset.register];
+    if(id){
+      const radio=document.getElementById(id);
+      radio.checked=true;
+      radio.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    document.getElementById('qeydiyyat').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+/* ============= FORM STEPS HIGHLIGHT ============= */
+const sections=[
+  {step:1,sel:'[data-step-section="1"]'},
+  {step:2,sel:'[data-step-section="2"]'},
+  {step:3,sel:'[data-step-section="3"]'},
+  {step:4,sel:'[data-step-section="4"]'},
+];
+const stepEls=document.querySelectorAll('#formSteps li');
+function setStep(n){
+  stepEls.forEach(li=>{
+    const s=Number(li.dataset.step);
+    li.classList.toggle('is-active',s===n);
+    li.classList.toggle('is-done',s<n);
+  });
+}
+sections.forEach(({step,sel})=>{
+  const el=document.querySelector(sel);
+  if(!el)return;
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)setStep(step);});
+  },{rootMargin:'-30% 0px -50% 0px'});
+  obs.observe(el);
+});
+
+/* ============= FILE UPLOAD UI ============= */
+function fmtSize(bytes){
+  if(bytes<1024)return bytes+' B';
+  if(bytes<1024*1024)return (bytes/1024).toFixed(1)+' KB';
+  return (bytes/1024/1024).toFixed(1)+' MB';
+}
+document.querySelectorAll('.upload__zone input[type="file"]').forEach(input=>{
+  const zone=input.closest('.upload__zone');
+  const titleEl=zone.querySelector('.upload__title');
+  const descEl=zone.querySelector('.upload__desc');
+  const btnEl=zone.querySelector('.upload__btn');
+  const origTitle=titleEl.innerHTML;
+  const origDesc=descEl.innerHTML;
+  const origBtn=btnEl.textContent;
+
+  input.addEventListener('change',e=>{
+    const file=input.files[0];
+    if(!file)return;
+    const maxMB=Number(input.dataset.max||100);
+    if(file.type!=='application/pdf'){
+      alert('Yalnız PDF formatında fayl yükləyin.');
+      input.value='';return;
+    }
+    if(file.size>maxMB*1024*1024){
+      alert(`Faylın ölçüsü ${maxMB} MB-dən çox ola bilməz.`);
+      input.value='';return;
+    }
+    zone.classList.add('has-file');
+    titleEl.innerHTML='<span style="color:var(--success)">✓</span> '+file.name;
+    descEl.innerHTML=fmtSize(file.size)+' · uğurla əlavə edildi';
+    btnEl.textContent='Dəyişdir';
+
+    // Add remove button if not present
+    if(!zone.querySelector('.upload-remove')){
+      const rm=document.createElement('button');
+      rm.type='button';rm.className='upload-remove';rm.textContent='Sil';
+      rm.addEventListener('click',ev=>{
+        ev.preventDefault();ev.stopPropagation();
+        input.value='';
+        zone.classList.remove('has-file');
+        titleEl.innerHTML=origTitle;
+        descEl.innerHTML=origDesc;
+        btnEl.textContent=origBtn;
+        rm.remove();
+      });
+      zone.appendChild(rm);
+    }
+  });
+});
+
+/* ============= FORM VALIDATION & SUBMIT ============= */
+const form=document.getElementById('registerForm');
+const showErr=(input,show)=>{
+  const wrap=input.closest('.field');
+  if(wrap)wrap.classList.toggle('has-error',show);
+  input.classList.toggle('is-invalid',show);
+};
+
+['fullname','fin','phone','email'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('blur',()=>validateField(el));
+  el.addEventListener('input',()=>{if(el.classList.contains('is-invalid'))validateField(el);});
+});
+
+function validateField(el){
+  let ok=true;
+  if(el.id==='fullname')ok=el.value.trim().split(/\s+/).length>=2;
+  else if(el.id==='fin')ok=/^[A-Za-z0-9]{7}$/.test(el.value.trim());
+  else if(el.id==='phone')ok=/^[+\d\s()-]{9,}$/.test(el.value.trim());
+  else if(el.id==='email')ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
+  showErr(el,!ok);
+  return ok;
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const submitBtn = document.getElementById('submitBtn');
+  const originalBtnText = submitBtn.textContent;
+  
+  let valid=true;
+
+  // Personal fields
+  ['fullname','fin','phone','email'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!validateField(el))valid=false;
+  });
+
+  // Course
+  const course=form.querySelector('input[name="course"]:checked');
+  document.getElementById('courseError').style.display=course?'none':'block';
+  if(!course)valid=false;
+
+  // Required files
+  const requiredFiles=form.querySelectorAll('.upload__zone[data-required="true"]');
+  let missingFiles=[];
+  requiredFiles.forEach(zone=>{
+    const input=zone.querySelector('input[type="file"]');
+    if(!input.files.length){
+      missingFiles.push(input.dataset.name);
+      zone.style.borderColor='var(--danger)';
+    }else{
+      zone.style.borderColor='';
+    }
+  });
+  if(missingFiles.length)valid=false;
+
+  // Consent
+  const consent=document.getElementById('consent');
+  if(!consent.checked){valid=false;consent.parentElement.style.color='var(--danger)';}
+  else consent.parentElement.style.color='';
+
+  if(!valid){
+    if(missingFiles.length){
+      alert('Lazımi sənədlər yüklənməyib:\n• '+missingFiles.join('\n• '));
+    }
+    const firstErr=form.querySelector('.is-invalid, .has-error, [style*="border-color: var(--danger)"]');
+    if(firstErr)firstErr.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  const data={
+    'Ad-Soyad':document.getElementById('fullname').value.trim(),
+    'Telefon':document.getElementById('phone').value.trim(),
+    'Kurs':course.value,
+  };
+
+  const payload = new FormData();
+  payload.append('name', data['Ad-Soyad']);
+  payload.append('phone', data['Telefon']);
+  payload.append('course_name', data['Kurs']);
+
+  // Faylları əlavə et
+  const fileInputs = form.querySelectorAll('input[type="file"]');
+  fileInputs.forEach(input => {
+    if (input.files && input.files.length > 0) {
+      const fieldName = input.name.replace('doc-', '') + '_file'; // doc-id -> id_file
+      payload.append(fieldName, input.files[0]);
+    }
+  });
+
+  // Loading state
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ Göndərilir...';
+
+  try {
+    console.log('Payload gönderiliyor:', Array.from(payload.entries()));
+    const response = await fetch('http://127.0.0.1:8000/enroll', {
+      method: 'POST',
+      body: payload
+    });
+    console.log('Response status:', response.status);
+    
+    let result;
+    try {
+      result = await response.json();
+    } catch (parseErr) {
+      console.error('JSON parse error:', parseErr);
+      throw new Error('Server cavabı oxunmadı: ' + response.statusText);
+    }
+    
+    console.log('Response body:', result);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${result.message || 'Bilinmeyen hata'}`);
+    }
+    if (result.status !== 'success') {
+      throw new Error(result.message || 'Server xətası');
+    }
+    console.log('Qeydiyyat uğurla tamamlandı');
+    
+    // Success - show modal
+    const regNum='ADDA-'+Date.now().toString().slice(-7);
+    const summary={
+      'Qeydiyyat №':regNum,
+      'Ad-Soyad':data['Ad-Soyad'],
+      'Telefon':data['Telefon'],
+      'Kurs':data['Kurs'],
+      'Vəziyyət': '✅ Qəbul olundu'
+    };
+
+    const detailsEl=document.getElementById('modalDetails');
+    detailsEl.innerHTML=Object.entries(summary).map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join('');
+
+    document.getElementById('successModal').classList.add('is-open');
+    document.body.style.overflow='hidden';
+    
+  } catch (err) {
+    console.error('Enroll error details:', err);
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+    alert('❌ Qeydiyyat tamamlanmadı:\n' + err.message + '\n\nZəhmət olmasa tarayıcı konsolu (F12) kontrol edin.');
+  }
+});
+
+document.getElementById('modalCloseBtn').addEventListener('click',()=>{
+  document.getElementById('successModal').classList.remove('is-open');
+  document.body.style.overflow='';
+  form.reset();
+  document.querySelectorAll('.upload__zone').forEach(z=>{
+    z.classList.remove('has-file');
+    z.style.borderColor='';
+    const rm=z.querySelector('.upload-remove');if(rm)rm.remove();
+  });
+  // Reset upload visuals
+  document.querySelectorAll('.upload__zone').forEach(zone=>{
+    const input=zone.querySelector('input');
+    input.dispatchEvent(new Event('reset'));
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+document.getElementById('successModal').addEventListener('click',e=>{
+  if(e.target.id==='successModal'){
+    document.getElementById('modalCloseBtn').click();
+  }
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('successModal').classList.contains('is-open')){
+    document.getElementById('modalCloseBtn').click();
+  }
+});
+
+/* Phone formatter (light) */
+document.getElementById('phone').addEventListener('input',e=>{
+  let v=e.target.value.replace(/[^\d+]/g,'');
+  if(v.startsWith('994'))v='+'+v;
+  e.target.value=v;
+});
+document.getElementById('fin').addEventListener('input',e=>{
+  e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);
+});
+</script>
+</body>
+</html>
