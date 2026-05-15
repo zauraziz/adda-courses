@@ -1,0 +1,25 @@
+{
+  "name": "adda-courses",
+  "version": "1.0.0",
+  "description": "Adda təhsil mərkəzinin onlayn kurs platforması.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zauraziz/adda-courses.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zauraziz/adda-courses/issues"
+  },
+  "homepage": "https://github.com/zauraziz/adda-courses#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "pg": "^8.20.0"
+  }
+}
