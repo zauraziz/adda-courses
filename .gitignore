@@ -1,0 +1,43 @@
+# OS faylları
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node (Vercel build üçün gələcəkdə lazım ola bilər)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment və sirr faylları — ƏN ƏHƏMİYYƏTLİSİ
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Build çıxışları
+dist/
+build/
+.next/
+.vercel/
+
+# Böyük media (video kursdursa ayrıca saxlayaq, repoya yox)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.rar
+
+# Loglar və müvəqqəti
+*.log
+tmp/
+temp/
