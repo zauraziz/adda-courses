@@ -1,0 +1,13 @@
+{
+  "builds": [
+    {
+      "src": "api/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/main.py" },
+    { "src": "/(.*\\.(css|js|html|png|jpg|jpeg|gif|svg|ico|pdf|woff2?|ttf|eot))", "dest": "/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
