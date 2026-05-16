@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin Daxil ol · ADDA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#fafaf6;
+  --surface:#ffffff;
+  --surface-2:#f4f1ea;
+  --ink:#0c1a2b;
+  --ink-soft:#3a4a5e;
+  --muted:#6b7785;
+  --border:#e6e1d6;
+  --border-strong:#d3cdbf;
+  --primary:#003b6f;
+  --primary-700:#002a52;
+  --accent:#b88746;
+  --accent-soft:#e9d9bf;
+  --danger:#b42318;
+  --danger-soft:#fee4e2;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Manrope',system-ui,sans-serif;
+  background:
+    radial-gradient(1000px 500px at 80% 10%, rgba(0,59,111,.08), transparent 60%),
+    radial-gradient(700px 400px at 10% 90%, rgba(184,135,70,.08), transparent 60%),
+    var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  display:grid;place-items:center;
+  padding:20px;
+  -webkit-font-smoothing:antialiased;
+}
+
+.card{
+  width:100%;
+  max-width:440px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:42px 36px;
+  box-shadow:0 24px 60px -20px rgba(12,26,43,.18);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+}
+
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+.brand__mark{
+  width:54px;height:54px;flex:0 0 54px;
+  display:grid;place-items:center;
+  background:var(--primary);
+  border-radius:50%;
+  box-shadow:0 0 0 3px var(--surface),0 0 0 4px var(--accent);
+}
+.brand__mark svg{width:32px;height:32px;color:#fff}
+.brand__text{display:flex;flex-direction:column;line-height:1.15}
+.brand__name{font-family:'Fraunces',serif;font-weight:600;font-size:17px}
+.brand__sub{font-size:11px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:3px}
+
+h1{
+  font-family:'Fraunces',serif;font-weight:500;
+  font-size:28px;letter-spacing:-.01em;line-height:1.15;
+  margin:0 0 10px;
+}
+.lead{color:var(--ink-soft);font-size:15px;margin:0 0 28px}
+
+.btn-ms{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;
+  padding:14px 20px;
+  background:#2f2f2f;color:#fff;
+  border:0;border-radius:10px;
+  font:600 15px/1 'Manrope',sans-serif;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn-ms:hover{background:#1a1a1a;transform:translateY(-1px);box-shadow:0 6px 22px -8px rgba(0,0,0,.3)}
+.btn-ms svg{width:20px;height:20px}
+
+.info{
+  margin-top:24px;padding:14px 16px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:13px;color:var(--ink-soft);
+  line-height:1.5;
+}
+.info svg{width:14px;height:14px;color:var(--primary);vertical-align:-2px;margin-right:4px}
+
+.error{
+  margin-bottom:20px;padding:12px 14px;
+  background:var(--danger-soft);
+  border:1px solid #fcd2cb;
+  border-radius:10px;
+  color:var(--danger);
+  font-size:13.5px;font-weight:500;
+  display:none;
+}
+.error.is-shown{display:block}
+.error strong{display:block;margin-bottom:2px}
+
+.footer{
+  text-align:center;
+  margin-top:24px;
+  font-size:12px;color:var(--muted);
+}
+.footer a{color:var(--primary);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <span class="brand__mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 14 12 12 22 10 12Z"/><path d="M2 12 12 14 22 12 12 10Z"/></svg>
+    </span>
+    <div class="brand__text">
+      <span class="brand__name">ADDA Admin</span>
+      <span class="brand__sub">Tədris idarəetməsi</span>
+    </div>
+  </div>
+
+  <h1>Daxil olun</h1>
+  <p class="lead">Admin paneline daxil olmaq üçün Microsoft 365 hesabınızdan istifadə edin.</p>
+
+  <div class="error" id="errorBox">
+    <strong id="errorTitle">Xəta</strong>
+    <span id="errorText"></span>
+  </div>
+
+  <a href="/api/auth/login" class="btn-ms">
+    <svg viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+      <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+      <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+      <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+    </svg>
+    Microsoft hesabı ilə daxil ol
+  </a>
+
+  <div class="info">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    Yalnız təyin olunmuş istifadəçilər daxil ola bilər. Səhv bir şey görünürsə, İT şöbəsi ilə əlaqə saxlayın.
+  </div>
+
+  <div class="footer">
+    Ana səhifəyə qayıt → <a href="/">portal.adda.edu.az</a>
+  </div>
+</div>
+
+<script>
+// URL-də ?error=... varsa, mesaj göstər
+const params = new URLSearchParams(location.search);
+const err = params.get('error');
+if (err) {
+  const errorMessages = {
+    not_authorized: {
+      title: 'Giriş icazəsi yoxdur',
+      text: 'Sizin Microsoft hesabınız admin qrupuna daxil deyil. İcazə üçün İT şöbəsi ilə əlaqə saxlayın.'
+    },
+    state_mismatch: {
+      title: 'Təhlükəsizlik xətası',
+      text: 'Login prosesi qırıldı. Səhifəni yenidən açıb cəhd edin.'
+    },
+    token_exchange_failed: {
+      title: 'Giriş xətası',
+      text: 'Microsoft serveri ilə əlaqə alınmadı. Bir az sonra yenidən cəhd edin.'
+    },
+    invalid_token: {
+      title: 'Token xətası',
+      text: 'Microsoft-dan gələn token yoxlanılmadı. Yenidən cəhd edin.'
+    },
+    no_code: {
+      title: 'Login qırıldı',
+      text: 'Microsoft-dan kod alınmadı. Yenidən cəhd edin.'
+    },
+    no_token: {
+      title: 'Token alınmadı',
+      text: 'Login prosesi tamamlanmadı. Yenidən cəhd edin.'
+    },
+    access_denied: {
+      title: 'Giriş ləğv edildi',
+      text: 'Siz Microsoft login pəncərəsində icazə vermədiniz.'
+    }
+  };
+  const info = errorMessages[err] || { title: 'Xəta', text: err };
+  document.getElementById('errorTitle').textContent = info.title;
+  document.getElementById('errorText').textContent = info.text;
+  document.getElementById('errorBox').classList.add('is-shown');
+  // URL-dən error param-ı təmizlə
+  history.replaceState({}, '', location.pathname);
+}
+
+// Əgər artıq daxil olmuşsa, admin-ə yönlət
+fetch('/api/auth/me')
+  .then(r => { if (r.ok) location.href = '/admin.html'; })
+  .catch(() => {});
+</script>
+
+</body>
+</html>

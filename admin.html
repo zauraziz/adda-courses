@@ -3,2398 +3,1002 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#003b6f">
-<meta name="robots" content="noindex, nofollow">
-<title>İdarəetmə Paneli — ADDA Təkmilləşdirilmə Kursları</title>
+<meta name="robots" content="noindex,nofollow">
+<title>Admin Panel · ADDA Təkmilləşdirilmə Kursları</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#f4f1ea;--surface:#ffffff;--surface-2:#fafaf6;--surface-3:#f0ece3;
-  --ink:#0c1a2b;--ink-soft:#3a4a5e;--muted:#6b7785;
-  --border:#e6e1d6;--border-strong:#d3cdbf;
-  --primary:#003b6f;--primary-700:#002a52;--primary-50:#eaf1f9;
-  --accent:#b88746;--accent-soft:#e9d9bf;
-  --success:#0e7c4a;--success-soft:#dcfae6;
-  --warn:#b54708;--warn-soft:#fef0c7;
-  --danger:#b42318;--danger-soft:#fee4e2;
-  --info:#175cd3;--info-soft:#d1e9ff;
-  --sidebar-w:260px;--radius-sm:6px;--radius:10px;--radius-lg:18px;
+  --bg:#fafaf6;
+  --surface:#ffffff;
+  --surface-2:#f4f1ea;
+  --ink:#0c1a2b;
+  --ink-soft:#3a4a5e;
+  --muted:#6b7785;
+  --border:#e6e1d6;
+  --border-strong:#d3cdbf;
+  --primary:#003b6f;
+  --primary-700:#002a52;
+  --primary-50:#eaf1f9;
+  --accent:#b88746;
+  --accent-soft:#e9d9bf;
+  --success:#0e7c4a;
+  --success-soft:#d1fadf;
+  --warn:#b54708;
+  --warn-soft:#fef0c7;
+  --danger:#b42318;
+  --danger-soft:#fee4e2;
+  --info:#0e639a;
+  --info-soft:#d1e9ff;
+  --radius-sm:6px;
+  --radius:10px;
+  --radius-lg:14px;
   --shadow-sm:0 1px 2px rgba(12,26,43,.04),0 1px 3px rgba(12,26,43,.06);
-  --shadow:0 6px 22px -8px rgba(12,26,43,.16),0 2px 6px rgba(12,26,43,.05);
-  --shadow-lg:0 24px 60px -20px rgba(12,26,43,.28);
-  --t:cubic-bezier(.22,.61,.36,1);
+  --shadow:0 6px 22px -8px rgba(12,26,43,.18),0 2px 6px rgba(12,26,43,.06);
 }
+
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
-img{max-width:100%;display:block}
+body{
+  margin:0;
+  font-family:'Manrope',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 input,select,textarea{font:inherit;color:inherit}
 a{color:var(--primary);text-decoration:none}
-[hidden]{display:none!important}
-::selection{background:var(--primary-50);color:var(--primary-700)}
+a:hover{text-decoration:underline}
 
-/* LOGIN */
-#loginOverlay{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;background:radial-gradient(900px 500px at 80% 10%,rgba(0,59,111,.15),transparent 60%),radial-gradient(900px 500px at 10% 110%,rgba(184,135,70,.15),transparent 60%),#0c1a2b}
-#loginOverlay::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent 70%);-webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent 70%)}
-.login-card{position:relative;z-index:1;background:var(--surface);border-radius:var(--radius-lg);padding:42px 38px;max-width:440px;width:100%;box-shadow:var(--shadow-lg);border:1px solid var(--border-strong)}
-.login-card__brand{display:flex;align-items:center;gap:14px;margin-bottom:24px}
-.login-card__mark{width:48px;height:48px;border-radius:50%;background:var(--primary);display:grid;place-items:center;flex:0 0 48px;box-shadow:0 0 0 3px var(--surface),0 0 0 4px var(--accent)}
-.login-card__mark svg{width:28px;height:28px}
-.login-card__name{font-family:'Fraunces',serif;font-weight:600;font-size:17px;line-height:1.1}
-.login-card__sub{font-size:11.5px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:3px}
-.login-card h1{font-family:'Fraunces',serif;font-weight:500;font-size:26px;line-height:1.2;margin:0 0 6px}
-.login-card .lead{color:var(--ink-soft);font-size:14px;margin-bottom:26px}
-.login-card label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--ink)}
-.login-card input{width:100%;padding:12px 14px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--surface);font-size:15px;margin-bottom:14px;transition:.15s var(--t)}
-.login-card input:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,59,111,.10)}
-.login-card .field-hint{font-size:12px;color:var(--muted);margin:-8px 0 14px;display:flex;gap:6px;align-items:center}
-.login-card .field-hint svg{width:13px;height:13px;color:var(--accent)}
-.login-card button[type="submit"]{width:100%;background:var(--primary);color:#fff;padding:13px;border-radius:var(--radius);font-weight:700;font-size:15px;transition:.2s var(--t);margin-top:6px;display:inline-flex;justify-content:center;align-items:center;gap:8px}
-.login-card button[type="submit"]:hover{background:var(--primary-700)}
-.login-card button[type="submit"]:disabled{opacity:.5;cursor:not-allowed}
-.login-error{background:#fef3f2;color:var(--danger);border:1px solid #fecdca;padding:12px 14px;border-radius:var(--radius);font-size:13.5px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
-.login-error svg{width:18px;height:18px;flex:0 0 18px;margin-top:1px}
-.security-note{margin-top:22px;padding:14px 16px;background:var(--surface-2);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:12.5px;color:var(--ink-soft);line-height:1.55}
-.security-note strong{color:var(--ink)}
+/* ============= LAYOUT ============= */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+@media (max-width:880px){.layout{grid-template-columns:1fr}}
 
-/* LAYOUT */
-.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
-.sidebar{background:#0c1a2b;color:#dce4ee;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;border-right:1px solid #1d2c40}
-.sidebar__brand{display:flex;align-items:center;gap:12px;padding:22px 22px 18px;border-bottom:1px solid #1d2c40}
-.sidebar__mark{width:38px;height:38px;border-radius:50%;flex:0 0 38px;background:var(--primary);display:grid;place-items:center;box-shadow:0 0 0 2px #0c1a2b,0 0 0 3px var(--accent)}
-.sidebar__mark svg{width:22px;height:22px}
-.sidebar__name{font-family:'Fraunces',serif;font-weight:600;font-size:15px;color:#fff;line-height:1.1}
-.sidebar__sub{font-size:10.5px;color:#7c8fa8;letter-spacing:.6px;text-transform:uppercase;margin-top:3px}
-.sidebar__nav{flex:1;overflow-y:auto;padding:18px 14px;display:flex;flex-direction:column;gap:2px}
-.sidebar__section{font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#5a6c83;font-weight:700;margin:18px 8px 8px}
-.sidebar__section:first-child{margin-top:0}
-.sidebar__nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--radius-sm);color:#a4b5cc;font-weight:500;font-size:13.5px;text-decoration:none;transition:.15s var(--t);position:relative}
-.sidebar__nav a svg{width:17px;height:17px;flex:0 0 17px;color:#7c8fa8}
-.sidebar__nav a:hover{background:#152538;color:#fff}
-.sidebar__nav a:hover svg{color:var(--accent)}
-.sidebar__nav a.is-active{background:var(--primary);color:#fff}
-.sidebar__nav a.is-active svg{color:#fff}
-.sidebar__nav a.is-active::before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:3px;background:var(--accent);border-radius:0 3px 3px 0}
-.sidebar__nav a .count{margin-left:auto;font-size:11px;background:rgba(255,255,255,.08);color:#fff;padding:2px 8px;border-radius:999px;font-weight:600}
-.sidebar__nav a.is-active .count{background:rgba(255,255,255,.18)}
-.sidebar__foot{padding:14px;border-top:1px solid #1d2c40;display:flex;flex-direction:column;gap:8px}
-.sidebar__user{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);background:#152538}
-.sidebar__avatar{width:34px;height:34px;border-radius:50%;flex:0 0 34px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;font-family:'Fraunces',serif}
-.sidebar__user-info{font-size:13px;line-height:1.2}
-.sidebar__user-info b{color:#fff;display:block}
-.sidebar__user-info small{color:#7c8fa8;font-size:11px}
-.sidebar__logout{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px;border-radius:var(--radius-sm);color:#a4b5cc;font-size:13px;font-weight:500;background:transparent;border:1px solid #1d2c40;transition:.15s var(--t)}
-.sidebar__logout:hover{background:#fef3f2;color:#b42318;border-color:#b42318}
-.sidebar__logout svg{width:15px;height:15px}
-.sidebar-toggle{display:none}
-.sidebar-backdrop{display:none}
-@media (max-width:960px){
-  .app{grid-template-columns:1fr}
-  .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:80;width:var(--sidebar-w);transform:translateX(-100%);transition:transform .25s var(--t)}
-  .sidebar.is-open{transform:translateX(0)}
-  .sidebar-toggle{display:grid;place-items:center;width:40px;height:40px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border)}
-  .sidebar-toggle svg{width:20px;height:20px}
-  .sidebar-backdrop{position:fixed;inset:0;z-index:79;background:rgba(12,26,43,.5);backdrop-filter:blur(2px);display:block;opacity:0;pointer-events:none;transition:.2s}
-  .sidebar-backdrop.is-visible{opacity:1;pointer-events:auto}
+/* ============= SIDEBAR ============= */
+.sidebar{
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:24px 16px;
+  display:flex;flex-direction:column;gap:8px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+@media (max-width:880px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--border)}}
+
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px 18px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.brand__mark{
+  width:42px;height:42px;flex:0 0 42px;
+  display:grid;place-items:center;
+  background:var(--primary);
+  border-radius:50%;
+  box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--accent);
+}
+.brand__mark svg{width:24px;height:24px;color:#fff}
+.brand__text{display:flex;flex-direction:column;line-height:1.15}
+.brand__name{font-family:'Fraunces',serif;font-weight:600;font-size:15px}
+.brand__sub{font-size:10.5px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+
+.nav-group{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.nav-group__label{font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 12px 4px}
+
+.nav-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-radius:var(--radius-sm);
+  color:var(--ink-soft);font-weight:500;font-size:14px;
+  transition:.15s;cursor:pointer;
+}
+.nav-item:hover{background:var(--surface-2);color:var(--ink)}
+.nav-item.is-active{background:var(--primary);color:#fff}
+.nav-item.is-active .nav-item__count{background:rgba(255,255,255,.18);color:#fff}
+.nav-item__left{display:flex;align-items:center;gap:10px}
+.nav-item svg{width:18px;height:18px;flex:0 0 18px}
+.nav-item__count{
+  font-size:11.5px;font-weight:600;
+  padding:2px 8px;border-radius:999px;
+  background:var(--surface-2);color:var(--muted);
 }
 
-/* MAIN */
-.main{display:flex;flex-direction:column;min-width:0}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;gap:18px;position:sticky;top:0;z-index:30}
-@media (max-width:600px){.topbar{padding:14px 18px}}
-.topbar__title{font-family:'Fraunces',serif;font-weight:500;font-size:22px;line-height:1.1;margin:0;color:var(--ink)}
-.topbar__subtitle{font-size:12.5px;color:var(--muted);margin-top:2px}
-.topbar__title-wrap{min-width:0;flex:1}
-.topbar__title-wrap > div{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.topbar__action{display:flex;gap:10px;align-items:center}
-.topbar__btn{padding:9px 14px;border-radius:var(--radius-sm);background:var(--surface-2);color:var(--ink);font-weight:600;font-size:13px;border:1px solid var(--border);display:inline-flex;align-items:center;gap:7px;transition:.15s}
-.topbar__btn:hover{background:var(--surface-3);border-color:var(--border-strong)}
-.topbar__btn svg{width:15px;height:15px}
-.content{padding:28px;max-width:1400px;width:100%;margin-inline:auto}
-@media (max-width:600px){.content{padding:18px}}
+/* ============= MAIN ============= */
+.main{padding:28px clamp(20px,3vw,40px);min-width:0}
 
-/* STATS */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}
-.stat-card::after{content:"";position:absolute;right:-30px;bottom:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,var(--primary-50),transparent 70%);opacity:.6}
-.stat-card__label{font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
-.stat-card__label svg{width:14px;height:14px;color:var(--primary)}
-.stat-card__value{font-family:'Fraunces',serif;font-size:34px;font-weight:600;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
-.stat-card__delta{margin-top:8px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
-.stat-card__delta.up{color:var(--success)}
-.stat-card__delta.down{color:var(--danger)}
-.dashboard-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
-@media (max-width:1000px){.dashboard-grid{grid-template-columns:1fr}}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.page-head__title{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.page-head h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;letter-spacing:-.01em;margin:0}
+.page-head__sub{color:var(--muted);font-size:14px;margin:0}
 
-/* PANEL */
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
-.panel__head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 22px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.panel__title{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin:0;color:var(--ink)}
-.panel__sub{font-size:12.5px;color:var(--muted);margin-top:2px}
-.panel__body{padding:0}
-.panel__body--padded{padding:22px}
-.panel__filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px 22px;background:var(--surface-2);border-bottom:1px solid var(--border)}
-.panel__filters input,.panel__filters select{padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);font-size:13px}
-.panel__filters input:focus,.panel__filters select:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,59,111,.08)}
-.panel__filters .search{flex:1;min-width:200px;position:relative}
-.panel__filters .search input{width:100%;padding-left:34px}
-.panel__filters .search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted)}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:999px;
+  font-size:12px;font-weight:600;letter-spacing:.2px;
+  background:var(--success-soft);color:var(--success);
+}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
 
-/* TABLES */
-.table-wrap{overflow-x:auto}
-.tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
-.tbl thead{background:var(--surface-2)}
-.tbl th{text-align:left;padding:12px 18px;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);white-space:nowrap}
-.tbl td{padding:14px 18px;border-bottom:1px solid var(--border);vertical-align:middle}
-.tbl tbody tr{transition:background .15s}
-.tbl tbody tr:hover{background:var(--surface-2)}
-.tbl tbody tr:last-child td{border-bottom:0}
-.tbl .col-actions{text-align:right;white-space:nowrap}
-.tbl .col-num{font-variant-numeric:tabular-nums;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-soft)}
-.tbl .empty{text-align:center;padding:48px 24px;color:var(--muted)}
-.tbl .empty svg{width:40px;height:40px;margin-bottom:10px;opacity:.4}
-.tbl .empty p{margin:0;font-size:14px}
-.tbl .empty small{display:block;margin-top:4px;font-size:12.5px}
-.row-actions{display:inline-flex;gap:4px}
-.icon-btn{width:30px;height:30px;border-radius:6px;display:grid;place-items:center;background:transparent;color:var(--ink-soft);transition:.15s var(--t)}
-.icon-btn:hover{background:var(--surface-3);color:var(--ink)}
-.icon-btn svg{width:15px;height:15px}
-.icon-btn--danger:hover{background:var(--danger-soft);color:var(--danger)}
-.icon-btn--success:hover{background:var(--success-soft);color:var(--success)}
-.icon-btn--primary:hover{background:var(--primary-50);color:var(--primary)}
-
-/* BADGES */
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid transparent;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
-.badge::before{content:"";width:6px;height:6px;border-radius:50%}
-.badge--pending{background:var(--warn-soft);color:#7a2e0e;border-color:#fedf89}
-.badge--pending::before{background:var(--warn)}
-.badge--approved{background:var(--success-soft);color:#085d39;border-color:#abefc6}
-.badge--approved::before{background:var(--success)}
-.badge--rejected{background:var(--danger-soft);color:#7a0e0e;border-color:#fecdca}
-.badge--rejected::before{background:var(--danger)}
-.badge--contacted{background:var(--info-soft);color:#0d3b8e;border-color:#b2ddff}
-.badge--contacted::before{background:var(--info)}
-.badge--active{background:var(--success-soft);color:#085d39;border-color:#abefc6}
-.badge--active::before{background:var(--success)}
-.badge--inactive{background:var(--surface-3);color:var(--muted);border-color:var(--border)}
-.badge--inactive::before{background:var(--muted)}
-.badge--info{background:var(--info-soft);color:#0d3b8e;border-color:#b2ddff}
-.badge--info::before{background:var(--info)}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:var(--radius-sm);font-weight:600;font-size:13.5px;transition:.15s var(--t);border:1px solid transparent}
+.page-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:9px 16px;border-radius:var(--radius-sm);
+  font-weight:600;font-size:13.5px;
+  border:1px solid var(--border-strong);background:var(--surface);
+  transition:.15s;
+}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-700)}
 .btn svg{width:15px;height:15px}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:var(--primary-700);text-decoration:none}
-.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--border-strong)}
-.btn-ghost:hover{background:var(--surface-2);text-decoration:none}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-danger:hover{background:#9c1f15;text-decoration:none}
-.btn-success{background:var(--success);color:#fff}
-.btn-success:hover{background:#0a6b3e;text-decoration:none}
-.btn-sm{padding:6px 12px;font-size:12.5px}
 
-/* FORMS */
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.form-row--full{grid-template-columns:1fr}
-.form-row--3{grid-template-columns:1fr 1fr 1fr}
-@media (max-width:600px){.form-row,.form-row--3{grid-template-columns:1fr}}
-.form-field{display:flex;flex-direction:column;gap:5px}
-.form-field label{font-size:12.5px;font-weight:600;color:var(--ink)}
-.form-field label .req{color:var(--danger)}
-.form-field input,.form-field select,.form-field textarea{padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-size:14px;color:var(--ink);transition:.15s var(--t);width:100%}
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,59,111,.10)}
-.form-field input.is-invalid{border-color:var(--danger);background:#fef3f2}
-.form-field textarea{resize:vertical;min-height:80px;font-family:inherit}
-.form-field .hint{font-size:11.5px;color:var(--muted)}
-.form-field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230c1a2b' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
-.checkbox-row{display:flex;gap:10px;align-items:center;padding:10px 12px;background:var(--surface-2);border-radius:var(--radius-sm);cursor:pointer}
-.checkbox-row input{width:17px;height:17px;accent-color:var(--primary);flex:0 0 17px}
-.checkbox-row span{font-size:13.5px}
+/* ============= STATS ============= */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px}
+.stat{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow-sm);
+}
+.stat__head{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;font-weight:600;margin-bottom:10px}
+.stat__head svg{width:14px;height:14px}
+.stat__value{font-family:'Fraunces',serif;font-weight:600;font-size:34px;line-height:1;letter-spacing:-.02em}
+.stat__note{font-size:12.5px;color:var(--muted);margin-top:6px}
+.stat__note.up{color:var(--success)}
 
-/* MODALS */
-.modal{position:fixed;inset:0;z-index:120;background:rgba(12,26,43,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;animation:fade .2s var(--t)}
+/* ============= CARD ============= */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:24px;
+}
+.card__head{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:18px 20px;border-bottom:1px solid var(--border);
+}
+.card__title{display:flex;flex-direction:column;gap:2px}
+.card__title h2{font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin:0}
+.card__title p{font-size:13px;color:var(--muted);margin:0}
+.card__actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-select{
+  padding:8px 28px 8px 12px;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface);
+  font-size:13.5px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%236b7785' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  appearance:none;
+}
+.filter-search{
+  padding:8px 12px 8px 32px;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface);
+  font-size:13.5px;width:240px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7785' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:10px center;
+}
+
+/* ============= TABLE ============= */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead{background:var(--surface-2)}
+th{
+  text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.4px;text-transform:uppercase;
+  color:var(--muted);padding:11px 16px;border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:var(--surface-2)}
+
+td.cell-id{font-family:'Fraunces',serif;font-weight:600;color:var(--ink-soft)}
+td.cell-name{font-weight:600}
+td.cell-name small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:2px}
+td.cell-files{white-space:nowrap}
+
+.status-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;
+  font-size:12px;font-weight:600;letter-spacing:.2px;
+}
+.status-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.status-pending  {background:var(--warn-soft);color:var(--warn)}
+.status-approved {background:var(--success-soft);color:var(--success)}
+.status-rejected {background:var(--danger-soft);color:var(--danger)}
+.status-contacted{background:var(--info-soft);color:var(--info)}
+
+.status-select{
+  padding:5px 24px 5px 10px;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface);
+  font-size:12px;font-weight:600;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%236b7785' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;
+  appearance:none;
+}
+
+.file-link{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:6px;
+  background:var(--surface-2);color:var(--ink-soft);
+  border:1px solid var(--border);
+  margin-right:4px;
+  transition:.15s;
+  position:relative;
+}
+.file-link:hover{background:var(--primary);color:#fff;text-decoration:none;border-color:var(--primary)}
+.file-link svg{width:14px;height:14px}
+.file-link[data-tooltip]:hover::after{
+  content:attr(data-tooltip);
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--ink);color:#fff;font-size:11px;padding:4px 8px;border-radius:4px;white-space:nowrap;
+  z-index:10;
+}
+
+.empty-state{
+  text-align:center;padding:60px 20px;color:var(--muted);
+}
+.empty-state svg{width:48px;height:48px;color:var(--border-strong);margin-bottom:12px}
+.empty-state h3{font-family:'Fraunces',serif;font-weight:500;margin:0 0 6px;color:var(--ink-soft);font-size:18px}
+.empty-state p{margin:0;font-size:14px}
+
+/* ============= MODAL ============= */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(12,26,43,.5)}
 .modal.is-open{display:flex}
-.modal__content{background:var(--surface);border-radius:var(--radius-lg);padding:0;max-width:640px;width:100%;box-shadow:var(--shadow-lg);animation:pop .25s var(--t);margin:auto}
-.modal__content--wide{max-width:780px}
-.modal__content--narrow{max-width:440px}
-.modal__head{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
-.modal__title{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin:0}
-.modal__sub{font-size:13px;color:var(--muted);margin-top:3px}
-.modal__close{width:32px;height:32px;border-radius:6px;flex:0 0 32px;display:grid;place-items:center;color:var(--muted);background:transparent}
-.modal__close:hover{background:var(--surface-3);color:var(--ink)}
-.modal__close svg{width:18px;height:18px}
-.modal__body{padding:24px 28px}
-.modal__foot{padding:18px 28px;border-top:1px solid var(--border);background:var(--surface-2);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-radius:0 0 var(--radius-lg) var(--radius-lg)}
-.confirm-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;margin-bottom:14px;background:var(--danger-soft);color:var(--danger)}
-.confirm-icon svg{width:24px;height:24px}
-.confirm-icon--info{background:var(--info-soft);color:var(--info)}
-.confirm-icon--warn{background:var(--warn-soft);color:var(--warn)}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+.modal__card{
+  background:var(--surface);border-radius:var(--radius-lg);
+  max-width:600px;width:100%;max-height:90vh;overflow-y:auto;
+  box-shadow:0 20px 60px -10px rgba(12,26,43,.35);
+}
+.modal__head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal__head h2{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:0}
+.modal__close{width:32px;height:32px;border-radius:6px;display:grid;place-items:center;color:var(--muted)}
+.modal__close:hover{background:var(--surface-2);color:var(--ink)}
+.modal__body{padding:20px 24px}
+.modal__row{display:grid;grid-template-columns:140px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.modal__row:last-child{border-bottom:0}
+.modal__row dt{color:var(--muted);font-size:13px;font-weight:500}
+.modal__row dd{margin:0;font-weight:500;word-break:break-word}
+.modal__files{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.modal__files a{font-size:13.5px;display:inline-flex;align-items:center;gap:6px}
 
-/* TOASTS */
-#toasts{position:fixed;bottom:24px;right:24px;z-index:150;display:flex;flex-direction:column;gap:10px;pointer-events:none}
-@media (max-width:600px){#toasts{left:16px;right:16px;bottom:16px}}
-.toast{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);padding:14px 18px;min-width:260px;max-width:380px;box-shadow:var(--shadow-lg);display:flex;gap:11px;align-items:flex-start;pointer-events:auto;border-left:3px solid var(--info);animation:slideIn .25s var(--t)}
-.toast--success{border-left-color:var(--success)}
-.toast--success .toast__icon{background:var(--success-soft);color:var(--success)}
-.toast--danger{border-left-color:var(--danger)}
-.toast--danger .toast__icon{background:var(--danger-soft);color:var(--danger)}
-.toast--warn{border-left-color:var(--warn)}
-.toast--warn .toast__icon{background:var(--warn-soft);color:var(--warn)}
-.toast__icon{width:30px;height:30px;border-radius:50%;flex:0 0 30px;display:grid;place-items:center;background:var(--info-soft);color:var(--info)}
-.toast__icon svg{width:16px;height:16px}
-.toast__body{flex:1;min-width:0}
-.toast__title{font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:1px}
-.toast__msg{font-size:12.5px;color:var(--ink-soft)}
-.toast__close{width:24px;height:24px;border-radius:5px;color:var(--muted);flex:0 0 24px;display:grid;place-items:center}
-.toast__close:hover{background:var(--surface-3)}
-.toast__close svg{width:14px;height:14px}
-.toast.is-leaving{animation:slideOut .25s var(--t) forwards}
-@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
-@keyframes slideOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(20px)}}
+/* ============= TOAST ============= */
+.toast{
+  position:fixed;bottom:20px;right:20px;z-index:200;
+  background:var(--ink);color:#fff;
+  padding:12px 18px;border-radius:var(--radius-sm);
+  font-size:13.5px;font-weight:500;
+  box-shadow:0 8px 24px -6px rgba(0,0,0,.3);
+  opacity:0;transform:translateY(20px);pointer-events:none;
+  transition:.25s;
+}
+.toast.is-show{opacity:1;transform:translateY(0)}
+.toast.is-error{background:var(--danger)}
+.toast.is-success{background:var(--success)}
 
-/* MISC */
-.tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--surface-3);color:var(--ink-soft);letter-spacing:.3px}
-.tag--primary{background:var(--primary-50);color:var(--primary)}
-.tag--accent{background:#fdf6e8;color:#8a5a18}
-.text-muted{color:var(--muted)}
-.text-mono{font-family:'JetBrains Mono',monospace}
-.mb-0{margin-bottom:0!important}
-.mb-16{margin-bottom:16px}
-.mb-24{margin-bottom:24px}
-.flex-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.text-right{text-align:right}
-.hr-line{height:1px;background:var(--border);margin:18px 0;border:0}
-.tabs{display:flex;gap:2px;padding:4px;background:var(--surface-3);border-radius:var(--radius-sm);margin-bottom:22px;overflow-x:auto}
-.tabs button{padding:8px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;transition:.15s}
-.tabs button:hover{color:var(--ink)}
-.tabs button.is-active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm)}
-.list-editor{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-.list-editor__item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm)}
-.list-editor__num{width:24px;height:24px;border-radius:5px;flex:0 0 24px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:700;font-size:11.5px;font-family:'Fraunces',serif}
-.list-editor__main{flex:1;min-width:0}
-.list-editor__title{font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:2px;display:flex;align-items:center;gap:8px}
-.list-editor__desc{font-size:12px;color:var(--muted)}
-.empty-state{text-align:center;padding:32px 16px;color:var(--muted);font-size:13.5px}
-@media print{.sidebar,.topbar,.modal,#toasts{display:none!important}.main{padding:0}}
-.detail-grid{display:grid;grid-template-columns:140px 1fr;gap:12px 18px;margin-bottom:18px}
-.detail-grid dt{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin:0;align-self:center}
-.detail-grid dd{margin:0;font-weight:500;color:var(--ink);font-size:14px;word-break:break-word}
-@media (max-width:520px){.detail-grid{grid-template-columns:1fr;gap:4px 0}.detail-grid dd{margin-bottom:10px}}
-.topics-editor{display:flex;flex-direction:column;gap:6px}
-.topic-row{display:flex;gap:8px;align-items:center}
-.topic-row input{flex:1}
+/* ============= LOADING ============= */
+.loader{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-row td{padding:30px;text-align:center;color:var(--muted)}
+
+/* ============= PAGES ============= */
+.page{display:none}
+.page.is-active{display:block}
+
+/* ============= COURSES GRID ============= */
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.course-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow-sm);
+}
+.course-card__head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.course-card__code{
+  font-family:'Fraunces',serif;font-weight:600;font-size:14px;
+  background:var(--primary-50);color:var(--primary);
+  padding:3px 10px;border-radius:6px;letter-spacing:.3px;
+}
+.course-card__level{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.course-card h3{font-family:'Fraunces',serif;font-weight:500;font-size:18px;margin:0 0 4px;line-height:1.25}
+.course-card__sub{font-size:13px;color:var(--muted);margin:0 0 14px}
+.course-card__meta{display:flex;gap:18px;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:12px}
+.course-card__meta div{flex:1;min-width:0}
+.course-card__meta dt{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600;margin:0 0 2px}
+.course-card__meta dd{margin:0;font-weight:600;font-size:13.5px}
+.course-card__price{display:flex;align-items:baseline;gap:6px}
+.course-card__price-val{font-family:'Fraunces',serif;font-weight:600;font-size:24px;color:var(--primary)}
+.course-card__price-cur{font-size:13px;color:var(--muted);font-weight:600}
+
 </style>
 </head>
+
 <body>
+<div class="layout">
 
-<!-- LOGIN -->
-<div id="loginOverlay">
-  <div class="login-card">
-    <div class="login-card__brand">
-      <span class="login-card__mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+  <!-- ============= SIDEBAR ============= -->
+  <aside class="sidebar">
+    <a class="brand" href="/admin.html">
+      <span class="brand__mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 14 12 12 22 10 12Z"/><path d="M2 12 12 14 22 12 12 10Z"/></svg>
       </span>
-      <div>
-        <div class="login-card__name">ADDA · İdarəetmə Paneli</div>
-        <div class="login-card__sub">Təkmilləşdirilmə Kursları 2026</div>
-      </div>
-    </div>
-
-    <div id="setupView">
-      <h1>İlk dəfə quraşdırma</h1>
-      <p class="lead">Admin şifrəsi yaradın. Bu şifrə SHA-256 alqoritmi ilə hash edilərək saxlanılır və açıq mətndə heç vaxt qorunmur.</p>
-      <form id="setupForm">
-        <label for="setupPwd1">Yeni şifrə</label>
-        <input type="password" id="setupPwd1" required minlength="8" autocomplete="new-password">
-        <div class="field-hint">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Ən az 8 simvol. Hərf, rəqəm və simvolların qarışığını istifadə edin.
-        </div>
-        <label for="setupPwd2">Şifrəni təkrarlayın</label>
-        <input type="password" id="setupPwd2" required minlength="8" autocomplete="new-password">
-        <div id="setupError" class="login-error" hidden></div>
-        <button type="submit">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Şifrəni yarat və daxil ol
-        </button>
-      </form>
-      <div class="security-note">
-        <strong>Təhlükəsizlik qeydi:</strong> Bu admin paneli yalnız brauzerdə işləyir (frontend prototip). Bütün məlumatlar bu cihazın <code>localStorage</code>-ında saxlanılır. Real təşkilati istifadə üçün backend (server, verilənlər bazası, HTTPS) tələb olunur.
-      </div>
-    </div>
-
-    <div id="loginView" hidden>
-      <h1>Daxil olun</h1>
-      <p class="lead">Admin şifrəsini daxil edərək davam edin.</p>
-      <form id="loginForm">
-        <label for="loginPwd">Şifrə</label>
-        <input type="password" id="loginPwd" required autocomplete="current-password" autofocus>
-        <div id="loginError" class="login-error" hidden></div>
-        <button type="submit" id="loginSubmit">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-          Daxil ol
-        </button>
-      </form>
-      <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px">
-        <a href="#" id="resetAuthLink" style="color:var(--muted)">Şifrəni unutmusunuz?</a>
-        <span class="text-muted">Sessiya: <span id="sessionInfo">30 dəq</span></span>
-      </div>
-      <div class="security-note">
-        <strong>Diqqət:</strong> 5 səhv cəhddən sonra 15 dəqiqəlik kilid tətbiq olunur. Sessiya 30 dəqiqə hərəkətsizlikdən sonra avtomatik bağlanır.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- APP -->
-<div class="app" id="adminApp" hidden>
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar__brand">
-      <span class="sidebar__mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+      <span class="brand__text">
+        <span class="brand__name">ADDA Admin</span>
+        <span class="brand__sub">Tədris idarəetməsi</span>
       </span>
-      <div>
-        <div class="sidebar__name">ADDA Admin</div>
-        <div class="sidebar__sub">Tədris idarəetməsi</div>
+    </a>
+
+    <div class="nav-group">
+      <span class="nav-group__label">Əsas</span>
+      <div class="nav-item is-active" data-page="dashboard">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span>Ana səhifə</span>
+        </span>
+      </div>
+      <div class="nav-item" data-page="courses">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Kurslar</span>
+        </span>
+        <span class="nav-item__count" id="navCoursesCount">—</span>
+      </div>
+      <div class="nav-item" data-page="enrollments">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Qeydiyyatlar</span>
+        </span>
+        <span class="nav-item__count" id="navEnrollmentsCount">—</span>
       </div>
     </div>
 
-    <nav class="sidebar__nav" id="sideNav">
-      <div class="sidebar__section">Əsas</div>
-      <a href="#" data-route="dashboard" class="is-active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-        Ana səhifə
-      </a>
-      <a href="#" data-route="courses">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        Kurslar <span class="count" id="cnt-courses">0</span>
-      </a>
-      <a href="#" data-route="registrations">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
-        Qeydiyyatlar <span class="count" id="cnt-regs">0</span>
-      </a>
-
-      <div class="sidebar__section">Tənzimləmə</div>
-      <a href="#" data-route="settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Səhifə parametrləri
-      </a>
-      <a href="#" data-route="audit">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        Audit jurnalı
-      </a>
-      <a href="#" data-route="security">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Təhlükəsizlik
-      </a>
-    </nav>
-
-    <div class="sidebar__foot">
-      <div class="sidebar__user">
-        <div class="sidebar__avatar">A</div>
-        <div class="sidebar__user-info">
-          <b>Administrator</b>
-          <small id="sessionRemaining">Sessiya: 30 dəq</small>
-        </div>
+    <div class="nav-group">
+      <span class="nav-group__label">Sistem</span>
+      <div class="nav-item" data-page="health">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <span>Sistem statusu</span>
+        </span>
       </div>
-      <button class="sidebar__logout" id="logoutBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </div>
+
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid var(--border)">
+      <div id="userBox" style="padding:8px 12px;border-radius:var(--radius-sm);background:var(--surface-2);display:none">
+        <div style="font-size:12.5px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="userName">—</div>
+        <div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="userEmail">—</div>
+      </div>
+      <button id="btnLogout" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border-strong);font-size:13px;font-weight:500;color:var(--ink-soft);cursor:pointer;transition:.15s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='var(--surface)'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Çıxış
       </button>
+      <div style="padding:0 12px;font-size:11px;color:var(--muted)">
+        API: <span id="apiHealthDot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin:0 4px"></span><span id="apiHealthText">yoxlanır...</span>
+      </div>
     </div>
   </aside>
 
-  <div class="main">
-    <header class="topbar">
-      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menyu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  <!-- ============= MAIN ============= -->
+  <main class="main">
+
+    <!-- ===== DASHBOARD ===== -->
+    <section class="page is-active" data-page="dashboard">
+      <div class="page-head">
+        <div class="page-head__title">
+          <h1>Ana səhifə</h1>
+          <span class="badge"><span class="dot"></span>Database</span>
+        </div>
+        <div class="page-actions">
+          <button class="btn" id="btnRefresh">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Yenilə
+          </button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat__head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Ümumi qeydiyyat</div>
+          <div class="stat__value" id="statTotal">—</div>
+          <div class="stat__note" id="statTotalNote">Bütün vəziyyətlər</div>
+        </div>
+        <div class="stat">
+          <div class="stat__head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Gözləyir</div>
+          <div class="stat__value" id="statPending">—</div>
+          <div class="stat__note">Yoxlama tələb edir</div>
+        </div>
+        <div class="stat">
+          <div class="stat__head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Təsdiqlənib</div>
+          <div class="stat__value" id="statApproved">—</div>
+          <div class="stat__note up">Kursa daxil olunub</div>
+        </div>
+        <div class="stat">
+          <div class="stat__head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Əlaqə saxlanılıb</div>
+          <div class="stat__value" id="statContacted">—</div>
+          <div class="stat__note">İcmal mərhələsində</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Son qeydiyyatlar</h2>
+            <p>Ən son 10 müraciət</p>
+          </div>
+          <div class="card__actions">
+            <button class="btn" onclick="switchPage('enrollments')">
+              Hamısı
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Tarix</th>
+                <th>Ad-Soyad</th>
+                <th>Kurs</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recentTableBody">
+              <tr class="loading-row"><td colspan="5"><span class="loader"></span> Yüklənir...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ENROLLMENTS ===== -->
+    <section class="page" data-page="enrollments">
+      <div class="page-head">
+        <div class="page-head__title">
+          <h1>Qeydiyyatlar</h1>
+          <span class="badge"><span class="dot"></span>Database</span>
+        </div>
+        <div class="page-actions">
+          <button class="btn" onclick="loadEnrollments()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Yenilə
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Bütün ərizələr</h2>
+            <p id="enrollmentsSubtitle">Yüklənir...</p>
+          </div>
+          <div class="card__actions">
+            <div class="filters">
+              <input type="search" class="filter-search" id="filterSearch" placeholder="Ad, FIN, telefon, email...">
+              <select class="filter-select" id="filterStatus">
+                <option value="">Bütün statuslar</option>
+                <option value="pending">Gözləyir</option>
+                <option value="approved">Təsdiqlənib</option>
+                <option value="rejected">Rədd edilib</option>
+                <option value="contacted">Əlaqə saxlanılıb</option>
+              </select>
+              <select class="filter-select" id="filterCourse">
+                <option value="">Bütün kurslar</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Tarix</th>
+                <th>Ad-Soyad</th>
+                <th>FIN</th>
+                <th>Telefon</th>
+                <th>Email</th>
+                <th>Kurs</th>
+                <th>Status</th>
+                <th>Sənədlər</th>
+              </tr>
+            </thead>
+            <tbody id="enrollmentsTableBody">
+              <tr class="loading-row"><td colspan="9"><span class="loader"></span> Yüklənir...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COURSES ===== -->
+    <section class="page" data-page="courses">
+      <div class="page-head">
+        <div class="page-head__title">
+          <h1>Kurslar</h1>
+          <span class="badge"><span class="dot"></span>Database</span>
+        </div>
+        <div class="page-actions">
+          <button class="btn" onclick="loadCourses()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Yenilə
+          </button>
+        </div>
+      </div>
+
+      <div id="coursesGrid" class="courses-grid">
+        <div class="empty-state" style="grid-column:1/-1"><span class="loader"></span> Yüklənir...</div>
+      </div>
+    </section>
+
+    <!-- ===== HEALTH ===== -->
+    <section class="page" data-page="health">
+      <div class="page-head">
+        <div class="page-head__title">
+          <h1>Sistem statusu</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn" onclick="checkHealth()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Yoxla
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Komponentlər</h2>
+            <p>API və verilənlər bazasının vəziyyəti</p>
+          </div>
+        </div>
+        <div style="padding:0 20px">
+          <table>
+            <tbody id="healthTableBody">
+              <tr><td>API serveri</td><td id="healthApi">—</td></tr>
+              <tr><td>Verilənlər bazası (Neon)</td><td id="healthDb">—</td></tr>
+              <tr><td>Endpoint: /api/courses</td><td id="healthCourses">—</td></tr>
+              <tr><td>Endpoint: /api/students</td><td id="healthStudents">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal" id="detailModal">
+  <div class="modal__card">
+    <div class="modal__head">
+      <h2 id="modalTitle">Qeydiyyat detalları</h2>
+      <button class="modal__close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
-      <div class="topbar__title-wrap">
-        <div>
-          <h1 class="topbar__title" id="pageTitle">Ana səhifə</h1>
-          <span class="badge badge--active" id="syncBadge" title="Məlumatlar bu brauzerdə saxlanılır">localStorage</span>
-        </div>
-        <div class="topbar__subtitle" id="pageSubtitle">Sistemin ümumi vəziyyəti və son hadisələr</div>
-      </div>
-      <div class="topbar__action">
-        <a class="topbar__btn" href="adda-tekmillesdirme-qeydiyyat.html" target="_blank">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          İctimai səhifə
-        </a>
-      </div>
-    </header>
-
-    <div class="content">
-
-      <!-- DASHBOARD -->
-      <section id="page-dashboard">
-        <div class="stat-grid" id="dashStats"></div>
-        <div class="dashboard-grid">
-          <div class="panel">
-            <div class="panel__head">
-              <div>
-                <h2 class="panel__title">Son qeydiyyatlar</h2>
-                <div class="panel__sub">Son 10 ərizə</div>
-              </div>
-              <button class="btn btn-ghost btn-sm" data-go="registrations">Hamısı →</button>
-            </div>
-            <div class="panel__body table-wrap" id="dashRecent"></div>
-          </div>
-          <div class="panel">
-            <div class="panel__head">
-              <div>
-                <h2 class="panel__title">Kurs üzrə bölüşdürmə</h2>
-                <div class="panel__sub">Qeydiyyatların sayı</div>
-              </div>
-            </div>
-            <div class="panel__body panel__body--padded" id="dashChart"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- COURSES -->
-      <section id="page-courses" hidden>
-        <div class="panel">
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Kurs kataloqu</h2>
-              <div class="panel__sub">Aktiv kurslar ictimai səhifədə göstərilir</div>
-            </div>
-            <button class="btn btn-primary" id="addCourseBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Yeni kurs əlavə et
-            </button>
-          </div>
-          <div class="panel__body table-wrap" id="coursesTable"></div>
-        </div>
-      </section>
-
-      <!-- REGISTRATIONS -->
-      <section id="page-registrations" hidden>
-        <div class="panel">
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Qeydiyyat ərizələri</h2>
-              <div class="panel__sub">Bütün ərizələr aşağıda göstərilir</div>
-            </div>
-            <div class="flex-row">
-              <button class="btn btn-ghost btn-sm" id="exportCsvBtn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                CSV ixrac
-              </button>
-              <button class="btn btn-ghost btn-sm" id="clearRegsBtn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-                Hamısını sil
-              </button>
-            </div>
-          </div>
-          <div class="panel__filters">
-            <div class="search">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="search" id="regSearch" placeholder="Ad, FİN, email və ya qeydiyyat № üzrə axtarış...">
-            </div>
-            <select id="regStatusFilter">
-              <option value="">Bütün statuslar</option>
-              <option value="pending">Gözləyir</option>
-              <option value="approved">Təsdiqlənib</option>
-              <option value="rejected">Rədd edilib</option>
-              <option value="contacted">Əlaqə saxlanıldı</option>
-            </select>
-            <select id="regCourseFilter">
-              <option value="">Bütün kurslar</option>
-            </select>
-          </div>
-          <div class="panel__body table-wrap" id="regsTable"></div>
-        </div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section id="page-settings" hidden>
-        <div class="tabs" id="settingsTabs">
-          <button class="is-active" data-tab="hero">Ana səhifə</button>
-          <button data-tab="contact">Əlaqə</button>
-          <button data-tab="bank">Bank rekvizitləri</button>
-          <button data-tab="docs">Sənədlər</button>
-          <button data-tab="faq">FAQ</button>
-        </div>
-
-        <div class="panel" data-tab-pane="hero">
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Ana səhifə mətnləri</h2>
-              <div class="panel__sub">Hero başlığı, alt mətn və son tarix</div>
-            </div>
-          </div>
-          <div class="panel__body panel__body--padded">
-            <form id="heroForm">
-              <div class="form-row form-row--full">
-                <div class="form-field">
-                  <label>Hero başlığı <span class="req">*</span></label>
-                  <input type="text" name="heroTitle" required>
-                  <span class="hint">"Dənizçilər üçün təkmilləşdirilmə kursları" kimi</span>
-                </div>
-              </div>
-              <div class="form-row form-row--full">
-                <div class="form-field">
-                  <label>Alt mətn (lead) <span class="req">*</span></label>
-                  <textarea name="heroLead" rows="3" required></textarea>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Son tarix <span class="req">*</span></label>
-                  <input type="datetime-local" name="deadline" required>
-                  <span class="hint">Bakı saatı ilə (+04:00)</span>
-                </div>
-                <div class="form-field">
-                  <label>Tədris dövrü etiketi</label>
-                  <input type="text" name="periodLabel">
-                  <span class="hint">"İyun 2026" kimi</span>
-                </div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:14px;border-top:1px solid var(--border);margin-top:8px">
-                <button type="submit" class="btn btn-primary">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  Yadda saxla
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="panel" data-tab-pane="contact" hidden>
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Əlaqə məlumatları</h2>
-              <div class="panel__sub">Header, footer və FAQ-da görünür</div>
-            </div>
-          </div>
-          <div class="panel__body panel__body--padded">
-            <form id="contactForm">
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Ümumi telefon</label>
-                  <input type="tel" name="phone">
-                </div>
-                <div class="form-field">
-                  <label>Ümumi email</label>
-                  <input type="email" name="email">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Tədris şöbəsi email</label>
-                  <input type="email" name="tedrisEmail">
-                </div>
-                <div class="form-field">
-                  <label>Ünvan</label>
-                  <input type="text" name="address">
-                </div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border);margin-top:8px">
-                <button type="submit" class="btn btn-primary">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  Yadda saxla
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="panel" data-tab-pane="bank" hidden>
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Bank rekvizitləri</h2>
-              <div class="panel__sub">Ödəniş bölməsində göstərilir</div>
-            </div>
-          </div>
-          <div class="panel__body panel__body--padded">
-            <form id="bankForm">
-              <div class="form-row form-row--full">
-                <div class="form-field">
-                  <label>Müəssisənin adı</label>
-                  <input type="text" name="bankCompany">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-field">
-                  <label>VÖEN</label>
-                  <input type="text" name="bankVoen">
-                </div>
-                <div class="form-field">
-                  <label>Bank adı</label>
-                  <input type="text" name="bankName">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Hesab nömrəsi (IBAN)</label>
-                  <input type="text" name="bankAccount">
-                </div>
-                <div class="form-field">
-                  <label>SWIFT</label>
-                  <input type="text" name="bankSwift">
-                </div>
-              </div>
-              <div class="form-row form-row--full">
-                <div class="form-field">
-                  <label>Təyinat (məqsəd)</label>
-                  <input type="text" name="bankPurpose">
-                </div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border);margin-top:8px">
-                <button type="submit" class="btn btn-primary">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  Yadda saxla
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="panel" data-tab-pane="docs" hidden>
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Tələb olunan sənədlər</h2>
-              <div class="panel__sub">İctimai səhifədə "Lazımi sənədlər" bölməsində göstərilir</div>
-            </div>
-            <button class="btn btn-primary btn-sm" id="addDocBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Sənəd əlavə et
-            </button>
-          </div>
-          <div class="panel__body panel__body--padded">
-            <div class="list-editor" id="docsList"></div>
-          </div>
-        </div>
-
-        <div class="panel" data-tab-pane="faq" hidden>
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Tez-tez verilən suallar</h2>
-              <div class="panel__sub">İctimai səhifədəki FAQ bölməsi</div>
-            </div>
-            <button class="btn btn-primary btn-sm" id="addFaqBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              FAQ əlavə et
-            </button>
-          </div>
-          <div class="panel__body panel__body--padded">
-            <div class="list-editor" id="faqList"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- AUDIT -->
-      <section id="page-audit" hidden>
-        <div class="panel">
-          <div class="panel__head">
-            <div>
-              <h2 class="panel__title">Audit jurnalı</h2>
-              <div class="panel__sub">Son 200 admin əməliyyatı</div>
-            </div>
-            <button class="btn btn-ghost btn-sm" id="clearAuditBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-              Jurnalı təmizlə
-            </button>
-          </div>
-          <div class="panel__body table-wrap" id="auditTable"></div>
-        </div>
-      </section>
-
-      <!-- SECURITY -->
-      <section id="page-security" hidden>
-        <div class="dashboard-grid">
-          <div class="panel">
-            <div class="panel__head">
-              <div>
-                <h2 class="panel__title">Şifrəni dəyişdir</h2>
-                <div class="panel__sub">SHA-256 + unikal salt ilə hashlənir</div>
-              </div>
-            </div>
-            <div class="panel__body panel__body--padded">
-              <form id="changePwdForm">
-                <div class="form-row form-row--full">
-                  <div class="form-field">
-                    <label>Hazırkı şifrə <span class="req">*</span></label>
-                    <input type="password" name="current" required autocomplete="current-password">
-                  </div>
-                </div>
-                <div class="form-row form-row--full">
-                  <div class="form-field">
-                    <label>Yeni şifrə <span class="req">*</span></label>
-                    <input type="password" name="next" required minlength="8" autocomplete="new-password">
-                    <span class="hint">Ən az 8 simvol</span>
-                  </div>
-                </div>
-                <div class="form-row form-row--full">
-                  <div class="form-field">
-                    <label>Yeni şifrəni təkrarlayın <span class="req">*</span></label>
-                    <input type="password" name="confirm" required minlength="8" autocomplete="new-password">
-                  </div>
-                </div>
-                <div style="display:flex;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border);margin-top:8px">
-                  <button type="submit" class="btn btn-primary">Şifrəni dəyiş</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel__head">
-              <div>
-                <h2 class="panel__title">Sessiya və qoruma</h2>
-                <div class="panel__sub">Cari brauzer və mexanizmlər</div>
-              </div>
-            </div>
-            <div class="panel__body panel__body--padded">
-              <dl class="detail-grid" id="securityInfo"></dl>
-              <hr class="hr-line">
-              <h3 style="font-family:Fraunces,serif;font-size:15px;margin:0 0 12px">Təhlükəli əməliyyatlar</h3>
-              <div style="display:flex;flex-direction:column;gap:10px">
-                <button class="btn btn-ghost" id="exportBackupBtn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Bütün məlumatları yedəklə (JSON)
-                </button>
-                <button class="btn btn-ghost" id="importBackupBtn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  Yedəkdən bərpa et
-                </button>
-                <input type="file" id="importBackupFile" accept="application/json" hidden>
-                <button class="btn btn-danger" id="wipeAllBtn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-                  Bütün məlumatları sil və şifrəni sıfırla
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+    </div>
+    <div class="modal__body">
+      <dl id="modalBody"></dl>
     </div>
   </div>
 </div>
 
-<div class="modal" id="modal" role="dialog" aria-modal="true"></div>
-<div id="toasts" aria-live="polite"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-'use strict';
+/* ============= CONFIG ============= */
+const API_BASE = '/api';
 
-const $ = (s, ctx = document) => ctx.querySelector(s);
-const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
-const setText = (el, txt) => { if (el) el.textContent = txt == null ? '' : String(txt); };
+/* ============= STATE ============= */
+let allEnrollments = [];
+let allCourses = [];
 
-function escapeHtml(s) {
-  return String(s == null ? '' : s).replace(/[&<>"'`/]/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','/':'&#x2F;'
-  }[c]));
+/* ============= UTILITIES ============= */
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function showToast(msg, type='') {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast is-show ' + (type ? 'is-'+type : '');
+  setTimeout(() => t.classList.remove('is-show'), 3000);
 }
 
-async function sha256Hex(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-function randomHex(bytes = 16) {
-  const arr = new Uint8Array(bytes);
-  crypto.getRandomValues(arr);
-  return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-function fmtDateTime(ts) {
-  if (!ts) return '—';
-  return new Date(ts).toLocaleString('az-AZ', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
-}
-function fmtDate(ts) {
-  if (!ts) return '—';
-  return new Date(ts).toLocaleDateString('az-AZ', { year:'numeric', month:'short', day:'numeric' });
-}
-function relTime(ts) {
-  const diff = Date.now() - ts;
-  const s = Math.floor(diff/1000);
-  if (s < 60) return `${s} san əvvəl`;
-  const m = Math.floor(s/60);
-  if (m < 60) return `${m} dəq əvvəl`;
-  const h = Math.floor(m/60);
-  if (h < 24) return `${h} saat əvvəl`;
-  const d = Math.floor(h/24);
-  if (d < 30) return `${d} gün əvvəl`;
-  return fmtDate(ts);
+function statusLabel(s) {
+  return {
+    pending:   'Gözləyir',
+    approved:  'Təsdiqlənib',
+    rejected:  'Rədd edilib',
+    contacted: 'Əlaqə saxlanılıb'
+  }[s] || s;
 }
 
-const STORAGE_PREFIX = 'adda_';
-const KEYS = { AUTH:'auth', COURSES:'courses', REGS:'registrations', SETTINGS:'settings', AUDIT:'audit', SESSION:'session' };
-
-const DB = {
-  get(key, fallback = null) {
-    try { const raw = localStorage.getItem(STORAGE_PREFIX + key); return raw ? JSON.parse(raw) : fallback; }
-    catch (e) { console.error('DB.get error:', e); return fallback; }
-  },
-  set(key, value) {
-    try { localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value)); return true; }
-    catch (e) { toast({ kind:'danger', title:'Yaddaş xətası', msg:'localStorage doludur və ya əlçatan deyil.' }); return false; }
-  },
-  remove(key) { localStorage.removeItem(STORAGE_PREFIX + key); },
-  wipe() { Object.values(KEYS).forEach(k => localStorage.removeItem(STORAGE_PREFIX + k)); }
-};
-
-const DEFAULT_COURSES = [
-  { id:'ngm', name:'Gəmi sürücülüyü', level:'İdarəetmə səviyyəsi', stcw:'A-II/2', subtitle:'Kapitan və baş köməkçi üçün',
-    duration:'4 həftə', hours:140, price:450, currency:'AZN', priceNote:'ASCO əməkdaşları üçün güzəştli',
-    topics:['Reys planlaşdırılması və naviqasiya təhlükəsizliyi','ECDIS və müasir naviqasiya sistemləri','Gəminin idarə edilməsi və manevr','Yük əməliyyatları və gəminin dayanıqlığı'],
-    active:true, order:1 },
-  { id:'ngo', name:'Gəmi sürücülüyü', level:'İstismar səviyyəsi', stcw:'A-II/1', subtitle:'Növbə zabiti üçün',
-    duration:'3 həftə', hours:108, price:320, currency:'AZN', priceNote:'Tam kurs + simulyator',
-    topics:['Naviqasiya növbəsinin aparılması','GMDSS rabitə əməliyyatları','Hava şəraiti və okeanoqrafiya','Beynəlxalq COLREG qaydaları'],
-    active:true, order:2 },
-  { id:'mem', name:'Gəmi mexanikləri', level:'İdarəetmə səviyyəsi', stcw:'A-III/2', subtitle:'Baş mexanik və 2-ci mexanik',
-    duration:'4 həftə', hours:140, price:450, currency:'AZN', priceNote:'Mühərrik otağı simulyatoru daxil',
-    topics:['Gəmi enerji qurğularının idarə edilməsi','Mühərrik və yardımçı mexanizmlərin texniki istismarı','Yanacaq, yağ və sistem analizi','Gəmi heyətinin idarə edilməsi və risk təhlili'],
-    active:true, order:3 },
-  { id:'meo', name:'Gəmi mexanikləri', level:'İstismar səviyyəsi', stcw:'A-III/1', subtitle:'Növbə mexaniki üçün',
-    duration:'3 həftə', hours:108, price:320, currency:'AZN', priceNote:'Praktiki məşğələ + test imtahanı',
-    topics:['Mexaniki növbənin aparılması qaydaları','Gəmi mühərriki və köməkçi sistemlər','Avtomatlaşdırılmış idarəetmə sistemləri','Texniki təhlükəsizlik və yanğından mühafizə'],
-    active:true, order:4 },
-  { id:'eem', name:'Gəmi elektromexanikləri', level:'İdarəetmə səviyyəsi', stcw:'A-III/6', subtitle:'Elektrotexniki zabit üçün',
-    duration:'4 həftə', hours:140, price:480, currency:'AZN', priceNote:'İxtisaslaşmış laboratoriya daxil',
-    topics:['Gəmi elektrik təchizatı sistemləri','Yüksəkgərginlikli avadanlıq və idarəetmə','Elektronika və avtomatlaşdırma','Texniki təhlükəsizlik və qoruyucu vasitələr'],
-    active:true, order:5 },
-];
-
-const DEFAULT_SETTINGS = {
-  heroTitle: 'Dənizçilər üçün təkmilləşdirilmə kursları',
-  heroLead: 'STCW konvensiyasının tələblərinə uyğun ixtisasartırma proqramları — gəmi sürücüləri, mexanikləri və elektromexanikləri üçün idarəetmə və istismar səviyyəsində.',
-  deadline: '2026-05-31T18:00',
-  periodLabel: 'İyun 2026',
-  phone: '(+994 12) 421-45-03',
-  email: 'info@adda.edu.az',
-  tedrisEmail: 'tedris@adda.edu.az',
-  address: 'Bakı şəhəri, Azərbaycan',
-  bankCompany: '"Azərbaycan Dövlət Dəniz Akademiyası" PHŞ',
-  bankVoen: '1234567890',
-  bankName: 'Mərkəzi Bank',
-  bankAccount: 'AZ00NABZ00000000000000000000',
-  bankSwift: 'NABZAZ2C',
-  bankPurpose: 'Təkmilləşdirilmə kursu üzrə xidmət haqqı',
-  docs: [
-    { id:'id', title:'Şəxsiyyət vəsiqəsi', desc:'Şəxsiyyət vəsiqəsinin oxunaqlı surəti.', required:true, maxMB:100 },
-    { id:'diploma', title:'Təhsil haqqında sənəd', desc:'Diplom (bakalavr / magistratura).', required:true, maxMB:100 },
-    { id:'work', title:'İşçi diplomu', desc:'İşçi diplomu və əlavəsi (qeyd vərəqi ilə).', required:true, maxMB:100 },
-    { id:'medical', title:'Tibbi kitabça', desc:'Tibbi kitabçanın ilk və son vərəqi.', required:true, maxMB:100 },
-    { id:'app', title:'Ərizə', desc:'Akademiyanın forması üzrə ərizə nümunəsi.', required:true, maxMB:100 },
-    { id:'receipt', title:'Ödəniş çeki', desc:'ASCO əməkdaşları istisna olmaqla.', required:false, maxMB:10 },
-  ],
-  faqs: [
-    { id:'f1', q:'Qeydiyyat necə təsdiq olunur?', a:'Forma göndərildikdən sonra sistem avtomatik olaraq qeydiyyat nömrəsi formalaşdırır və email ünvanınıza göndərir. Sənədlərin yoxlanması 3 iş günü ərzində aparılır.' },
-    { id:'f2', q:'Hansı kursu seçəcəyimə əmin deyiləm. Necə kömək ala bilərəm?', a:'Tədris şöbəsi ilə (+994 12) 421-45-03 və ya tedris@adda.edu.az vasitəsilə əlaqə saxlaya bilərsiniz.' },
-    { id:'f3', q:'Mən ASCO əməkdaşıyam. Hansı sənədləri yükləməliyəm?', a:'ASCO əməkdaşları ödəniş çeki istisna olmaqla bütün məcburi sənədləri yükləməlidirlər.' },
-    { id:'f4', q:'Sənədlər PDF-dən başqa formatda qəbul olunurmu?', a:'Xeyr. Bütün sənədlər yalnız PDF formatında qəbul edilir.' },
-    { id:'f5', q:'Son tarixdən sonra qeydiyyatdan keçə bilərəmmi?', a:'Son tarix 31 may 2026-cı il, saat 18:00-dır. Bu vaxtdan sonra forma avtomatik bağlanır.' },
-  ]
-};
-
-function seedDefaults() {
-  if (!DB.get(KEYS.COURSES)) DB.set(KEYS.COURSES, DEFAULT_COURSES);
-  if (!DB.get(KEYS.SETTINGS)) DB.set(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  if (!DB.get(KEYS.REGS)) DB.set(KEYS.REGS, []);
-  if (!DB.get(KEYS.AUDIT)) DB.set(KEYS.AUDIT, []);
+function statusPill(s) {
+  return `<span class="status-pill status-${s}"><span class="dot"></span>${statusLabel(s)}</span>`;
 }
 
-function audit(action, details = '') {
-  const log = DB.get(KEYS.AUDIT, []);
-  log.unshift({ ts: Date.now(), action, details });
-  DB.set(KEYS.AUDIT, log.slice(0, 200));
-}
-
-function toast({ kind = 'info', title = '', msg = '', duration = 3500 }) {
-  const cont = $('#toasts');
-  const el = document.createElement('div');
-  el.className = 'toast toast--' + kind;
-  const icons = {
-    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>',
-    danger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+function fileIcon(fieldName) {
+  const labels = {
+    id_file:          'Şəxsiyyət',
+    diploma_file:     'Diplom',
+    work_file:        'İşçi diplomu',
+    medical_file:     'Tibbi kitabça',
+    application_file: 'Ərizə',
+    receipt_file:     'Ödəniş çeki'
   };
-  el.innerHTML = `
-    <div class="toast__icon">${icons[kind] || icons.info}</div>
-    <div class="toast__body">
-      <div class="toast__title"></div>
-      <div class="toast__msg"></div>
-    </div>
-    <button class="toast__close" aria-label="Bağla"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-  `;
-  setText(el.querySelector('.toast__title'), title);
-  setText(el.querySelector('.toast__msg'), msg);
-  el.querySelector('.toast__close').addEventListener('click', () => closeToast(el));
-  cont.appendChild(el);
-  if (duration) setTimeout(() => closeToast(el), duration);
-}
-function closeToast(el) {
-  el.classList.add('is-leaving');
-  setTimeout(() => el.remove(), 250);
+  return labels[fieldName] || fieldName;
 }
 
-function openModal({ title = '', subtitle = '', body = '', size = '', footer = '', onOpen = null }) {
-  const modal = $('#modal');
-  const cls = size === 'wide' ? ' modal__content--wide' : size === 'narrow' ? ' modal__content--narrow' : '';
-  modal.innerHTML = `
-    <div class="modal__content${cls}">
-      <div class="modal__head">
-        <div>
-          <h3 class="modal__title"></h3>
-          ${subtitle ? '<div class="modal__sub"></div>' : ''}
-        </div>
-        <button class="modal__close" aria-label="Bağla"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-      </div>
-      <div class="modal__body"></div>
-      ${footer ? '<div class="modal__foot"></div>' : ''}
-    </div>`;
-  setText(modal.querySelector('.modal__title'), title);
-  if (subtitle) setText(modal.querySelector('.modal__sub'), subtitle);
-  modal.querySelector('.modal__body').innerHTML = body;
-  if (footer) modal.querySelector('.modal__foot').innerHTML = footer;
-  modal.classList.add('is-open');
-  document.body.style.overflow = 'hidden';
-  modal.querySelector('.modal__close').addEventListener('click', closeModal);
-  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); }, { once:true });
-  if (onOpen) onOpen(modal);
+function parseFiles(files) {
+  if (!files) return {};
+  if (typeof files === 'string') {
+    try { return JSON.parse(files); } catch { return {}; }
+  }
+  return files;
 }
+
+/* ============= NAVIGATION ============= */
+function switchPage(pageName) {
+  $$('.nav-item').forEach(el => el.classList.toggle('is-active', el.dataset.page === pageName));
+  $$('.page').forEach(el => el.classList.toggle('is-active', el.dataset.page === pageName));
+  window.scrollTo(0, 0);
+}
+
+$$('.nav-item').forEach(item => {
+  item.addEventListener('click', () => switchPage(item.dataset.page));
+});
+
+/* ============= API ============= */
+async function apiGet(path) {
+  const res = await fetch(API_BASE + path, { credentials: 'include' });
+  if (res.status === 401) {
+    location.href = '/login.html';
+    throw new Error('Unauthorized');
+  }
+  if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
+  return await res.json();
+}
+
+async function apiPatch(path, body) {
+  const res = await fetch(API_BASE + path, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (res.status === 401) {
+    location.href = '/login.html';
+    throw new Error('Unauthorized');
+  }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `HTTP ${res.status}`);
+  }
+  return await res.json();
+}
+
+async function apiPost(path, body) {
+  const res = await fetch(API_BASE + path, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : null
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+/* ============= DASHBOARD ============= */
+function renderDashboard() {
+  const total = allEnrollments.length;
+  const pending = allEnrollments.filter(e => e.status === 'pending').length;
+  const approved = allEnrollments.filter(e => e.status === 'approved').length;
+  const contacted = allEnrollments.filter(e => e.status === 'contacted').length;
+
+  $('#statTotal').textContent = total;
+  $('#statPending').textContent = pending;
+  $('#statApproved').textContent = approved;
+  $('#statContacted').textContent = contacted;
+  $('#navEnrollmentsCount').textContent = total;
+
+  // Son 7 gündə
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const last7 = allEnrollments.filter(e => e.created_at && new Date(e.created_at) >= sevenDaysAgo).length;
+  $('#statTotalNote').textContent = `+${last7} son 7 gündə`;
+
+  // Son 10
+  const recent = allEnrollments.slice(0, 10);
+  const tbody = $('#recentTableBody');
+  if (recent.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <h3>Hələ qeydiyyat yoxdur</h3><p>Sayt vasitəsilə qeydiyyatlar bu siyahıda görünəcək.</p>
+    </div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = recent.map(e => `
+    <tr style="cursor:pointer" onclick="showDetail(${e.id})">
+      <td class="cell-id">#${e.id}</td>
+      <td>${formatDate(e.created_at)}</td>
+      <td class="cell-name">${escapeHtml(e.student_name)}<small>${escapeHtml(e.phone || '')}</small></td>
+      <td>${escapeHtml(e.course_name)}</td>
+      <td>${statusPill(e.status)}</td>
+    </tr>
+  `).join('');
+}
+
+/* ============= ENROLLMENTS ============= */
+function renderEnrollments() {
+  const statusFilter = $('#filterStatus').value;
+  const courseFilter = $('#filterCourse').value;
+  const search = $('#filterSearch').value.trim().toLowerCase();
+
+  let filtered = allEnrollments;
+  if (statusFilter) filtered = filtered.filter(e => e.status === statusFilter);
+  if (courseFilter) filtered = filtered.filter(e => e.course_code === courseFilter);
+  if (search) filtered = filtered.filter(e =>
+    (e.student_name || '').toLowerCase().includes(search) ||
+    (e.fin || '').toLowerCase().includes(search) ||
+    (e.phone || '').toLowerCase().includes(search) ||
+    (e.email || '').toLowerCase().includes(search)
+  );
+
+  $('#enrollmentsSubtitle').textContent =
+    filtered.length === allEnrollments.length
+      ? `Cəmi ${allEnrollments.length} qeydiyyat`
+      : `${filtered.length} / ${allEnrollments.length} qeydiyyat göstərilir`;
+
+  const tbody = $('#enrollmentsTableBody');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <h3>Tapılmadı</h3><p>Filtrlərə uyğun qeydiyyat yoxdur.</p>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(e => {
+    const files = parseFiles(e.files);
+    const fileLinks = Object.entries(files).map(([key, url]) => `
+      <a class="file-link" href="${escapeHtml(url)}" target="_blank" rel="noopener" data-tooltip="${escapeHtml(fileIcon(key))}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </a>
+    `).join('');
+
+    return `
+      <tr>
+        <td class="cell-id">#${e.id}</td>
+        <td style="white-space:nowrap">${formatDate(e.created_at)}</td>
+        <td class="cell-name"><a href="#" onclick="showDetail(${e.id});return false">${escapeHtml(e.student_name)}</a></td>
+        <td><code style="font-size:12px">${escapeHtml(e.fin || '—')}</code></td>
+        <td>${escapeHtml(e.phone || '—')}</td>
+        <td>${escapeHtml(e.email || '—')}</td>
+        <td>${escapeHtml(e.course_name)}</td>
+        <td>
+          <select class="status-select" data-id="${e.id}" onchange="updateStatus(${e.id}, this.value)">
+            <option value="pending"   ${e.status==='pending'?'selected':''}>Gözləyir</option>
+            <option value="contacted" ${e.status==='contacted'?'selected':''}>Əlaqə saxlanılıb</option>
+            <option value="approved"  ${e.status==='approved'?'selected':''}>Təsdiqlənib</option>
+            <option value="rejected"  ${e.status==='rejected'?'selected':''}>Rədd edilib</option>
+          </select>
+        </td>
+        <td class="cell-files">${fileLinks || '<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ============= STATUS UPDATE ============= */
+async function updateStatus(id, status) {
+  try {
+    await apiPatch(`/enrollments/${id}/status`, { status });
+    const item = allEnrollments.find(e => e.id === id);
+    if (item) item.status = status;
+    renderDashboard();
+    renderEnrollments();
+    showToast(`#${id} statusu yeniləndi: ${statusLabel(status)}`, 'success');
+  } catch (err) {
+    showToast('Status yenilənmədi: ' + err.message, 'error');
+    loadEnrollments(); // səhv olduqda yenidən yüklə
+  }
+}
+
+/* ============= COURSES ============= */
+function renderCourses() {
+  $('#navCoursesCount').textContent = allCourses.length;
+
+  // Filter dropdown
+  const select = $('#filterCourse');
+  const currentVal = select.value;
+  select.innerHTML = '<option value="">Bütün kurslar</option>' +
+    allCourses.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name || c.code)}${c.level ? ' · ' + escapeHtml(c.level) : ''}</option>`).join('');
+  select.value = currentVal;
+
+  const grid = $('#coursesGrid');
+  if (allCourses.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <h3>Kurs yoxdur</h3><p>Bazada heç bir aktiv kurs tapılmadı.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = allCourses.map(c => `
+    <div class="course-card">
+      <div class="course-card__head">
+        <span class="course-card__code">${escapeHtml(c.code || '—')}</span>
+        <span class="course-card__level">${escapeHtml(c.level || '')}</span>
+      </div>
+      <h3>${escapeHtml(c.name || '—')}</h3>
+      <p class="course-card__sub">${escapeHtml(c.stcw || '')}${c.subtitle ? ' · ' + escapeHtml(c.subtitle) : ''}</p>
+      <dl class="course-card__meta">
+        <div><dt>Müddət</dt><dd>${c.duration_weeks ? c.duration_weeks + ' həftə' : '—'}</dd></div>
+        <div><dt>Saat</dt><dd>${c.hours || '—'}</dd></div>
+        <div><dt>Qeydiyyat</dt><dd>${countEnrollmentsForCourse(c.code)}</dd></div>
+      </dl>
+      <div class="course-card__price">
+        <span class="course-card__price-val">${c.price != null ? c.price : '—'}</span>
+        <span class="course-card__price-cur">${escapeHtml(c.currency || 'AZN')}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function countEnrollmentsForCourse(code) {
+  return allEnrollments.filter(e => e.course_code === code).length;
+}
+
+/* ============= DETAIL MODAL ============= */
+function showDetail(id) {
+  const e = allEnrollments.find(x => x.id === id);
+  if (!e) return;
+
+  const files = parseFiles(e.files);
+  const fileLinks = Object.entries(files).map(([key, url]) =>
+    `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      ${escapeHtml(fileIcon(key))}
+    </a>`
+  ).join('');
+
+  $('#modalTitle').textContent = `Qeydiyyat #${e.id}`;
+  $('#modalBody').innerHTML = `
+    <div class="modal__row"><dt>Tarix</dt><dd>${formatDate(e.created_at)}</dd></div>
+    <div class="modal__row"><dt>Ad-Soyad</dt><dd>${escapeHtml(e.student_name)}</dd></div>
+    <div class="modal__row"><dt>FIN</dt><dd><code>${escapeHtml(e.fin || '—')}</code></dd></div>
+    <div class="modal__row"><dt>Telefon</dt><dd><a href="tel:${escapeHtml(e.phone || '')}">${escapeHtml(e.phone || '—')}</a></dd></div>
+    <div class="modal__row"><dt>Email</dt><dd><a href="mailto:${escapeHtml(e.email || '')}">${escapeHtml(e.email || '—')}</a></dd></div>
+    <div class="modal__row"><dt>Kurs</dt><dd>${escapeHtml(e.course_name)} <small style="color:var(--muted)">(${escapeHtml(e.course_code || '')})</small></dd></div>
+    <div class="modal__row"><dt>Status</dt><dd>${statusPill(e.status)}</dd></div>
+    <div class="modal__row"><dt>Sənədlər</dt><dd><div class="modal__files">${fileLinks || '<span style="color:var(--muted)">Sənəd yoxdur</span>'}</div></dd></div>
+  `;
+  $('#detailModal').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+
 function closeModal() {
-  const modal = $('#modal');
-  modal.classList.remove('is-open');
-  modal.innerHTML = '';
+  $('#detailModal').classList.remove('is-open');
   document.body.style.overflow = '';
 }
+
+$('#detailModal').addEventListener('click', e => {
+  if (e.target.id === 'detailModal') closeModal();
+});
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && $('#modal').classList.contains('is-open')) closeModal();
+  if (e.key === 'Escape' && $('#detailModal').classList.contains('is-open')) closeModal();
 });
 
-function confirmAction({ title, msg, confirmText = 'Təsdiq et', kind = 'danger', onConfirm }) {
-  const iconClass = kind === 'danger' ? '' : kind === 'warn' ? 'confirm-icon--warn' : 'confirm-icon--info';
-  const btnClass = kind === 'danger' ? 'btn-danger' : 'btn-primary';
-  const iconSvg = kind === 'danger'
-    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>'
-    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>';
+/* ============= HEALTH ============= */
+async function checkHealth() {
+  $('#healthApi').innerHTML = '<span class="loader"></span>';
+  $('#healthDb').innerHTML = '<span class="loader"></span>';
+  $('#healthCourses').innerHTML = '<span class="loader"></span>';
+  $('#healthStudents').innerHTML = '<span class="loader"></span>';
 
-  openModal({
-    title, size: 'narrow',
-    body: `<div class="confirm-icon ${iconClass}">${iconSvg}</div><p style="margin:0;color:var(--ink-soft)"></p>`,
-    footer: `<button class="btn btn-ghost" id="confirmCancel">Ləğv et</button><button class="btn ${btnClass}" id="confirmOk"></button>`,
-    onOpen: modal => {
-      setText(modal.querySelector('.modal__body p'), msg);
-      setText(modal.querySelector('#confirmOk'), confirmText);
-      modal.querySelector('#confirmCancel').addEventListener('click', closeModal);
-      modal.querySelector('#confirmOk').addEventListener('click', () => { closeModal(); onConfirm && onConfirm(); });
-    }
-  });
-}
+  try {
+    const h = await apiGet('/health');
+    $('#healthApi').innerHTML = statusPill('approved').replace(statusLabel('approved'),'İşləyir');
+    $('#healthDb').innerHTML = h.database === 'connected'
+      ? statusPill('approved').replace(statusLabel('approved'),'Qoşulub')
+      : statusPill('rejected').replace(statusLabel('rejected'), 'Xəta: ' + h.database);
 
-const AUTH_CONFIG = { SESSION_MIN: 30, MAX_ATTEMPTS: 5, LOCKOUT_MIN: 15 };
-
-const Auth = {
-  exists() { const a = DB.get(KEYS.AUTH); return !!(a && a.hash && a.salt); },
-  async setPassword(newPassword) {
-    const salt = randomHex(16);
-    const hash = await sha256Hex(newPassword + salt);
-    const existing = DB.get(KEYS.AUTH) || {};
-    DB.set(KEYS.AUTH, { hash, salt, failedAttempts: 0, lockoutUntil: 0, createdAt: existing.createdAt || Date.now(), passwordChangedAt: Date.now() });
-    audit('Şifrə yaradıldı və ya dəyişdirildi');
-  },
-  async verify(password) {
-    const auth = DB.get(KEYS.AUTH);
-    if (!auth) return false;
-    if (auth.lockoutUntil && Date.now() < auth.lockoutUntil) {
-      const remaining = Math.ceil((auth.lockoutUntil - Date.now()) / 60000);
-      throw new Error(`Çox sayda səhv cəhd. ${remaining} dəqiqədən sonra yenidən cəhd edin.`);
-    }
-    const hash = await sha256Hex(password + auth.salt);
-    if (hash === auth.hash) {
-      auth.failedAttempts = 0; auth.lockoutUntil = 0;
-      DB.set(KEYS.AUTH, auth);
-      return true;
-    } else {
-      auth.failedAttempts = (auth.failedAttempts || 0) + 1;
-      audit('Səhv giriş cəhdi', `Cəhd #${auth.failedAttempts}`);
-      if (auth.failedAttempts >= AUTH_CONFIG.MAX_ATTEMPTS) {
-        auth.lockoutUntil = Date.now() + AUTH_CONFIG.LOCKOUT_MIN * 60000;
-        auth.failedAttempts = 0;
-        audit('Hesab kilidləndi', `${AUTH_CONFIG.LOCKOUT_MIN} dəqiqə`);
-      }
-      DB.set(KEYS.AUTH, auth);
-      return false;
-    }
-  },
-  startSession() {
-    const token = randomHex(32);
-    const expires = Date.now() + AUTH_CONFIG.SESSION_MIN * 60000;
-    DB.set(KEYS.SESSION, { token, expires, startedAt: Date.now(), lastActivity: Date.now() });
-    audit('Sessiya başladıldı');
-    return token;
-  },
-  checkSession() {
-    const s = DB.get(KEYS.SESSION);
-    if (!s) return false;
-    if (Date.now() > s.expires) { DB.remove(KEYS.SESSION); return false; }
-    return true;
-  },
-  refreshSession() {
-    const s = DB.get(KEYS.SESSION);
-    if (!s) return;
-    s.expires = Date.now() + AUTH_CONFIG.SESSION_MIN * 60000;
-    s.lastActivity = Date.now();
-    DB.set(KEYS.SESSION, s);
-  },
-  endSession() { audit('Sessiya sona çatdı'); DB.remove(KEYS.SESSION); },
-  getSession() { return DB.get(KEYS.SESSION); },
-};
-
-const ROUTES = {
-  dashboard:    { title: 'Ana səhifə',         sub: 'Sistemin ümumi vəziyyəti və son hadisələr', render: renderDashboard },
-  courses:      { title: 'Kurslar',             sub: 'Kurs kataloqunun idarə edilməsi',          render: renderCourses },
-  registrations:{ title: 'Qeydiyyatlar',        sub: 'Bütün qeydiyyat ərizələri',                 render: renderRegistrations },
-  settings:     { title: 'Səhifə parametrləri', sub: 'İctimai səhifənin məzmunu',                  render: renderSettings },
-  audit:        { title: 'Audit jurnalı',       sub: 'Admin əməliyyatlarının tarixçəsi',           render: renderAudit },
-  security:     { title: 'Təhlükəsizlik',       sub: 'Şifrə və sessiya idarəetməsi',              render: renderSecurity },
-};
-
-function go(route) {
-  if (!ROUTES[route]) route = 'dashboard';
-  $$('#sideNav a').forEach(a => a.classList.toggle('is-active', a.dataset.route === route));
-  $$('section[id^="page-"]').forEach(s => s.hidden = s.id !== 'page-' + route);
-  setText($('#pageTitle'), ROUTES[route].title);
-  setText($('#pageSubtitle'), ROUTES[route].sub);
-  $('#sidebar').classList.remove('is-open');
-  $('#sidebarBackdrop').classList.remove('is-visible');
-  Auth.refreshSession();
-  updateSidebarCounts();
-  try { ROUTES[route].render(); } catch (e) { console.error('Render error:', e); }
-  $('.content').scrollIntoView({ behavior:'smooth', block:'start' });
-}
-
-$('#sideNav').addEventListener('click', e => {
-  const a = e.target.closest('a[data-route]');
-  if (!a) return;
-  e.preventDefault();
-  go(a.dataset.route);
-});
-document.addEventListener('click', e => {
-  const btn = e.target.closest('[data-go]');
-  if (btn) { e.preventDefault(); go(btn.dataset.go); }
-});
-
-function updateSidebarCounts() {
-  setText($('#cnt-courses'), DB.get(KEYS.COURSES, []).length);
-  setText($('#cnt-regs'), DB.get(KEYS.REGS, []).length);
-}
-
-function statusLabel(s) { return { pending:'Gözləyir', approved:'Təsdiqlənib', rejected:'Rədd edilib', contacted:'Əlaqə saxlanıldı' }[s] || s; }
-
-function renderDashboard() {
-  const courses = DB.get(KEYS.COURSES, []);
-  const regs = DB.get(KEYS.REGS, []);
-  const weekAgo = Date.now() - 7*86400000;
-  const recent = regs.filter(r => r.timestamp > weekAgo).length;
-  const pending = regs.filter(r => r.status === 'pending').length;
-  const approved = regs.filter(r => r.status === 'approved').length;
-
-  $('#dashStats').innerHTML = `
-    <div class="stat-card">
-      <div class="stat-card__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg> Ümumi qeydiyyat</div>
-      <div class="stat-card__value">${regs.length}</div>
-      <div class="stat-card__delta">+${recent} son 7 gündə</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Gözləyir</div>
-      <div class="stat-card__value">${pending}</div>
-      <div class="stat-card__delta">Yoxlama tələb edir</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Təsdiqlənib</div>
-      <div class="stat-card__value">${approved}</div>
-      <div class="stat-card__delta up">Kursa daxil olunub</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Aktiv kurs</div>
-      <div class="stat-card__value">${courses.filter(c => c.active).length}</div>
-      <div class="stat-card__delta">${courses.length} ümumi</div>
-    </div>
-  `;
-
-  const recentList = regs.slice().sort((a,b) => b.timestamp - a.timestamp).slice(0, 10);
-  if (recentList.length === 0) {
-    $('#dashRecent').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg><p>Hələ qeydiyyat yoxdur</p><small>İlk ərizə daxil olduqda burada görünəcək</small></div></td></tr></tbody></table>`;
-  } else {
-    $('#dashRecent').innerHTML = `<table class="tbl">
-        <thead><tr><th>№</th><th>Ad-Soyad</th><th>Kurs</th><th>Tarix</th><th>Status</th></tr></thead>
-        <tbody>${recentList.map(r => `
-          <tr>
-            <td class="col-num">${escapeHtml(r.id)}</td>
-            <td>${escapeHtml(r.fullname)}</td>
-            <td><span class="tag tag--primary">${escapeHtml(r.course)}</span></td>
-            <td class="text-muted">${escapeHtml(relTime(r.timestamp))}</td>
-            <td><span class="badge badge--${escapeHtml(r.status)}">${escapeHtml(statusLabel(r.status))}</span></td>
-          </tr>`).join('')}</tbody>
-      </table>`;
+    $('#apiHealthDot').style.background = 'var(--success)';
+    $('#apiHealthText').textContent = 'işləyir';
+  } catch (err) {
+    $('#healthApi').innerHTML = statusPill('rejected').replace(statusLabel('rejected'), 'Çatmır');
+    $('#healthDb').innerHTML = statusPill('rejected').replace(statusLabel('rejected'), '—');
+    $('#apiHealthDot').style.background = 'var(--danger)';
+    $('#apiHealthText').textContent = 'xəta';
   }
 
-  const counts = {};
-  courses.forEach(c => counts[c.id] = 0);
-  regs.forEach(r => {
-    const c = courses.find(x => x.name + ' (' + x.level + ')' === r.course);
-    if (c) counts[c.id] = (counts[c.id] || 0) + 1;
-  });
-  const max = Math.max(1, ...Object.values(counts));
-  if (courses.length === 0) {
-    $('#dashChart').innerHTML = '<div class="empty-state">Kurslar əlavə edilməyib</div>';
-  } else {
-    $('#dashChart').innerHTML = courses.map(c => {
-      const count = counts[c.id] || 0;
-      const pct = (count / max) * 100;
-      return `
-        <div style="margin-bottom:14px">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
-            <span style="font-size:13px;font-weight:600">${escapeHtml(c.name)}</span>
-            <span style="font-family:Fraunces,serif;font-size:15px;color:var(--primary);font-weight:600">${count}</span>
-          </div>
-          <div style="height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden">
-            <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;transition:width .5s"></div>
-          </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px">${escapeHtml(c.level)}</div>
-        </div>`;
-    }).join('');
+  try {
+    const c = await apiGet('/courses');
+    $('#healthCourses').innerHTML = statusPill('approved').replace(statusLabel('approved'), `${c.length} kurs`);
+  } catch (err) {
+    $('#healthCourses').innerHTML = statusPill('rejected').replace(statusLabel('rejected'), 'Xəta');
+  }
+
+  try {
+    const s = await apiGet('/students');
+    $('#healthStudents').innerHTML = statusPill('approved').replace(statusLabel('approved'), `${s.length} qeydiyyat`);
+  } catch (err) {
+    $('#healthStudents').innerHTML = statusPill('rejected').replace(statusLabel('rejected'), 'Xəta');
   }
 }
 
-function renderCourses() {
-  const courses = DB.get(KEYS.COURSES, []).slice().sort((a,b) => (a.order||0) - (b.order||0));
-
-  if (courses.length === 0) {
-    $('#coursesTable').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>Hələ kurs əlavə edilməyib</p><small>"Yeni kurs əlavə et" düyməsindən istifadə edin</small></div></td></tr></tbody></table>`;
-    return;
+/* ============= LOADERS ============= */
+async function loadEnrollments() {
+  try {
+    allEnrollments = await apiGet('/students');
+    renderDashboard();
+    renderEnrollments();
+  } catch (err) {
+    showToast('Qeydiyyatlar yüklənmədi: ' + err.message, 'error');
+    $('#enrollmentsTableBody').innerHTML = `<tr><td colspan="9"><div class="empty-state">
+      <h3>Xəta</h3><p>${escapeHtml(err.message)}</p>
+    </div></td></tr>`;
   }
-
-  $('#coursesTable').innerHTML = `
-    <table class="tbl">
-      <thead>
-        <tr>
-          <th style="width:50px">№</th>
-          <th>Kursun adı</th>
-          <th>Səviyyə</th>
-          <th>STCW</th>
-          <th>Müddət</th>
-          <th>Qiymət</th>
-          <th>Status</th>
-          <th class="col-actions">Əməliyyatlar</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${courses.map((c, idx) => `
-          <tr data-id="${escapeHtml(c.id)}">
-            <td class="col-num">${idx + 1}</td>
-            <td>
-              <div style="font-weight:600">${escapeHtml(c.name)}</div>
-              <div style="font-size:12px;color:var(--muted);margin-top:2px">${escapeHtml(c.subtitle || '')}</div>
-            </td>
-            <td><span class="tag tag--accent">${escapeHtml(c.level)}</span></td>
-            <td class="text-mono">${escapeHtml(c.stcw || '—')}</td>
-            <td>${escapeHtml(c.duration || '—')} · ${escapeHtml(String(c.hours || 0))} saat</td>
-            <td style="font-weight:600;font-family:Fraunces,serif;color:var(--primary)">${escapeHtml(String(c.price))} ${escapeHtml(c.currency)}</td>
-            <td><span class="badge badge--${c.active ? 'active' : 'inactive'}">${c.active ? 'Aktiv' : 'Deaktiv'}</span></td>
-            <td class="col-actions">
-              <div class="row-actions">
-                <button class="icon-btn icon-btn--primary" data-action="move-up" data-id="${escapeHtml(c.id)}" title="Yuxarı" ${idx === 0 ? 'disabled style="opacity:.3"' : ''}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-                </button>
-                <button class="icon-btn icon-btn--primary" data-action="move-down" data-id="${escapeHtml(c.id)}" title="Aşağı" ${idx === courses.length - 1 ? 'disabled style="opacity:.3"' : ''}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <button class="icon-btn ${c.active ? 'icon-btn--success' : 'icon-btn--primary'}" data-action="toggle" data-id="${escapeHtml(c.id)}" title="${c.active ? 'Deaktiv et' : 'Aktiv et'}">
-                  ${c.active
-                    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>'
-                    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg>'}
-                </button>
-                <button class="icon-btn icon-btn--primary" data-action="edit" data-id="${escapeHtml(c.id)}" title="Redaktə et">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-                <button class="icon-btn icon-btn--danger" data-action="delete" data-id="${escapeHtml(c.id)}" title="Sil">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-                </button>
-              </div>
-            </td>
-          </tr>`).join('')}
-      </tbody>
-    </table>`;
-
-  $$('#coursesTable [data-action]').forEach(btn => {
-    btn.addEventListener('click', () => courseAction(btn.dataset.action, btn.dataset.id));
-  });
 }
 
-function courseAction(action, id) {
-  const courses = DB.get(KEYS.COURSES, []);
-  const idx = courses.findIndex(c => c.id === id);
-  if (idx === -1) return;
-  const course = courses[idx];
-
-  if (action === 'edit') {
-    openCourseModal(course);
-  } else if (action === 'delete') {
-    confirmAction({
-      title: 'Kursu sil',
-      msg: `"${course.name} (${course.level})" kursunu silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.`,
-      confirmText: 'Bəli, sil',
-      onConfirm: () => {
-        DB.set(KEYS.COURSES, courses.filter(c => c.id !== id));
-        audit('Kurs silindi', `${course.name} (${course.level})`);
-        toast({ kind:'success', title:'Silindi', msg:`"${course.name}" silindi.` });
-        renderCourses();
-        updateSidebarCounts();
-      }
-    });
-  } else if (action === 'toggle') {
-    course.active = !course.active;
-    courses[idx] = course;
-    DB.set(KEYS.COURSES, courses);
-    audit('Kurs statusu dəyişdirildi', `${course.name}: ${course.active ? 'aktiv' : 'deaktiv'}`);
-    toast({ kind:'success', title:'Status dəyişdi', msg:`"${course.name}" ${course.active ? 'aktivləşdirildi' : 'deaktivləşdirildi'}.` });
+async function loadCourses() {
+  try {
+    allCourses = await apiGet('/courses');
     renderCourses();
-  } else if (action === 'move-up' || action === 'move-down') {
-    const sorted = courses.slice().sort((a,b) => (a.order||0) - (b.order||0));
-    const sIdx = sorted.findIndex(c => c.id === id);
-    const swapWith = action === 'move-up' ? sIdx - 1 : sIdx + 1;
-    if (swapWith < 0 || swapWith >= sorted.length) return;
-    [sorted[sIdx].order, sorted[swapWith].order] = [sorted[swapWith].order, sorted[sIdx].order];
-    DB.set(KEYS.COURSES, sorted);
-    renderCourses();
-  }
-}
-
-function openCourseModal(course) {
-  const isEdit = !!course;
-  course = course || { id:'', name:'', level:'İdarəetmə səviyyəsi', stcw:'', subtitle:'', duration:'', hours:0, price:0, currency:'AZN', priceNote:'', topics:[''], active:true, order:0 };
-
-  const body = `
-    <form id="courseForm">
-      <div class="form-row">
-        <div class="form-field">
-          <label>Kurs ID <span class="req">*</span></label>
-          <input type="text" name="id" value="${escapeHtml(course.id)}" pattern="[a-z0-9_-]+" required ${isEdit ? 'readonly' : ''}>
-          <span class="hint">Kiçik hərflər, rəqəm, tire</span>
-        </div>
-        <div class="form-field">
-          <label>STCW istinadı</label>
-          <input type="text" name="stcw" value="${escapeHtml(course.stcw)}" placeholder="A-II/2">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>Kursun adı <span class="req">*</span></label>
-          <input type="text" name="name" value="${escapeHtml(course.name)}" required>
-        </div>
-        <div class="form-field">
-          <label>Səviyyə <span class="req">*</span></label>
-          <select name="level" required>
-            <option value="İdarəetmə səviyyəsi" ${course.level === 'İdarəetmə səviyyəsi' ? 'selected' : ''}>İdarəetmə səviyyəsi</option>
-            <option value="İstismar səviyyəsi" ${course.level === 'İstismar səviyyəsi' ? 'selected' : ''}>İstismar səviyyəsi</option>
-            <option value="Köməkçi səviyyə" ${course.level === 'Köməkçi səviyyə' ? 'selected' : ''}>Köməkçi səviyyə</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row form-row--full">
-        <div class="form-field">
-          <label>Alt başlıq</label>
-          <input type="text" name="subtitle" value="${escapeHtml(course.subtitle)}" placeholder="Kim üçün olduğunu qeyd edin">
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
-        <div class="form-field">
-          <label>Müddət</label>
-          <input type="text" name="duration" value="${escapeHtml(course.duration)}" placeholder="4 həftə">
-        </div>
-        <div class="form-field">
-          <label>Saat <span class="req">*</span></label>
-          <input type="number" name="hours" value="${escapeHtml(course.hours)}" min="0" required>
-        </div>
-        <div class="form-field">
-          <label>Qiymət <span class="req">*</span></label>
-          <input type="number" name="price" value="${escapeHtml(course.price)}" min="0" step="0.01" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>Valyuta</label>
-          <select name="currency">
-            <option value="AZN" ${course.currency === 'AZN' ? 'selected' : ''}>AZN</option>
-            <option value="USD" ${course.currency === 'USD' ? 'selected' : ''}>USD</option>
-            <option value="EUR" ${course.currency === 'EUR' ? 'selected' : ''}>EUR</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label>Qiymət qeydi</label>
-          <input type="text" name="priceNote" value="${escapeHtml(course.priceNote)}" placeholder="Məs.: simulyator daxil">
-        </div>
-      </div>
-      <div class="form-row form-row--full">
-        <div class="form-field">
-          <label>Mövzular (sətir-sətir)</label>
-          <div class="topics-editor" id="topicsEditor"></div>
-          <button type="button" class="btn btn-ghost btn-sm" id="addTopicBtn" style="align-self:flex-start;margin-top:6px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Mövzu əlavə et
-          </button>
-        </div>
-      </div>
-      <label class="checkbox-row" style="margin-top:6px">
-        <input type="checkbox" name="active" ${course.active ? 'checked' : ''}>
-        <span>İctimai səhifədə aktiv olaraq göstər</span>
-      </label>
-    </form>`;
-
-  const footer = `
-    <button class="btn btn-ghost" id="cancelCourse">Ləğv et</button>
-    <button class="btn btn-primary" id="saveCourse">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-      ${isEdit ? 'Dəyişiklikləri yadda saxla' : 'Kursu yarat'}
-    </button>`;
-
-  openModal({
-    title: isEdit ? 'Kursu redaktə et' : 'Yeni kurs əlavə et',
-    subtitle: isEdit ? 'Mövcud kurs məlumatlarını yeniləyin' : 'Bütün məlumatları doldurun',
-    body, footer, size: 'wide',
-    onOpen: modal => {
-      const topicsEd = modal.querySelector('#topicsEditor');
-      const topics = (course.topics && course.topics.length) ? course.topics.slice() : [''];
-      const renderTopics = () => {
-        topicsEd.innerHTML = topics.map((t, i) => `
-          <div class="topic-row">
-            <input type="text" value="${escapeHtml(t)}" data-topic-idx="${i}" placeholder="Mövzu adı">
-            <button type="button" class="icon-btn icon-btn--danger" data-remove-topic="${i}" ${topics.length === 1 ? 'disabled style="opacity:.3"' : ''}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>`).join('');
-        topicsEd.querySelectorAll('[data-remove-topic]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            if (topics.length <= 1) return;
-            topics.splice(Number(btn.dataset.removeTopic), 1);
-            renderTopics();
-          });
-        });
-        topicsEd.querySelectorAll('[data-topic-idx]').forEach(inp => {
-          inp.addEventListener('input', () => { topics[Number(inp.dataset.topicIdx)] = inp.value; });
-        });
-      };
-      renderTopics();
-
-      modal.querySelector('#addTopicBtn').addEventListener('click', () => { topics.push(''); renderTopics(); });
-      modal.querySelector('#cancelCourse').addEventListener('click', closeModal);
-      modal.querySelector('#saveCourse').addEventListener('click', () => {
-        const form = modal.querySelector('#courseForm');
-        const data = new FormData(form);
-        const id = String(data.get('id') || '').trim();
-        if (!id || !/^[a-z0-9_-]+$/.test(id)) {
-          toast({ kind:'danger', title:'Səhv', msg:'Kurs ID düzgün formatda olmalıdır (kiçik hərflər, rəqəm, tire).' });
-          return;
-        }
-        const all = DB.get(KEYS.COURSES, []);
-        if (!isEdit && all.some(c => c.id === id)) {
-          toast({ kind:'danger', title:'Səhv', msg:'Bu ID ilə kurs artıq mövcuddur.' });
-          return;
-        }
-        const filtered = topics.map(t => String(t).trim()).filter(Boolean);
-        if (filtered.length === 0) {
-          toast({ kind:'danger', title:'Səhv', msg:'Ən az bir mövzu daxil edin.' });
-          return;
-        }
-
-        const updated = {
-          id,
-          name: String(data.get('name') || '').trim(),
-          level: String(data.get('level') || '').trim(),
-          stcw: String(data.get('stcw') || '').trim(),
-          subtitle: String(data.get('subtitle') || '').trim(),
-          duration: String(data.get('duration') || '').trim(),
-          hours: Number(data.get('hours') || 0),
-          price: Number(data.get('price') || 0),
-          currency: String(data.get('currency') || 'AZN'),
-          priceNote: String(data.get('priceNote') || '').trim(),
-          topics: filtered,
-          active: !!data.get('active'),
-          order: isEdit ? course.order : (Math.max(0, ...all.map(c => c.order || 0)) + 1),
-        };
-
-        if (isEdit) {
-          all[all.findIndex(c => c.id === id)] = updated;
-          audit('Kurs redaktə edildi', updated.name + ' (' + updated.level + ')');
-          toast({ kind:'success', title:'Yeniləndi', msg:`"${updated.name}" yeniləndi.` });
-        } else {
-          all.push(updated);
-          audit('Yeni kurs əlavə edildi', updated.name + ' (' + updated.level + ')');
-          toast({ kind:'success', title:'Yaradıldı', msg:`"${updated.name}" əlavə edildi.` });
-        }
-        DB.set(KEYS.COURSES, all);
-        closeModal();
-        renderCourses();
-        updateSidebarCounts();
-      });
-    }
-  });
-}
-
-$('#addCourseBtn').addEventListener('click', () => openCourseModal(null));
-
-let regFilters = { q: '', status: '' };
-
-let backendRegsCache = [];
-
-async function renderRegistrations() {
-  $('#regsTable').innerHTML = `<div style="padding:32px;text-align:center;color:var(--muted)">Yüklənir…</div>`;
-  const data = await fetchBackendStudents();
-  if (data) {
-    backendRegsCache = data;
-    // populate course filter
-    const select = $('#regCourseFilter');
-    const cur = select.value;
-    const courses = [...new Set(data.map(r => r.course_name).filter(Boolean))];
-    select.innerHTML = '<option value="">Bütün kurslar</option>' +
-      courses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    select.value = cur;
-  }
-  applyBackendFilters();
-}
-
-function applyBackendFilters() {
-  let list = backendRegsCache.slice();
-  if (regFilters.status) list = list.filter(r => r.status === regFilters.status);
-  if (regFilters.course) list = list.filter(r => r.course_name === regFilters.course);
-  if (regFilters.q) {
-    const q = regFilters.q.toLowerCase();
-    list = list.filter(r => [r.id, r.student_name, r.fin, r.phone, r.email, r.course_name, r.course_code]
-      .map(v => String(v == null ? '' : v)).join(' ').toLowerCase().includes(q));
-  }
-  renderBackendRegsList(list);
-}
-
-function renderBackendRegsList(regs) {
-  if (!Array.isArray(regs) || regs.length === 0) {
-    const msg = backendRegsCache.length > 0 ? 'Filtrə uyğun nəticə yoxdur' : 'Hələ qeydiyyat yoxdur';
-    const sub = backendRegsCache.length > 0 ? 'Filtrləri dəyişməyə cəhd edin' : 'İctimai formada qeydiyyat olunduqda burada görünəcək';
-    $('#regsTable').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg><p>${msg}</p><small>${sub}</small></div></td></tr></tbody></table>`;
-    return;
-  }
-
-  $('#regsTable').innerHTML = `
-    <table class="tbl">
-      <thead>
-        <tr>
-          <th>№</th>
-          <th>Tarix</th>
-          <th>Ad-Soyad</th>
-          <th>FİN</th>
-          <th>Əlaqə</th>
-          <th>Kurs</th>
-          <th>Status</th>
-          <th>Sənədlər</th>
-          <th class="col-actions">Status dəyiş</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${regs.map(r => `
-          <tr data-reg-id="${escapeHtml(String(r.id))}">
-            <td class="col-num">${escapeHtml(String(r.id))}</td>
-            <td class="text-muted" style="white-space:nowrap;font-size:12px">${escapeHtml(r.created_at ? new Date(r.created_at).toLocaleString('az-AZ',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—')}</td>
-            <td><strong>${escapeHtml(r.student_name || '—')}</strong></td>
-            <td class="text-mono" style="font-size:12.5px">${escapeHtml(r.fin || '—')}</td>
-            <td>
-              <div style="font-size:12.5px">${escapeHtml(r.phone || '—')}</div>
-              <div style="font-size:12px;color:var(--muted)">${escapeHtml(r.email || '—')}</div>
-            </td>
-            <td>
-              <span class="tag tag--primary">${escapeHtml(r.course_name || '—')}</span>
-              <div style="font-size:11px;color:var(--muted);margin-top:3px">${escapeHtml(r.course_code || '')}</div>
-            </td>
-            <td><span class="badge badge--${escapeHtml(r.status || 'pending')}">${escapeHtml(statusLabel(r.status || 'pending'))}</span></td>
-            <td>${renderFileLinks(r.files || {})}</td>
-            <td class="col-actions">
-              <select class="status-select" data-reg-id="${escapeHtml(String(r.id))}" style="padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:12.5px;background:var(--surface)">
-                <option value="pending"   ${r.status==='pending'   ?'selected':''}>Gözləyir</option>
-                <option value="approved"  ${r.status==='approved'  ?'selected':''}>Təsdiqlənib</option>
-                <option value="rejected"  ${r.status==='rejected'  ?'selected':''}>Rədd edilib</option>
-                <option value="contacted" ${r.status==='contacted' ?'selected':''}>Əlaqə saxlanıldı</option>
-              </select>
-            </td>
-          </tr>`).join('')}
-      </tbody>
-    </table>`;
-
-  $$('#regsTable .status-select').forEach(sel => {
-    sel.addEventListener('change', async () => {
-      const id = Number(sel.dataset.regId);
-      const newStatus = sel.value;
-      sel.disabled = true;
-      try {
-        await updateEnrollmentStatus(id, newStatus);
-        const rec = backendRegsCache.find(r => r.id === id);
-        if (rec) rec.status = newStatus;
-        const badge = sel.closest('tr').querySelector('.badge');
-        if (badge) {
-          badge.className = `badge badge--${newStatus}`;
-          badge.textContent = statusLabel(newStatus);
-        }
-        toast({ kind:'success', title:'Status dəyişdi', msg:`#${id} → ${statusLabel(newStatus)}` });
-      } catch (err) {
-        toast({ kind:'danger', title:'Xəta', msg: err.message });
-        sel.value = backendRegsCache.find(r => r.id === id)?.status || 'pending';
-      } finally {
-        sel.disabled = false;
-      }
-    });
-  });
-}
-
-function renderFileLinks(files) {
-  const entries = Object.entries(files || {}).filter(([, url]) => url && url.startsWith('http'));
-  if (entries.length === 0) return '<span style="color:var(--muted);font-size:12px">—</span>';
-  const labels = { id_file:'Şəxs.', diploma_file:'Diplom', work_file:'İş dip.', medical_file:'Tibbi', application_file:'Ərizə', receipt_file:'Çek' };
-  return entries.map(([key, url]) =>
-    `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:11px;margin:2px 2px 2px 0">${escapeHtml(labels[key] || key)}</a>`
-  ).join('');
-}
-
-async function updateEnrollmentStatus(id, status) {
-  const res = await fetch(`/api/enrollments/${id}/status`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status }),
-  });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.detail || `HTTP ${res.status}`);
-  }
-  return res.json();
-}
-
-function showFilesModal(files, studentName) {
-  const labels = { id_file:'Şəxsiyyət vəsiqəsi', diploma_file:'Diplom', work_file:'İşçi diplomu', medical_file:'Tibbi kitabça', application_file:'Ərizə', receipt_file:'Ödəniş çeki' };
-  const entries = Object.entries(files || {}).filter(([, url]) => url);
-  const fileList = entries.map(([key, url]) => {
-    const label = labels[key] || key;
-    const isBlob = url.startsWith('http');
-    return `
-      <div style="margin-bottom:12px;padding:10px;background:var(--surface-2);border-radius:6px;display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <div style="display:flex;align-items:center;gap:8px;min-width:0">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;color:var(--primary);flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <span style="font-size:13px;color:var(--ink);word-break:break-all">${escapeHtml(label)}</span>
-        </div>
-        ${isBlob
-          ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Aç</a>`
-          : `<span style="font-size:12px;color:var(--muted)">URL yoxdur</span>`}
-      </div>`;
-  }).join('');
-
-  openModal({
-    title: 'Sənədlər',
-    subtitle: `${escapeHtml(studentName)} tərəfindən yüklənən fayllar`,
-    body: fileList.length > 0
-      ? `<div style="max-height:400px;overflow-y:auto">${fileList}</div>`
-      : '<p style="text-align:center;color:var(--muted);padding:20px">Fayl yüklənməyib</p>',
-    footer: '<button class="btn btn-ghost" id="closeFilesModal">Bağla</button>',
-    onOpen: modal => {
-      modal.querySelector('#closeFilesModal').addEventListener('click', closeModal);
-    }
-  });
-}
-
-async function fetchBackendStudents() {
-  try {
-    const response = await fetch('/api/students');
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    if (!Array.isArray(data)) throw new Error('Serverdən düzgün cavab alınmadı.');
-    return data;
   } catch (err) {
-    console.warn('Backend student fetch failed:', err);
-    toast({ kind:'danger', title:'Bağlantı xətası', msg:'Serverdən məlumat yüklənmədi: ' + err.message });
-    return null;
+    showToast('Kurslar yüklənmədi: ' + err.message, 'error');
+    $('#coursesGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <h3>Xəta</h3><p>${escapeHtml(err.message)}</p>
+    </div>`;
   }
 }
 
-function renderRegsList() {
-  const regs = DB.get(KEYS.REGS, []).slice().sort((a,b) => b.timestamp - a.timestamp);
-  const filtered = regs.filter(r => {
-    if (regFilters.status && r.status !== regFilters.status) return false;
-    if (regFilters.course && r.course !== regFilters.course) return false;
-    if (regFilters.q) {
-      const q = regFilters.q.toLowerCase();
-      const hay = [r.id, r.fullname, r.fin, r.phone, r.email].map(String).join(' ').toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
+/* ============= ESCAPE ============= */
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ============= AUTH ============= */
+async function checkAuth() {
+  try {
+    const me = await apiGet('/auth/me');
+    document.getElementById('userName').textContent = me.name || me.email;
+    document.getElementById('userEmail').textContent = me.email;
+    document.getElementById('userBox').style.display = 'block';
     return true;
-  });
-
-  if (filtered.length === 0) {
-    $('#regsTable').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg><p>${regs.length === 0 ? 'Hələ qeydiyyat yoxdur' : 'Filtrə uyğun nəticə yoxdur'}</p><small>${regs.length === 0 ? 'İctimai formada qeydiyyat olunduqda burada görünəcək' : 'Filtrləri dəyişməyə cəhd edin'}</small></div></td></tr></tbody></table>`;
-    return;
-  }
-
-  $('#regsTable').innerHTML = `
-    <table class="tbl">
-      <thead>
-        <tr>
-          <th>№</th>
-          <th>Tarix</th>
-          <th>Ad-Soyad</th>
-          <th>FİN</th>
-          <th>Əlaqə</th>
-          <th>Kurs</th>
-          <th>Status</th>
-          <th class="col-actions">Əməliyyatlar</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${filtered.map(r => `
-          <tr>
-            <td class="col-num">${escapeHtml(r.id)}</td>
-            <td>${escapeHtml(fmtDateTime(r.timestamp))}</td>
-            <td><strong>${escapeHtml(r.fullname)}</strong></td>
-            <td class="text-mono">${escapeHtml(r.fin)}</td>
-            <td>
-              <div style="font-size:12.5px">${escapeHtml(r.phone)}</div>
-              <div style="font-size:12px;color:var(--muted)">${escapeHtml(r.email)}</div>
-            </td>
-            <td><span class="tag tag--primary">${escapeHtml(r.course)}</span></td>
-            <td><span class="badge badge--${escapeHtml(r.status)}">${escapeHtml(statusLabel(r.status))}</span></td>
-            <td class="col-actions">
-              <div class="row-actions">
-                <button class="icon-btn icon-btn--primary" data-reg-action="view" data-id="${escapeHtml(r.id)}" title="Bax">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
-                ${r.status !== 'approved' ? `<button class="icon-btn icon-btn--success" data-reg-action="approve" data-id="${escapeHtml(r.id)}" title="Təsdiqlə">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>` : ''}
-                ${r.status !== 'rejected' ? `<button class="icon-btn icon-btn--danger" data-reg-action="reject" data-id="${escapeHtml(r.id)}" title="Rədd et">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>` : ''}
-                <button class="icon-btn icon-btn--danger" data-reg-action="delete" data-id="${escapeHtml(r.id)}" title="Sil">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-                </button>
-              </div>
-            </td>
-          </tr>`).join('')}
-      </tbody>
-    </table>`;
-
-  $$('#regsTable [data-reg-action]').forEach(btn => {
-    btn.addEventListener('click', () => regAction(btn.dataset.regAction, btn.dataset.id));
-  });
-}
-
-function regAction(action, id) {
-  const regs = DB.get(KEYS.REGS, []);
-  const idx = regs.findIndex(r => r.id === id);
-  if (idx === -1) return;
-  const r = regs[idx];
-
-  if (action === 'view') {
-    openModal({
-      title: 'Qeydiyyat #' + r.id,
-      subtitle: 'Daxil olma: ' + fmtDateTime(r.timestamp),
-      body: `
-        <dl class="detail-grid">
-          <dt>Qeydiyyat №</dt><dd class="text-mono">${escapeHtml(r.id)}</dd>
-          <dt>Daxil olma</dt><dd>${escapeHtml(fmtDateTime(r.timestamp))}</dd>
-          <dt>Ad-Soyad</dt><dd><strong>${escapeHtml(r.fullname)}</strong></dd>
-          <dt>FİN</dt><dd class="text-mono">${escapeHtml(r.fin)}</dd>
-          <dt>Telefon</dt><dd>${escapeHtml(r.phone)}</dd>
-          <dt>Email</dt><dd>${escapeHtml(r.email)}</dd>
-          <dt>Seçilən kurs</dt><dd><span class="tag tag--primary">${escapeHtml(r.course)}</span></dd>
-          <dt>Status</dt><dd><span class="badge badge--${escapeHtml(r.status)}">${escapeHtml(statusLabel(r.status))}</span></dd>
-          ${r.note ? `<dt>Qeyd</dt><dd>${escapeHtml(r.note)}</dd>` : ''}
-          ${r.files && r.files.length ? `<dt>Sənədlər</dt><dd>${r.files.map(f => `<div style="font-size:13px;margin-bottom:2px">📄 ${escapeHtml(f)}</div>`).join('')}</dd>` : ''}
-        </dl>
-        <div class="form-field">
-          <label>Status</label>
-          <select id="changeStatus">
-            <option value="pending" ${r.status === 'pending' ? 'selected' : ''}>Gözləyir</option>
-            <option value="approved" ${r.status === 'approved' ? 'selected' : ''}>Təsdiqlənib</option>
-            <option value="rejected" ${r.status === 'rejected' ? 'selected' : ''}>Rədd edilib</option>
-          </select>
-        </div>
-        <div class="form-field" style="margin-top:10px">
-          <label>Daxili qeyd</label>
-          <textarea id="changeNote" rows="3" placeholder="(istəyə bağlı)">${escapeHtml(r.note || '')}</textarea>
-        </div>`,
-      footer: `
-        <button class="btn btn-ghost" id="cancelReg">Bağla</button>
-        <button class="btn btn-primary" id="saveReg">Yadda saxla</button>`,
-      onOpen: modal => {
-        modal.querySelector('#cancelReg').addEventListener('click', closeModal);
-        modal.querySelector('#saveReg').addEventListener('click', () => {
-          const newStatus = modal.querySelector('#changeStatus').value;
-          const newNote = modal.querySelector('#changeNote').value;
-          const wasStatus = r.status;
-          r.status = newStatus;
-          r.note = newNote;
-          regs[idx] = r;
-          DB.set(KEYS.REGS, regs);
-          if (wasStatus !== newStatus) audit('Qeydiyyat statusu dəyişdirildi', `${r.id}: ${wasStatus} → ${newStatus}`);
-          toast({ kind:'success', title:'Yeniləndi', msg:`#${r.id} yadda saxlanıldı.` });
-          closeModal();
-          renderRegsList();
-        });
-      }
-    });
-  } else if (action === 'approve' || action === 'reject') {
-    const newStatus = action === 'approve' ? 'approved' : 'rejected';
-    r.status = newStatus;
-    regs[idx] = r;
-    DB.set(KEYS.REGS, regs);
-    audit('Qeydiyyat statusu dəyişdirildi', `${r.id}: ${newStatus}`);
-    toast({ kind:'success', title: newStatus === 'approved' ? 'Təsdiqləndi' : 'Rədd edildi', msg: `#${r.id} ${statusLabel(newStatus).toLowerCase()}.` });
-    renderRegsList();
-  } else if (action === 'delete') {
-    confirmAction({
-      title: 'Qeydiyyatı sil',
-      msg: `#${r.id} (${r.fullname}) qeydiyyatını silmək istədiyinizə əminsiniz?`,
-      confirmText: 'Bəli, sil',
-      onConfirm: () => {
-        DB.set(KEYS.REGS, regs.filter(x => x.id !== id));
-        audit('Qeydiyyat silindi', `${r.id} (${r.fullname})`);
-        toast({ kind:'success', title:'Silindi', msg:`#${r.id} silindi.` });
-        renderRegsList();
-        updateSidebarCounts();
-      }
-    });
+  } catch (e) {
+    // apiGet onsuz da login.html-ə yönləndirir 401-də
+    return false;
   }
 }
 
-$('#regSearch').addEventListener('input', e => { regFilters.q = e.target.value; applyBackendFilters(); });
-$('#regStatusFilter').addEventListener('change', e => { regFilters.status = e.target.value; applyBackendFilters(); });
-$('#regCourseFilter').addEventListener('change', e => { regFilters.course = e.target.value; applyBackendFilters(); });
-
-$('#exportCsvBtn').addEventListener('click', () => {
-  const regs = DB.get(KEYS.REGS, []);
-  if (regs.length === 0) { toast({ kind:'warn', title:'Boş', msg:'İxrac üçün qeydiyyat yoxdur.' }); return; }
-  const headers = ['Qeydiyyat №','Tarix','Ad-Soyad','FİN','Telefon','Email','Kurs','Status','Qeyd'];
-  const escCsv = v => {
-    const s = String(v == null ? '' : v);
-    return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-  };
-  const rows = regs.map(r => [r.id, fmtDateTime(r.timestamp), r.fullname, r.fin, r.phone, r.email, r.course, statusLabel(r.status), r.note || '']);
-  const csv = '\ufeff' + [headers, ...rows].map(row => row.map(escCsv).join(';')).join('\r\n');
-  const blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `adda-qeydiyyatlar-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  audit('CSV ixrac edildi', `${regs.length} qeyd`);
-  toast({ kind:'success', title:'İxrac olundu', msg:`${regs.length} qeyd CSV faylına yazıldı.` });
-});
-
-$('#clearRegsBtn').addEventListener('click', () => {
-  const count = DB.get(KEYS.REGS, []).length;
-  if (count === 0) { toast({ kind:'warn', title:'Boş', msg:'Silinəcək qeydiyyat yoxdur.' }); return; }
-  confirmAction({
-    title: 'Bütün qeydiyyatları sil',
-    msg: `${count} qeyd silinəcək. Bu əməliyyat geri qaytarıla bilməz. Davam edirsiniz?`,
-    confirmText: 'Bəli, hamısını sil',
-    onConfirm: () => {
-      DB.set(KEYS.REGS, []);
-      audit('Bütün qeydiyyatlar silindi', `${count} qeyd`);
-      toast({ kind:'success', title:'Silindi', msg:`${count} qeyd silindi.` });
-      renderRegsList();
-      updateSidebarCounts();
-    }
-  });
-});
-
-function renderSettings() {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-
-  const heroF = $('#heroForm');
-  heroF.heroTitle.value = settings.heroTitle || '';
-  heroF.heroLead.value = settings.heroLead || '';
-  heroF.deadline.value = settings.deadline || '';
-  heroF.periodLabel.value = settings.periodLabel || '';
-
-  const cF = $('#contactForm');
-  cF.phone.value = settings.phone || '';
-  cF.email.value = settings.email || '';
-  cF.tedrisEmail.value = settings.tedrisEmail || '';
-  cF.address.value = settings.address || '';
-
-  const bF = $('#bankForm');
-  bF.bankCompany.value = settings.bankCompany || '';
-  bF.bankVoen.value = settings.bankVoen || '';
-  bF.bankName.value = settings.bankName || '';
-  bF.bankAccount.value = settings.bankAccount || '';
-  bF.bankSwift.value = settings.bankSwift || '';
-  bF.bankPurpose.value = settings.bankPurpose || '';
-
-  renderDocsList();
-  renderFaqList();
-}
-
-$$('#settingsTabs button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    $$('#settingsTabs button').forEach(b => b.classList.toggle('is-active', b === btn));
-    $$('[data-tab-pane]').forEach(p => p.hidden = p.dataset.tabPane !== btn.dataset.tab);
-  });
-});
-
-function bindSettingsForm(formSel, fields, label) {
-  $(formSel).addEventListener('submit', e => {
-    e.preventDefault();
-    const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-    const f = e.target;
-    fields.forEach(k => { settings[k] = f[k].value; });
-    DB.set(KEYS.SETTINGS, settings);
-    audit('Parametrlər yeniləndi', label);
-    toast({ kind:'success', title:'Saxlanıldı', msg:`${label} yeniləndi.` });
-  });
-}
-
-bindSettingsForm('#heroForm',    ['heroTitle','heroLead','deadline','periodLabel'], 'Ana səhifə');
-bindSettingsForm('#contactForm', ['phone','email','tedrisEmail','address'], 'Əlaqə');
-bindSettingsForm('#bankForm',    ['bankCompany','bankVoen','bankName','bankAccount','bankSwift','bankPurpose'], 'Bank rekvizitləri');
-
-function renderDocsList() {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const docs = settings.docs || [];
-  const cont = $('#docsList');
-  if (docs.length === 0) { cont.innerHTML = '<div class="empty-state">Sənəd əlavə edilməyib</div>'; return; }
-  cont.innerHTML = docs.map((d, idx) => `
-    <div class="list-editor__item" data-doc-idx="${idx}">
-      <span class="list-editor__num">${idx + 1}</span>
-      <div class="list-editor__main">
-        <div class="list-editor__title">${escapeHtml(d.title)} ${d.required ? '<span class="badge badge--info">Məcburi</span>' : '<span class="tag">İstəyə bağlı</span>'}</div>
-        <div class="list-editor__desc">${escapeHtml(d.desc)} · maks. ${escapeHtml(String(d.maxMB))} MB</div>
-      </div>
-      <div class="row-actions">
-        <button class="icon-btn icon-btn--primary" data-doc-up="${idx}" ${idx === 0 ? 'disabled style="opacity:.3"' : ''}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-        </button>
-        <button class="icon-btn icon-btn--primary" data-doc-down="${idx}" ${idx === docs.length - 1 ? 'disabled style="opacity:.3"' : ''}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <button class="icon-btn icon-btn--primary" data-doc-edit="${idx}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button class="icon-btn icon-btn--danger" data-doc-del="${idx}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-        </button>
-      </div>
-    </div>`).join('');
-
-  cont.querySelectorAll('[data-doc-del]').forEach(btn => btn.addEventListener('click', () => removeDoc(Number(btn.dataset.docDel))));
-  cont.querySelectorAll('[data-doc-edit]').forEach(btn => btn.addEventListener('click', () => editDoc(Number(btn.dataset.docEdit))));
-  cont.querySelectorAll('[data-doc-up]').forEach(btn => btn.addEventListener('click', () => moveDoc(Number(btn.dataset.docUp), -1)));
-  cont.querySelectorAll('[data-doc-down]').forEach(btn => btn.addEventListener('click', () => moveDoc(Number(btn.dataset.docDown), 1)));
-}
-
-function moveDoc(idx, dir) {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const docs = settings.docs;
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= docs.length) return;
-  [docs[idx], docs[newIdx]] = [docs[newIdx], docs[idx]];
-  DB.set(KEYS.SETTINGS, settings);
-  renderDocsList();
-}
-
-function removeDoc(idx) {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const docs = settings.docs;
-  const d = docs[idx];
-  confirmAction({
-    title: 'Sənədi sil',
-    msg: `"${d.title}" sənədini siyahıdan silmək istədiyinizə əminsiniz?`,
-    confirmText: 'Bəli, sil',
-    onConfirm: () => {
-      docs.splice(idx, 1);
-      DB.set(KEYS.SETTINGS, settings);
-      audit('Sənəd silindi', d.title);
-      toast({ kind:'success', title:'Silindi', msg:`"${d.title}" silindi.` });
-      renderDocsList();
-    }
-  });
-}
-
-function editDoc(idx) {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const isEdit = idx >= 0;
-  const d = isEdit ? settings.docs[idx] : { id:'', title:'', desc:'', required:true, maxMB:100 };
-
-  const body = `
-    <form id="docForm">
-      <div class="form-row">
-        <div class="form-field">
-          <label>ID <span class="req">*</span></label>
-          <input type="text" name="id" value="${escapeHtml(d.id)}" pattern="[a-z0-9_-]+" required ${isEdit ? 'readonly' : ''}>
-        </div>
-        <div class="form-field">
-          <label>Maks. ölçü (MB) <span class="req">*</span></label>
-          <input type="number" name="maxMB" value="${escapeHtml(d.maxMB)}" min="1" max="500" required>
-        </div>
-      </div>
-      <div class="form-row form-row--full">
-        <div class="form-field">
-          <label>Başlıq <span class="req">*</span></label>
-          <input type="text" name="title" value="${escapeHtml(d.title)}" required>
-        </div>
-      </div>
-      <div class="form-row form-row--full">
-        <div class="form-field">
-          <label>Təsvir</label>
-          <input type="text" name="desc" value="${escapeHtml(d.desc)}">
-        </div>
-      </div>
-      <label class="checkbox-row">
-        <input type="checkbox" name="required" ${d.required ? 'checked' : ''}>
-        <span>Məcburi sənəd kimi qeyd et</span>
-      </label>
-    </form>`;
-  openModal({
-    title: isEdit ? 'Sənədi redaktə et' : 'Yeni sənəd əlavə et',
-    body, size:'narrow',
-    footer: `<button class="btn btn-ghost" id="cancelDoc">Ləğv et</button><button class="btn btn-primary" id="saveDoc">Yadda saxla</button>`,
-    onOpen: modal => {
-      modal.querySelector('#cancelDoc').addEventListener('click', closeModal);
-      modal.querySelector('#saveDoc').addEventListener('click', () => {
-        const f = modal.querySelector('#docForm');
-        const data = new FormData(f);
-        const id = String(data.get('id') || '').trim();
-        if (!id || !/^[a-z0-9_-]+$/.test(id)) { toast({ kind:'danger', title:'Səhv', msg:'ID düzgün formatda olmalıdır.' }); return; }
-        if (!isEdit && settings.docs.some(x => x.id === id)) { toast({ kind:'danger', title:'Səhv', msg:'Bu ID artıq mövcuddur.' }); return; }
-
-        const item = {
-          id,
-          title: String(data.get('title') || '').trim(),
-          desc: String(data.get('desc') || '').trim(),
-          maxMB: Math.max(1, Number(data.get('maxMB') || 100)),
-          required: !!data.get('required'),
-        };
-        if (isEdit) settings.docs[idx] = item;
-        else settings.docs.push(item);
-
-        DB.set(KEYS.SETTINGS, settings);
-        audit(isEdit ? 'Sənəd redaktə edildi' : 'Sənəd əlavə edildi', item.title);
-        toast({ kind:'success', title:'Saxlanıldı', msg:`"${item.title}" yadda saxlanıldı.` });
-        closeModal();
-        renderDocsList();
-      });
-    }
-  });
-}
-
-$('#addDocBtn').addEventListener('click', () => editDoc(-1));
-
-function renderFaqList() {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const faqs = settings.faqs || [];
-  const cont = $('#faqList');
-  if (faqs.length === 0) { cont.innerHTML = '<div class="empty-state">FAQ əlavə edilməyib</div>'; return; }
-  cont.innerHTML = faqs.map((f, idx) => `
-    <div class="list-editor__item">
-      <span class="list-editor__num">${idx + 1}</span>
-      <div class="list-editor__main">
-        <div class="list-editor__title">${escapeHtml(f.q)}</div>
-        <div class="list-editor__desc">${escapeHtml(f.a.slice(0, 120))}${f.a.length > 120 ? '…' : ''}</div>
-      </div>
-      <div class="row-actions">
-        <button class="icon-btn icon-btn--primary" data-faq-up="${idx}" ${idx === 0 ? 'disabled style="opacity:.3"' : ''}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-        </button>
-        <button class="icon-btn icon-btn--primary" data-faq-down="${idx}" ${idx === faqs.length - 1 ? 'disabled style="opacity:.3"' : ''}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <button class="icon-btn icon-btn--primary" data-faq-edit="${idx}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button class="icon-btn icon-btn--danger" data-faq-del="${idx}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
-        </button>
-      </div>
-    </div>`).join('');
-
-  cont.querySelectorAll('[data-faq-del]').forEach(btn => btn.addEventListener('click', () => removeFaq(Number(btn.dataset.faqDel))));
-  cont.querySelectorAll('[data-faq-edit]').forEach(btn => btn.addEventListener('click', () => editFaq(Number(btn.dataset.faqEdit))));
-  cont.querySelectorAll('[data-faq-up]').forEach(btn => btn.addEventListener('click', () => moveFaq(Number(btn.dataset.faqUp), -1)));
-  cont.querySelectorAll('[data-faq-down]').forEach(btn => btn.addEventListener('click', () => moveFaq(Number(btn.dataset.faqDown), 1)));
-}
-
-function moveFaq(idx, dir) {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const faqs = settings.faqs;
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= faqs.length) return;
-  [faqs[idx], faqs[newIdx]] = [faqs[newIdx], faqs[idx]];
-  DB.set(KEYS.SETTINGS, settings);
-  renderFaqList();
-}
-
-function removeFaq(idx) {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const f = settings.faqs[idx];
-  confirmAction({
-    title: 'FAQ-ı sil',
-    msg: `"${f.q}" sualını silmək istədiyinizə əminsiniz?`,
-    confirmText: 'Bəli, sil',
-    onConfirm: () => {
-      settings.faqs.splice(idx, 1);
-      DB.set(KEYS.SETTINGS, settings);
-      audit('FAQ silindi', f.q);
-      toast({ kind:'success', title:'Silindi', msg:'FAQ silindi.' });
-      renderFaqList();
-    }
-  });
-}
-
-function editFaq(idx) {
-  const settings = DB.get(KEYS.SETTINGS, DEFAULT_SETTINGS);
-  const isEdit = idx >= 0;
-  const f = isEdit ? settings.faqs[idx] : { id: 'f' + Date.now(), q:'', a:'' };
-
-  const body = `
-    <form id="faqForm">
-      <div class="form-row form-row--full">
-        <div class="form-field">
-          <label>Sual <span class="req">*</span></label>
-          <input type="text" name="q" value="${escapeHtml(f.q)}" required>
-        </div>
-      </div>
-      <div class="form-row form-row--full">
-        <div class="form-field">
-          <label>Cavab <span class="req">*</span></label>
-          <textarea name="a" rows="5" required>${escapeHtml(f.a)}</textarea>
-        </div>
-      </div>
-    </form>`;
-  openModal({
-    title: isEdit ? 'FAQ-ı redaktə et' : 'Yeni FAQ əlavə et',
-    body,
-    footer: `<button class="btn btn-ghost" id="cancelFaq">Ləğv et</button><button class="btn btn-primary" id="saveFaq">Yadda saxla</button>`,
-    onOpen: modal => {
-      modal.querySelector('#cancelFaq').addEventListener('click', closeModal);
-      modal.querySelector('#saveFaq').addEventListener('click', () => {
-        const data = new FormData(modal.querySelector('#faqForm'));
-        const item = {
-          id: f.id,
-          q: String(data.get('q') || '').trim(),
-          a: String(data.get('a') || '').trim(),
-        };
-        if (!item.q || !item.a) { toast({ kind:'danger', title:'Səhv', msg:'Bütün sahələri doldurun.' }); return; }
-        if (isEdit) settings.faqs[idx] = item;
-        else settings.faqs.push(item);
-        DB.set(KEYS.SETTINGS, settings);
-        audit(isEdit ? 'FAQ redaktə edildi' : 'FAQ əlavə edildi', item.q);
-        toast({ kind:'success', title:'Saxlanıldı', msg:'FAQ yadda saxlanıldı.' });
-        closeModal();
-        renderFaqList();
-      });
-    }
-  });
-}
-
-$('#addFaqBtn').addEventListener('click', () => editFaq(-1));
-
-function renderAudit() {
-  const log = DB.get(KEYS.AUDIT, []);
-  if (log.length === 0) {
-    $('#auditTable').innerHTML = `<table class="tbl"><tbody><tr><td><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><p>Jurnal boşdur</p><small>Admin əməliyyatları burada qeydə alınır</small></div></td></tr></tbody></table>`;
-    return;
-  }
-  $('#auditTable').innerHTML = `
-    <table class="tbl">
-      <thead><tr><th>Vaxt</th><th>Əməliyyat</th><th>Təfərrüat</th></tr></thead>
-      <tbody>
-        ${log.map(e => `
-          <tr>
-            <td class="text-muted text-mono" style="font-size:12px;white-space:nowrap">${escapeHtml(fmtDateTime(e.ts))}</td>
-            <td><strong>${escapeHtml(e.action)}</strong></td>
-            <td class="text-muted">${escapeHtml(e.details || '')}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>`;
-}
-
-$('#clearAuditBtn').addEventListener('click', () => {
-  confirmAction({
-    title: 'Audit jurnalını təmizlə',
-    msg: 'Bütün audit qeydləri silinəcək. Bu əməliyyat geri qaytarıla bilməz.',
-    confirmText: 'Bəli, təmizlə',
-    onConfirm: () => {
-      DB.set(KEYS.AUDIT, []);
-      audit('Audit jurnalı təmizləndi');
-      toast({ kind:'success', title:'Təmizləndi', msg:'Audit jurnalı sıfırlandı.' });
-      renderAudit();
-    }
-  });
-});
-
-function renderSecurity() {
-  const auth = DB.get(KEYS.AUTH);
-  const session = Auth.getSession();
-  $('#securityInfo').innerHTML = `
-    <dt>Şifrə yaradılma tarixi</dt><dd>${escapeHtml(fmtDateTime(auth.createdAt))}</dd>
-    <dt>Sonuncu şifrə dəyişikliyi</dt><dd>${escapeHtml(fmtDateTime(auth.passwordChangedAt || auth.createdAt))}</dd>
-    <dt>Hash alqoritmi</dt><dd>SHA-256 + 16-bayt unikal salt</dd>
-    <dt>Cari sessiya başladı</dt><dd>${escapeHtml(session ? fmtDateTime(session.startedAt) : '—')}</dd>
-    <dt>Sessiya bitir</dt><dd>${escapeHtml(session ? fmtDateTime(session.expires) : '—')}</dd>
-    <dt>Brute force qoruması</dt><dd>${AUTH_CONFIG.MAX_ATTEMPTS} cəhd → ${AUTH_CONFIG.LOCKOUT_MIN} dəq lockout</dd>
-    <dt>Cari səhv cəhd</dt><dd>${auth.failedAttempts || 0}</dd>
-    <dt>Sessiya müddəti</dt><dd>${AUTH_CONFIG.SESSION_MIN} dəqiqə (hərəkətsizliyə görə avtomatik bağlama)</dd>`;
-}
-
-$('#changePwdForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const f = e.target;
-  const cur = f.current.value;
-  const next = f.next.value;
-  const conf = f.confirm.value;
-
-  if (next.length < 8) { toast({ kind:'danger', title:'Səhv', msg:'Şifrə ən az 8 simvol olmalıdır.' }); return; }
-  if (next !== conf) { toast({ kind:'danger', title:'Səhv', msg:'Yeni şifrələr uyğun gəlmir.' }); return; }
-
+async function logout() {
   try {
-    const ok = await Auth.verify(cur);
-    if (!ok) { toast({ kind:'danger', title:'Səhv', msg:'Hazırkı şifrə yanlışdır.' }); return; }
-  } catch (err) {
-    toast({ kind:'danger', title:'Kilidləndi', msg: err.message }); return;
-  }
-
-  await Auth.setPassword(next);
-  toast({ kind:'success', title:'Dəyişdirildi', msg:'Şifrəniz uğurla dəyişdirildi.' });
-  f.reset();
-  renderSecurity();
-});
-
-$('#exportBackupBtn').addEventListener('click', () => {
-  const backup = {
-    version: '1.0',
-    exportedAt: new Date().toISOString(),
-    courses: DB.get(KEYS.COURSES),
-    registrations: DB.get(KEYS.REGS),
-    settings: DB.get(KEYS.SETTINGS),
-    audit: DB.get(KEYS.AUDIT),
-  };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type:'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `adda-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  audit('Yedək yaradıldı');
-  toast({ kind:'success', title:'Yedək yaradıldı', msg:'JSON faylı endirildi.' });
-});
-
-$('#importBackupBtn').addEventListener('click', () => $('#importBackupFile').click());
-$('#importBackupFile').addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if (!data.courses || !data.settings) throw new Error('Etibarsız yedək faylı');
-    confirmAction({
-      title: 'Yedəkdən bərpa',
-      msg: `Cari məlumatlar yedəkdəki məlumatlarla əvəz olunacaq. Davam edirsiniz?`,
-      confirmText: 'Bəli, bərpa et',
-      kind: 'warn',
-      onConfirm: () => {
-        if (data.courses) DB.set(KEYS.COURSES, data.courses);
-        if (data.registrations) DB.set(KEYS.REGS, data.registrations);
-        if (data.settings) DB.set(KEYS.SETTINGS, data.settings);
-        audit('Yedəkdən bərpa edildi', file.name);
-        toast({ kind:'success', title:'Bərpa olundu', msg:'Məlumatlar yedəkdən bərpa edildi.' });
-        renderSecurity();
-        updateSidebarCounts();
-      }
-    });
-  } catch (err) {
-    toast({ kind:'danger', title:'Səhv', msg:'Yedək faylını oxumaq alınmadı.' });
-  }
-  e.target.value = '';
-});
-
-$('#wipeAllBtn').addEventListener('click', () => {
-  confirmAction({
-    title: 'Bütün məlumatları sil',
-    msg: 'BÜTÜN məlumatlar, o cümlədən admin şifrəsi, kurslar, qeydiyyatlar və parametrlər silinəcək. Bu geri qaytarıla bilməz. Davam edirsiniz?',
-    confirmText: 'Bəli, hər şeyi sil',
-    onConfirm: () => {
-      DB.wipe();
-      toast({ kind:'success', title:'Silindi', msg:'Bütün məlumatlar silindi. Səhifə yenilənir...' });
-      setTimeout(() => location.reload(), 1200);
-    }
-  });
-});
-
-function showLogin() {
-  if (Auth.exists()) {
-    $('#setupView').hidden = true;
-    $('#loginView').hidden = false;
-  } else {
-    $('#setupView').hidden = false;
-    $('#loginView').hidden = true;
-  }
+    await apiPost('/auth/logout');
+  } catch {}
+  location.href = '/login.html';
 }
 
-function showApp() {
-  $('#loginOverlay').hidden = true;
-  $('#adminApp').hidden = false;
-  seedDefaults();
-  go('dashboard');
-  startSessionTimer();
-}
-
-$('#setupForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const p1 = $('#setupPwd1').value;
-  const p2 = $('#setupPwd2').value;
-  const err = $('#setupError');
-  err.hidden = true;
-
-  if (p1.length < 8) { showLoginError(err, 'Şifrə ən az 8 simvol olmalıdır.'); return; }
-  if (p1 !== p2) { showLoginError(err, 'Şifrələr uyğun gəlmir.'); return; }
-
-  await Auth.setPassword(p1);
-  Auth.startSession();
-  toast({ kind:'success', title:'Quraşdırma tamam', msg:'Admin paneli aktivləşdirildi.' });
-  showApp();
+/* ============= INIT ============= */
+document.getElementById('btnLogout').addEventListener('click', logout);
+$('#btnRefresh').addEventListener('click', () => {
+  Promise.all([loadCourses(), loadEnrollments()]).then(() => showToast('Yeniləndi', 'success'));
 });
+$('#filterSearch').addEventListener('input', renderEnrollments);
+$('#filterStatus').addEventListener('change', renderEnrollments);
+$('#filterCourse').addEventListener('change', renderEnrollments);
 
-$('#loginForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const p = $('#loginPwd').value;
-  const err = $('#loginError');
-  err.hidden = true;
-  const btn = $('#loginSubmit');
-  btn.disabled = true;
-
-  try {
-    const ok = await Auth.verify(p);
-    if (ok) {
-      Auth.startSession();
-      $('#loginPwd').value = '';
-      showApp();
-    } else {
-      const auth = DB.get(KEYS.AUTH);
-      const left = AUTH_CONFIG.MAX_ATTEMPTS - (auth.failedAttempts || 0);
-      showLoginError(err, left > 0 ? `Şifrə yanlışdır. Qalan cəhd: ${left}` : 'Hesab müvəqqəti kilidləndi.');
-    }
-  } catch (e2) {
-    showLoginError(err, e2.message);
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-function showLoginError(el, msg) {
-  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span></span>`;
-  setText(el.querySelector('span'), msg);
-  el.hidden = false;
-}
-
-$('#resetAuthLink').addEventListener('click', e => {
-  e.preventDefault();
-  if (confirm('Şifrəni unutmusunuz? Bu cihazda saxlanan bütün admin məlumatları (kurslar, qeydiyyatlar, parametrlər) silinəcək. Davam edirsiniz?')) {
-    DB.wipe();
-    location.reload();
-  }
-});
-
-$('#logoutBtn').addEventListener('click', () => {
-  confirmAction({
-    title: 'Çıxış',
-    msg: 'Sistemdən çıxmaq istədiyinizə əminsiniz?',
-    confirmText: 'Bəli, çıx',
-    kind: 'warn',
-    onConfirm: () => { Auth.endSession(); location.reload(); }
-  });
-});
-
-let sessionTimer = null;
-function startSessionTimer() {
-  if (sessionTimer) clearInterval(sessionTimer);
-  sessionTimer = setInterval(() => {
-    const s = Auth.getSession();
-    if (!s) {
-      clearInterval(sessionTimer);
-      toast({ kind:'warn', title:'Sessiya bitdi', msg:'Yenidən daxil olun.' });
-      setTimeout(() => location.reload(), 1800);
-      return;
-    }
-    const left = Math.max(0, Math.floor((s.expires - Date.now()) / 60000));
-    setText($('#sessionRemaining'), `Sessiya: ${left} dəq`);
-    if (left <= 0) {
-      clearInterval(sessionTimer);
-      toast({ kind:'warn', title:'Sessiya bitdi', msg:'Yenidən daxil olun.' });
-      Auth.endSession();
-      setTimeout(() => location.reload(), 1800);
-    }
-  }, 30000);
-}
-
-['click','keydown'].forEach(ev => document.addEventListener(ev, () => {
-  if (Auth.checkSession()) Auth.refreshSession();
-}, { passive: true }));
-
-$('#sidebarToggle').addEventListener('click', () => {
-  $('#sidebar').classList.toggle('is-open');
-  $('#sidebarBackdrop').classList.toggle('is-visible');
-});
-$('#sidebarBackdrop').addEventListener('click', () => {
-  $('#sidebar').classList.remove('is-open');
-  $('#sidebarBackdrop').classList.remove('is-visible');
-});
-
-(function init() {
-  if (Auth.exists() && Auth.checkSession()) {
-    showApp();
-  } else {
-    showLogin();
-  }
+(async () => {
+  const ok = await checkAuth();
+  if (!ok) return;
+  await Promise.all([loadCourses(), loadEnrollments()]);
+  checkHealth();
 })();
-// Səhifə yüklənən kimi məlumatları gətir
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/enrollments');
-        const enrollments = await response.json();
-        
-        // Fərz edirik ki, cədvəlin `<tbody>` hissəsinin id-si "tableBody"-dir
-        const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = ''; // Əvvəlcə içini təmizlə
-        
-        enrollments.forEach((item, index) => {
-            const row = `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.student_name}</td>
-                    <td>${item.phone}</td>
-                    <td>${item.course_name}</td>
-                    <td>${new Date(item.enrollment_date).toLocaleString()}</td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-    } catch (error) {
-        console.error('Məlumatı yükləmək mümkün olmadı:', error);
-    }
-});
 </script>
 </body>
 </html>

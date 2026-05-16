@@ -3,3 +3,7 @@ psycopg2-binary
 python-multipart
 vercel-blob
 python-dotenv
+pydantic
+PyJWT[crypto]
+httpx
+cryptography
