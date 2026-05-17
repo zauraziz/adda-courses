@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Müraciət detalları · ADDA Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#fafaf6;
+  --surface:#ffffff;
+  --surface-2:#f4f1ea;
+  --ink:#0c1a2b;
+  --ink-soft:#3a4a5e;
+  --muted:#6b7785;
+  --border:#e6e1d6;
+  --border-strong:#d3cdbf;
+  --primary:#003b6f;
+  --primary-700:#002a52;
+  --primary-50:#eaf1f9;
+  --accent:#b88746;
+  --accent-soft:#e9d9bf;
+  --success:#0e7c4a;
+  --success-soft:#d1fadf;
+  --warn:#b54708;
+  --warn-soft:#fef0c7;
+  --danger:#b42318;
+  --danger-soft:#fee4e2;
+  --info:#0e639a;
+  --info-soft:#d1e9ff;
+  --radius-sm:6px;
+  --radius:10px;
+  --radius-lg:14px;
+  --shadow-sm:0 1px 2px rgba(12,26,43,.04),0 1px 3px rgba(12,26,43,.06);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Manrope',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+
+/* ============= HEADER (no-print) ============= */
+.top-bar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  position:sticky;top:0;z-index:50;
+}
+.top-bar__left{display:flex;align-items:center;gap:16px}
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:var(--radius-sm);
+  background:var(--surface-2);color:var(--ink-soft);
+  font-size:13px;font-weight:500;
+  transition:.15s;
+}
+.back-link:hover{background:var(--border);text-decoration:none}
+.back-link svg{width:14px;height:14px}
+
+.top-title{display:flex;align-items:baseline;gap:12px}
+.top-title h1{
+  font-family:'Fraunces',serif;font-weight:600;font-size:22px;
+  margin:0;letter-spacing:-.01em;
+}
+.top-title .reg-no{color:var(--muted);font-size:14px;font-weight:500}
+
+.top-bar__right{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:var(--radius-sm);
+  font-weight:600;font-size:13px;
+  border:1px solid var(--border-strong);background:var(--surface);
+  transition:.15s;
+}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-700)}
+.btn svg{width:14px;height:14px}
+
+/* ============= LAYOUT ============= */
+.wrap{
+  max-width:1280px;margin:0 auto;
+  padding:24px;
+  display:grid;grid-template-columns:1fr 360px;gap:24px;
+}
+@media (max-width:980px){.wrap{grid-template-columns:1fr}}
+
+.col-main{display:flex;flex-direction:column;gap:20px;min-width:0}
+.col-side{display:flex;flex-direction:column;gap:20px}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-sm);
+}
+.card__head{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.card__head h2{
+  font-family:'Fraunces',serif;font-weight:600;font-size:17px;
+  margin:0;
+}
+.card__head p{font-size:13px;color:var(--muted);margin:0}
+.card__body{padding:20px}
+.card__body--tight{padding:8px}
+
+/* ============= INFO LIST ============= */
+.info-list{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.info-list--single{grid-template-columns:1fr}
+.info-item{display:flex;flex-direction:column;gap:2px;min-width:0}
+.info-item dt{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.info-item dd{margin:0;font-weight:500;font-size:14px;word-break:break-word}
+.info-item dd.mono{font-family:'JetBrains Mono','Courier New',monospace;font-size:13px}
+.info-item.full{grid-column:1/-1}
+.info-item dd a{font-weight:500}
+
+/* ============= STATUS ============= */
+.status-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:999px;
+  font-size:12px;font-weight:600;letter-spacing:.2px;
+  width:max-content;
+}
+.status-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.status-pending  {background:var(--warn-soft);color:var(--warn)}
+.status-approved {background:var(--success-soft);color:var(--success)}
+.status-rejected {background:var(--danger-soft);color:var(--danger)}
+.status-contacted{background:var(--info-soft);color:var(--info)}
+
+.status-actions{display:flex;flex-direction:column;gap:8px}
+.status-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);
+  font-weight:500;font-size:13.5px;text-align:left;
+  transition:.15s;
+}
+.status-btn:hover{background:var(--surface-2)}
+.status-btn.is-active{background:var(--primary-50);border-color:var(--primary);color:var(--primary);font-weight:600}
+.status-btn .icon{
+  width:24px;height:24px;flex:0 0 24px;
+  display:grid;place-items:center;border-radius:50%;
+  background:var(--surface-2);
+}
+.status-btn .icon svg{width:13px;height:13px}
+.status-btn.is-active .icon{background:var(--primary);color:#fff}
+
+/* ============= NOTES ============= */
+.notes-textarea{
+  width:100%;
+  min-height:120px;
+  padding:12px 14px;
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);
+  background:var(--surface);
+  font-size:14px;
+  line-height:1.5;
+  resize:vertical;
+  font-family:inherit;
+}
+.notes-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-50)}
+
+.notes-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.notes-foot small{font-size:12px;color:var(--muted)}
+
+/* ============= FILES ============= */
+.file-tabs{
+  display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--border);
+  overflow-x:auto;
+}
+.file-tab{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:var(--radius-sm);
+  font-size:12.5px;font-weight:500;
+  color:var(--ink-soft);
+  white-space:nowrap;
+  transition:.15s;
+  border:1px solid transparent;
+}
+.file-tab:hover{background:var(--surface-2)}
+.file-tab.is-active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.file-tab svg{width:12px;height:12px}
+
+.file-viewer{
+  height:600px;
+  background:var(--surface-2);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.file-viewer embed{width:100%;height:100%;border:0}
+.file-viewer__empty{
+  text-align:center;color:var(--muted);padding:40px;
+}
+.file-viewer__empty svg{width:48px;height:48px;color:var(--border-strong);margin-bottom:12px}
+.file-viewer__empty h3{font-family:'Fraunces',serif;font-weight:500;margin:0 0 4px;color:var(--ink-soft)}
+.file-viewer__actions{
+  position:absolute;top:12px;right:12px;
+  display:flex;gap:6px;
+}
+.file-viewer__btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:var(--radius-sm);
+  background:rgba(12,26,43,.85);color:#fff;
+  font-size:12px;font-weight:500;
+  backdrop-filter:blur(8px);
+}
+.file-viewer__btn:hover{background:var(--ink);text-decoration:none}
+.file-viewer__btn svg{width:12px;height:12px}
+
+/* ============= TOAST ============= */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:200;
+  background:var(--ink);color:#fff;
+  padding:12px 18px;border-radius:var(--radius-sm);
+  font-size:13.5px;font-weight:500;
+  opacity:0;transform:translateY(20px);pointer-events:none;
+  transition:.25s;
+}
+.toast.is-show{opacity:1;transform:translateY(0)}
+.toast.is-success{background:var(--success)}
+.toast.is-error{background:var(--danger)}
+
+/* ============= LOADER ============= */
+.loader{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-screen{
+  display:flex;align-items:center;justify-content:center;
+  padding:60px 20px;color:var(--muted);gap:10px;
+}
+
+.error-screen{
+  text-align:center;padding:60px 20px;
+}
+.error-screen h2{font-family:'Fraunces',serif;color:var(--danger);margin:0 0 10px}
+
+/* ============= PRINT VIEW (only visible when printing) ============= */
+.print-view{display:none}
+
+/* ============= PRINT STYLES ============= */
+@media print{
+  /* Hide everything except print view */
+  .top-bar, .wrap{display:none !important}
+
+  .print-view{
+    display:block !important;
+    padding:0;
+    color:#000;
+    font-size:11pt;
+    line-height:1.45;
+  }
+
+  @page{margin:18mm 16mm}
+
+  body{
+    background:#fff;
+    margin:0;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  .print-view{font-family:'Manrope',sans-serif;color:#000}
+
+  .pv-header{
+    display:flex;align-items:flex-start;justify-content:space-between;
+    border-bottom:2px solid #003b6f;
+    padding-bottom:10px;margin-bottom:18px;
+  }
+  .pv-brand{display:flex;align-items:center;gap:10px}
+  .pv-brand__mark{
+    width:40px;height:40px;
+    background:#003b6f;border-radius:50%;
+    display:grid;place-items:center;color:#fff;
+  }
+  .pv-brand__mark svg{width:24px;height:24px}
+  .pv-brand__text{display:flex;flex-direction:column}
+  .pv-brand__name{font-family:'Fraunces',serif;font-weight:600;font-size:14pt;color:#003b6f}
+  .pv-brand__sub{font-size:8pt;color:#444;letter-spacing:.4px;text-transform:uppercase}
+
+  .pv-header__right{text-align:right}
+  .pv-reg-no{font-family:'Fraunces',serif;font-weight:600;font-size:13pt;color:#003b6f}
+  .pv-date{font-size:9pt;color:#444;margin-top:2px}
+
+  .pv-title{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:18pt;margin:0 0 18px;color:#003b6f;text-align:center;
+  }
+
+  .pv-section{margin-bottom:14pt;page-break-inside:avoid}
+  .pv-section__title{
+    font-family:'Fraunces',serif;font-weight:600;font-size:11pt;
+    margin:0 0 6pt;color:#003b6f;
+    padding-bottom:3pt;border-bottom:1px solid #b88746;
+  }
+
+  .pv-table{
+    width:100%;border-collapse:collapse;font-size:10pt;
+  }
+  .pv-table tr{page-break-inside:avoid}
+  .pv-table td{
+    padding:5pt 8pt;border-bottom:1px solid #ddd;
+    vertical-align:top;
+  }
+  .pv-table td:first-child{
+    font-weight:600;color:#444;
+    width:35%;
+  }
+
+  .pv-status{
+    display:inline-block;padding:2pt 10pt;
+    border-radius:3pt;font-weight:600;font-size:10pt;
+    border:1px solid #003b6f;
+  }
+  .pv-status--approved{background:#d1fadf;color:#0e7c4a;border-color:#0e7c4a}
+  .pv-status--rejected{background:#fee4e2;color:#b42318;border-color:#b42318}
+  .pv-status--pending {background:#fef0c7;color:#b54708;border-color:#b54708}
+  .pv-status--contacted{background:#d1e9ff;color:#0e639a;border-color:#0e639a}
+
+  .pv-files{padding-left:14pt;margin:0}
+  .pv-files li{margin-bottom:3pt;font-size:9.5pt}
+  .pv-files a{color:#003b6f;text-decoration:underline;word-break:break-all}
+
+  .pv-notes{
+    background:#f9f6ef;border:1px solid #d3cdbf;
+    border-radius:4pt;padding:8pt 10pt;
+    font-size:10pt;white-space:pre-wrap;
+    min-height:40pt;
+  }
+  .pv-notes--empty{color:#888;font-style:italic}
+
+  .pv-foot{
+    margin-top:30pt;
+    display:flex;justify-content:space-between;align-items:flex-end;
+    page-break-inside:avoid;
+  }
+  .pv-sig{
+    flex:1;max-width:45%;
+    border-top:1px solid #444;padding-top:4pt;
+    font-size:9pt;color:#444;text-align:center;
+  }
+  .pv-foot-meta{
+    font-size:8pt;color:#777;text-align:right;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ============= TOP BAR ============= -->
+<div class="top-bar">
+  <div class="top-bar__left">
+    <a class="back-link" href="/admin.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Geri
+    </a>
+    <div class="top-title">
+      <h1>Müraciət detalları</h1>
+      <span class="reg-no" id="topRegNo">—</span>
+    </div>
+  </div>
+  <div class="top-bar__right">
+    <button class="btn" onclick="window.print()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Çap et
+    </button>
+  </div>
+</div>
+
+<!-- ============= MAIN VIEW ============= -->
+<div class="wrap" id="mainView">
+  <div class="loading-screen" id="loadingScreen">
+    <span class="loader"></span> Yüklənir...
+  </div>
+</div>
+
+<!-- ============= PRINT VIEW (yalnız çap zamanı görünür) ============= -->
+<div class="print-view" id="printView"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = '/api';
+
+const params = new URLSearchParams(location.search);
+const enrollmentId = parseInt(params.get('id'));
+
+let currentData = null;
+let saveTimeout = null;
+
+const STATUS_LABELS = {
+  pending:   'Gözləyir',
+  approved:  'Təsdiqlənib',
+  rejected:  'Rədd edilib',
+  contacted: 'Əlaqə saxlanılıb'
+};
+
+const FILE_LABELS = {
+  id_file:          'Şəxsiyyət vəsiqəsi',
+  diploma_file:     'Diplom',
+  work_file:        'İşçi diplomu',
+  medical_file:     'Tibbi kitabça',
+  application_file: 'Ərizə',
+  receipt_file:     'Ödəniş çeki'
+};
+
+const POSITION_LABELS = {
+  captain: 'Kapitan',
+  chief_officer: 'Baş köməkçi',
+  officer: 'Növbə zabiti',
+  chief_engineer: 'Baş mexanik',
+  second_engineer: 'İkinci mexanik',
+  engineer: 'Növbə mexaniki',
+  electrical_officer: 'Elektrotexniki zabit',
+  cadet: 'Kursant',
+  other: 'Digər'
+};
+
+const WORKPLACE_LABELS = {
+  asco: 'ASCO (Azərbaycan Xəzər Dəniz Gəmiçiliyi)',
+  cms: 'Caspian Marine Services',
+  cdc: 'Caspian Drilling Company',
+  socar_marine: 'SOCAR Marine',
+  bp_agt: 'BP-AGT',
+  none: 'İşləmir',
+  other: 'Digər'
+};
+
+/* ============= UTILITIES ============= */
+function $(sel){return document.querySelector(sel)}
+
+function escapeHtml(s){
+  if(s==null)return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function formatDate(iso){
+  if(!iso)return '—';
+  const d=new Date(iso);
+  if(isNaN(d))return iso;
+  const pad=n=>String(n).padStart(2,'0');
+  return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function showToast(msg, type=''){
+  const t=$('#toast');
+  t.textContent=msg;
+  t.className='toast is-show '+(type?'is-'+type:'');
+  setTimeout(()=>t.classList.remove('is-show'),2500);
+}
+
+function parseFiles(files){
+  if(!files)return {};
+  if(typeof files==='string'){try{return JSON.parse(files)}catch{return {}}}
+  return files;
+}
+
+function workplaceText(d){
+  if(d.workplace_id && d.workplace_other) return d.workplace_other;
+  if(d.workplace_id) return WORKPLACE_LABELS[d.workplace_id] || d.workplace_id;
+  return '—';
+}
+
+function positionText(d){
+  if(!d.position) return '—';
+  return POSITION_LABELS[d.position] || d.position;
+}
+
+/* ============= API ============= */
+async function apiGet(path){
+  const r=await fetch(API_BASE+path,{credentials:'include'});
+  if(r.status===401){location.href='/login.html';throw new Error('Unauthorized')}
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  return await r.json();
+}
+
+async function apiPatch(path, body){
+  const r=await fetch(API_BASE+path,{
+    method:'PATCH',credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  if(r.status===401){location.href='/login.html';throw new Error('Unauthorized')}
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.detail||`HTTP ${r.status}`)}
+  return await r.json();
+}
+
+/* ============= LOAD ============= */
+async function loadEnrollment(){
+  if(!enrollmentId){
+    $('#mainView').innerHTML=`<div class="error-screen" style="grid-column:1/-1"><h2>ID tapılmadı</h2><p>URL-də müraciət ID-si göstərilməyib.</p><a class="btn btn-primary" href="/admin.html">Admin paneline qayıt</a></div>`;
+    return;
+  }
+
+  try{
+    const all=await apiGet('/students');
+    const item=all.find(e=>e.id===enrollmentId);
+    if(!item){
+      $('#mainView').innerHTML=`<div class="error-screen" style="grid-column:1/-1"><h2>Müraciət tapılmadı</h2><p>#${enrollmentId} ID ilə qeydiyyat mövcud deyil.</p><a class="btn btn-primary" href="/admin.html">Admin paneline qayıt</a></div>`;
+      return;
+    }
+    currentData=item;
+    render();
+  }catch(err){
+    $('#mainView').innerHTML=`<div class="error-screen" style="grid-column:1/-1"><h2>Xəta</h2><p>${escapeHtml(err.message)}</p></div>`;
+  }
+}
+
+/* ============= RENDER ============= */
+function render(){
+  const d=currentData;
+  $('#topRegNo').textContent=`№ ${d.id}`;
+  document.title=`Müraciət #${d.id} — ${d.student_name} · ADDA Admin`;
+
+  const files=parseFiles(d.files);
+  const fileEntries=Object.entries(files);
+
+  $('#mainView').innerHTML=`
+    <div class="col-main">
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <h2>Tələbə məlumatları</h2>
+            <p>Müraciət qeydiyyatı — ${formatDate(d.created_at)}</p>
+          </div>
+          <span class="status-pill status-${d.status}"><span class="dot"></span>${STATUS_LABELS[d.status]||d.status}</span>
+        </div>
+        <div class="card__body">
+          <dl class="info-list">
+            <div class="info-item full">
+              <dt>Ad-Soyad</dt>
+              <dd style="font-size:18px;font-weight:600">${escapeHtml(d.student_name)}</dd>
+            </div>
+            <div class="info-item">
+              <dt>FİN kod</dt>
+              <dd class="mono">${escapeHtml(d.fin||'—')}</dd>
+            </div>
+            <div class="info-item">
+              <dt>Telefon</dt>
+              <dd><a href="tel:${escapeHtml(d.phone||'')}">${escapeHtml(d.phone||'—')}</a></dd>
+            </div>
+            <div class="info-item full">
+              <dt>Email</dt>
+              <dd><a href="mailto:${escapeHtml(d.email||'')}">${escapeHtml(d.email||'—')}</a></dd>
+            </div>
+            <div class="info-item">
+              <dt>İş yeri</dt>
+              <dd>${escapeHtml(workplaceText(d))}</dd>
+            </div>
+            <div class="info-item">
+              <dt>Vəzifə</dt>
+              <dd>${escapeHtml(positionText(d))}</dd>
+            </div>
+            <div class="info-item">
+              <dt>İş təcrübəsi</dt>
+              <dd>${d.experience_years!=null ? d.experience_years+' il' : '—'}</dd>
+            </div>
+            <div class="info-item">
+              <dt>Qeydiyyat tarixi</dt>
+              <dd>${formatDate(d.created_at)}</dd>
+            </div>
+            <div class="info-item full">
+              <dt>Kurs</dt>
+              <dd style="font-size:16px;font-weight:600">${escapeHtml(d.course_name)} <small style="color:var(--muted);font-weight:500">(${escapeHtml(d.course_code||'')})</small></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <h2>Yüklənmiş sənədlər</h2>
+            <p>${fileEntries.length} fayl — kliklə baxış</p>
+          </div>
+        </div>
+        ${fileEntries.length===0 ? `
+          <div class="file-viewer">
+            <div class="file-viewer__empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <h3>Sənəd yoxdur</h3>
+              <p>Bu müraciətdə fayl yüklənməyib.</p>
+            </div>
+          </div>
+        ` : `
+          <div class="file-tabs" id="fileTabs">
+            ${fileEntries.map(([key,url],i)=>`
+              <button class="file-tab ${i===0?'is-active':''}" data-key="${escapeHtml(key)}" data-url="${escapeHtml(url)}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                ${escapeHtml(FILE_LABELS[key]||key)}
+              </button>
+            `).join('')}
+          </div>
+          <div class="file-viewer" id="fileViewer">
+            <div class="file-viewer__actions">
+              <a class="file-viewer__btn" id="fileOpenNew" href="${escapeHtml(fileEntries[0][1])}" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Yeni səhifədə
+              </a>
+              <a class="file-viewer__btn" id="fileDownload" href="${escapeHtml(fileEntries[0][1])}" download>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Yüklə
+              </a>
+            </div>
+            <embed id="fileEmbed" src="${escapeHtml(fileEntries[0][1])}" type="application/pdf">
+          </div>
+        `}
+      </div>
+    </div>
+
+    <div class="col-side">
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <h2>Status</h2>
+            <p>Müraciətin vəziyyəti</p>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="status-actions">
+            ${['pending','contacted','approved','rejected'].map(s=>`
+              <button class="status-btn ${d.status===s?'is-active':''}" data-status="${s}" onclick="changeStatus('${s}')">
+                <span class="icon">${statusIcon(s)}</span>
+                <span>${STATUS_LABELS[s]}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <h2>Admin qeydləri</h2>
+            <p>Daxili — yalnız admin görür</p>
+          </div>
+        </div>
+        <div class="card__body">
+          <textarea class="notes-textarea" id="notesArea" placeholder="Müraciət haqqında qeydlərinizi buraya yazın...">${escapeHtml(d.notes||'')}</textarea>
+          <div class="notes-foot">
+            <small id="notesStatus">Avtomatik saxlanılır</small>
+            <button class="btn btn-primary" onclick="saveNotes(true)">Saxla</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // File tabs event handler
+  document.querySelectorAll('.file-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.file-tab').forEach(t=>t.classList.remove('is-active'));
+      tab.classList.add('is-active');
+      const url=tab.dataset.url;
+      document.getElementById('fileEmbed').src=url;
+      document.getElementById('fileOpenNew').href=url;
+      document.getElementById('fileDownload').href=url;
+    });
+  });
+
+  // Notes auto-save
+  const notesArea=$('#notesArea');
+  if(notesArea){
+    notesArea.addEventListener('input',()=>{
+      $('#notesStatus').textContent='Yazılır...';
+      clearTimeout(saveTimeout);
+      saveTimeout=setTimeout(()=>saveNotes(false),1200);
+    });
+  }
+
+  // Print view-i da hazırla
+  renderPrintView();
+}
+
+function statusIcon(s){
+  const icons={
+    pending: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    contacted: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    approved: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    rejected: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+  };
+  return icons[s]||'';
+}
+
+/* ============= ACTIONS ============= */
+async function changeStatus(newStatus){
+  if(newStatus===currentData.status)return;
+  try{
+    await apiPatch(`/enrollments/${currentData.id}/status`,{status:newStatus});
+    currentData.status=newStatus;
+    render();
+    showToast(`Status dəyişdirildi: ${STATUS_LABELS[newStatus]}`,'success');
+  }catch(err){
+    showToast('Status yenilənmədi: '+err.message,'error');
+  }
+}
+
+async function saveNotes(manual){
+  const text=$('#notesArea').value;
+  if(text===(currentData.notes||''))return;
+  try{
+    $('#notesStatus').textContent='Saxlanılır...';
+    await apiPatch(`/enrollments/${currentData.id}/notes`,{notes:text});
+    currentData.notes=text;
+    $('#notesStatus').textContent='Saxlanıldı ✓';
+    if(manual)showToast('Qeydlər saxlanıldı','success');
+    renderPrintView();
+  }catch(err){
+    $('#notesStatus').textContent='Saxlanmadı: '+err.message;
+    if(manual)showToast('Qeydlər saxlanmadı: '+err.message,'error');
+  }
+}
+
+/* ============= PRINT VIEW ============= */
+function renderPrintView(){
+  const d=currentData;
+  const files=parseFiles(d.files);
+  const fileEntries=Object.entries(files);
+  const today=new Date();
+  const todayStr=`${String(today.getDate()).padStart(2,'0')}.${String(today.getMonth()+1).padStart(2,'0')}.${today.getFullYear()}`;
+
+  $('#printView').innerHTML=`
+    <div class="pv-header">
+      <div class="pv-brand">
+        <div class="pv-brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 14 12 12 22 10 12Z"/><path d="M2 12 12 14 22 12 12 10Z"/></svg>
+        </div>
+        <div class="pv-brand__text">
+          <div class="pv-brand__name">ADDA</div>
+          <div class="pv-brand__sub">Təkmilləşdirilmə kursları</div>
+        </div>
+      </div>
+      <div class="pv-header__right">
+        <div class="pv-reg-no">№ ${d.id}</div>
+        <div class="pv-date">Çap tarixi: ${todayStr}</div>
+      </div>
+    </div>
+
+    <h1 class="pv-title">Qeydiyyat müraciəti</h1>
+
+    <div class="pv-section">
+      <h2 class="pv-section__title">Şəxsi məlumatlar</h2>
+      <table class="pv-table">
+        <tr><td>Ad-Soyad</td><td><strong>${escapeHtml(d.student_name)}</strong></td></tr>
+        <tr><td>FİN kod</td><td>${escapeHtml(d.fin||'—')}</td></tr>
+        <tr><td>Telefon</td><td>${escapeHtml(d.phone||'—')}</td></tr>
+        <tr><td>Email</td><td>${escapeHtml(d.email||'—')}</td></tr>
+      </table>
+    </div>
+
+    <div class="pv-section">
+      <h2 class="pv-section__title">Peşə məlumatları</h2>
+      <table class="pv-table">
+        <tr><td>İş yeri</td><td>${escapeHtml(workplaceText(d))}</td></tr>
+        <tr><td>Vəzifə</td><td>${escapeHtml(positionText(d))}</td></tr>
+        <tr><td>İş təcrübəsi</td><td>${d.experience_years!=null ? d.experience_years+' il' : '—'}</td></tr>
+      </table>
+    </div>
+
+    <div class="pv-section">
+      <h2 class="pv-section__title">Müraciət olunan kurs</h2>
+      <table class="pv-table">
+        <tr><td>Kurs</td><td><strong>${escapeHtml(d.course_name)}</strong></td></tr>
+        <tr><td>Kurs kodu</td><td>${escapeHtml(d.course_code||'—')}</td></tr>
+        <tr><td>Qeydiyyat tarixi</td><td>${formatDate(d.created_at)}</td></tr>
+        <tr><td>Vəziyyət</td><td><span class="pv-status pv-status--${d.status}">${STATUS_LABELS[d.status]||d.status}</span></td></tr>
+      </table>
+    </div>
+
+    <div class="pv-section">
+      <h2 class="pv-section__title">Yüklənmiş sənədlər (${fileEntries.length})</h2>
+      ${fileEntries.length===0 ? '<p style="font-size:9.5pt;color:#888;font-style:italic">Sənəd yüklənməyib.</p>' :
+        `<ul class="pv-files">${fileEntries.map(([key,url])=>`<li><strong>${escapeHtml(FILE_LABELS[key]||key)}:</strong> <a href="${escapeHtml(url)}">${escapeHtml(url)}</a></li>`).join('')}</ul>`
+      }
+    </div>
+
+    <div class="pv-section">
+      <h2 class="pv-section__title">Admin qeydləri</h2>
+      <div class="pv-notes ${!d.notes?'pv-notes--empty':''}">${d.notes ? escapeHtml(d.notes) : 'Qeyd yoxdur.'}</div>
+    </div>
+
+    <div class="pv-foot">
+      <div class="pv-sig">Tədris şöbəsi rəhbəri</div>
+      <div class="pv-foot-meta">
+        ADDA · adda.edu.az<br>
+        Sənəd avtomatik olaraq generasiya olunub
+      </div>
+    </div>
+  `;
+}
+
+/* ============= INIT ============= */
+loadEnrollment();
+</script>
+
+</body>
+</html>

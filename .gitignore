@@ -59,3 +59,4 @@ temp/
 .claude/
 __pycache__/
 *.pyc
+api/main_backup.py

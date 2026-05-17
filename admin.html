@@ -495,13 +495,14 @@ td.cell-files{white-space:nowrap}
                 <th>FIN</th>
                 <th>Telefon</th>
                 <th>Email</th>
+                <th>İş yeri</th>
                 <th>Kurs</th>
                 <th>Status</th>
                 <th>Sənədlər</th>
               </tr>
             </thead>
             <tbody id="enrollmentsTableBody">
-              <tr class="loading-row"><td colspan="9"><span class="loader"></span> Yüklənir...</td></tr>
+              <tr class="loading-row"><td colspan="10"><span class="loader"></span> Yüklənir...</td></tr>
             </tbody>
           </table>
         </div>
@@ -755,7 +756,7 @@ function renderEnrollments() {
 
   const tbody = $('#enrollmentsTableBody');
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <h3>Tapılmadı</h3><p>Filtrlərə uyğun qeydiyyat yoxdur.</p>
     </div></td></tr>`;
@@ -774,10 +775,11 @@ function renderEnrollments() {
       <tr>
         <td class="cell-id">#${e.id}</td>
         <td style="white-space:nowrap">${formatDate(e.created_at)}</td>
-        <td class="cell-name"><a href="#" onclick="showDetail(${e.id});return false">${escapeHtml(e.student_name)}</a></td>
+        <td class="cell-name"><a href="/enrollment.html?id=${e.id}">${escapeHtml(e.student_name)}</a></td>
         <td><code style="font-size:12px">${escapeHtml(e.fin || '—')}</code></td>
         <td>${escapeHtml(e.phone || '—')}</td>
         <td>${escapeHtml(e.email || '—')}</td>
+        <td>${e.workplace_other ? escapeHtml(e.workplace_other) : (e.workplace_id ? escapeHtml({asco:'ASCO',cms:'CMS',cdc:'CDC',socar_marine:'SOCAR Marine',bp_agt:'BP-AGT',none:'İşləmir',other:'Digər'}[e.workplace_id] || e.workplace_id) : '—')}</td>
         <td>${escapeHtml(e.course_name)}</td>
         <td>
           <select class="status-select" data-id="${e.id}" onchange="updateStatus(${e.id}, this.value)">
@@ -939,7 +941,7 @@ async function loadEnrollments() {
     renderEnrollments();
   } catch (err) {
     showToast('Qeydiyyatlar yüklənmədi: ' + err.message, 'error');
-    $('#enrollmentsTableBody').innerHTML = `<tr><td colspan="9"><div class="empty-state">
+    $('#enrollmentsTableBody').innerHTML = `<tr><td colspan="10"><div class="empty-state">
       <h3>Xəta</h3><p>${escapeHtml(err.message)}</p>
     </div></td></tr>`;
   }

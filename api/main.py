@@ -377,6 +377,10 @@ async def enroll(
     email: str = Form(...),
     course_name: str = Form(...),
     course_code: str = Form(...),
+    workplace_id: str = Form(""),
+    workplace_other: str = Form(""),
+    position: str = Form(""),
+    experience_years: str = Form(""),
     id_file: UploadFile = File(None),
     diploma_file: UploadFile = File(None),
     work_file: UploadFile = File(None),
@@ -416,10 +420,14 @@ async def enroll(
         cur.execute(
             """
             INSERT INTO enrollments
-              (student_name, phone, fin, email, course_name, course_code, files, status)
-            VALUES (%s, %s, %s, %s, %s, %s, %s::jsonb, 'pending')
+              (student_name, phone, fin, email, course_name, course_code, files, status,
+               workplace_id, workplace_other, position, experience_years)
+            VALUES (%s, %s, %s, %s, %s, %s, %s::jsonb, 'pending',
+                    %s, %s, %s, %s)
             """,
-            (name, phone, fin, email, course_name, course_code, json.dumps(files)),
+            (name, phone, fin, email, course_name, course_code, json.dumps(files),
+             workplace_id or None, workplace_other or None, position or None,
+             int(experience_years) if experience_years.strip().isdigit() else None),
         )
         conn.commit()
         cur.close()
@@ -445,7 +453,8 @@ async def students(user=Depends(require_admin)):
         cur.execute(
             """
             SELECT id, created_at, student_name, fin, phone, email,
-                   course_name, course_code, status, files, notes
+                   course_name, course_code, status, files, notes,
+                   workplace_id, workplace_other, position, experience_years
             FROM enrollments
             ORDER BY id DESC
             """
@@ -460,7 +469,7 @@ async def students(user=Depends(require_admin)):
                     files_data = json.loads(files_data)
                 except Exception:
                     files_data = {}
-            result.append({
+           result.append({
                 "id": row[0],
                 "created_at": row[1].isoformat() if row[1] else None,
                 "student_name": row[2],
@@ -472,6 +481,10 @@ async def students(user=Depends(require_admin)):
                 "status": row[8],
                 "files": files_data,
                 "notes": row[10],
+                "workplace_id": row[11],
+                "workplace_other": row[12],
+                "position": row[13],
+                "experience_years": row[14],
             })
         return result
     except Exception as e:
@@ -513,6 +526,37 @@ async def update_status(enrollment_id: int, body: StatusUpdate, user=Depends(req
             conn.rollback()
         log.error("Status update failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
+class NotesUpdate(BaseModel):
+    notes: str
+
+@app.patch("/enrollments/{enrollment_id}/notes")
+async def update_notes(enrollment_id: int, body: NotesUpdate, user=Depends(require_admin)):
+    """Admin — müraciətə qeyd əlavə et."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE enrollments SET notes = %s WHERE id = %s RETURNING id",
+            (body.notes, enrollment_id),
+        )
+        row = cur.fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Enrollment not found")
+        conn.commit()
+        cur.close()
+        log.info("Notes updated by %s for enrollment %s", user["email"], enrollment_id)
+        return {"status": "success", "id": enrollment_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        log.error("Notes update failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
     finally:
         if conn:
             put_conn(conn)

@@ -1156,6 +1156,46 @@ footer{
               <span class="field__hint">Bütün bildirişlər və təlimatlar bu ünvana göndəriləcək.</span>
               <span class="field__error">Düzgün email ünvanı daxil edin.</span>
             </div>
+<div class="field">
+              <label for="workplace_id">İş yeri</label>
+              <select id="workplace_id" name="workplace_id" onchange="document.getElementById('workplace_other_wrap').style.display=this.value==='other'?'block':'none'">
+                <option value="">Seçilməyib</option>
+                <option value="asco">ASCO (Azərbaycan Xəzər Dəniz Gəmiçiliyi)</option>
+                <option value="cms">Caspian Marine Services</option>
+                <option value="cdc">Caspian Drilling Company</option>
+                <option value="socar_marine">SOCAR Marine</option>
+                <option value="bp_agt">BP-AGT</option>
+                <option value="none">İşləmir</option>
+                <option value="other">Digər</option>
+              </select>
+            </div>
+
+            <div class="field" id="workplace_other_wrap" style="display:none">
+              <label for="workplace_other">İş yerinin adı</label>
+              <input type="text" id="workplace_other" name="workplace_other" placeholder="Şirkətin adı" maxlength="200">
+            </div>
+
+            <div class="field">
+              <label for="position">Vəzifə</label>
+              <select id="position" name="position">
+                <option value="">Seçilməyib</option>
+                <option value="captain">Kapitan</option>
+                <option value="chief_officer">Baş köməkçi</option>
+                <option value="officer">Növbə zabiti</option>
+                <option value="chief_engineer">Baş mexanik</option>
+                <option value="second_engineer">İkinci mexanik</option>
+                <option value="engineer">Növbə mexaniki</option>
+                <option value="electrical_officer">Elektrotexniki zabit</option>
+                <option value="cadet">Kursant</option>
+                <option value="other">Digər</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="experience_years">İş təcrübəsi (il)</label>
+              <input type="number" id="experience_years" name="experience_years" min="0" max="60" placeholder="Məs.: 5">
+              <span class="field__hint">Dəniz sektorundakı təcrübəniz</span>
+            </div>
           </div>
         </div>
 
@@ -1722,6 +1762,13 @@ form.addEventListener('submit', async e => {
   payload.append('email', document.getElementById('email').value.trim());
   payload.append('course_name', data['Kurs']);
   payload.append('course_code', course.id.replace('r-', ''));
+payload.append('fin', document.getElementById('fin').value.trim());
+  payload.append('email', document.getElementById('email').value.trim());
+  payload.append('course_code', course.id);
+  payload.append('workplace_id', document.getElementById('workplace_id').value);
+  payload.append('workplace_other', document.getElementById('workplace_other').value.trim());
+  payload.append('position', document.getElementById('position').value);
+  payload.append('experience_years', document.getElementById('experience_years').value);
 
   // Faylları əlavə et
   const fileInputs = form.querySelectorAll('input[type="file"]');
