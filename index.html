@@ -477,12 +477,19 @@ section{padding-block:clamp(60px,8vw,90px)}
 .field input[type="tel"],
 .field input[type="number"],
 .field select{
-  width:100%;padding:12px 14px;
+  width:100%;
+  padding:12px 14px;
   background:var(--surface);
   border:1.5px solid var(--border);
   border-radius:var(--radius);
-  font-size:15px;color:var(--ink);
+  font-family:inherit;
+  font-size:15px;
+  font-weight:500;
+  line-height:1.4;
+  color:var(--ink);
   transition:.15s var(--transition);
+  -webkit-appearance:none;
+  appearance:none;
 }
 .field input:focus,.field select:focus{
   outline:0;border-color:var(--primary);
@@ -501,6 +508,16 @@ section{padding-block:clamp(60px,8vw,90px)}
   -webkit-appearance:none;
   padding-right:44px;
   cursor:pointer;
+}
+
+/* Remove number spinner arrows for cleaner look */
+.field input[type="number"]::-webkit-outer-spin-button,
+.field input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+.field input[type="number"]{
+  -moz-appearance:textfield;
 }
 
 /* Course selection (radio cards) */
