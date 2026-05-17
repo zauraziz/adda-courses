@@ -248,8 +248,7 @@ async def auth_callback(request: Request, code: str = "", state: str = "", error
         is_admin = await verify_user_in_admin_group(access_token, user_id)
     
     if not is_admin:
-        log.warning("DEBUG: user=%s id=%s claims_groups=%s admin_group_id=%s claim_names=%s",
-                    user_email, user_id, groups, ADMIN_GROUP_ID, claims.get("_claim_names"))
+        log.info("Access denied for user %s (%s) — not in admin group", user_email, user_id)
         return RedirectResponse(url=f"{origin}/login.html?error=not_authorized", status_code=302)
     
     log.info("Admin login: %s (%s)", user_name, user_email)
