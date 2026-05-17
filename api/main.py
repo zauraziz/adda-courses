@@ -469,7 +469,7 @@ async def students(user=Depends(require_admin)):
                     files_data = json.loads(files_data)
                 except Exception:
                     files_data = {}
-           result.append({
+            result.append({
                 "id": row[0],
                 "created_at": row[1].isoformat() if row[1] else None,
                 "student_name": row[2],
@@ -554,9 +554,6 @@ async def update_notes(enrollment_id: int, body: NotesUpdate, user=Depends(requi
             conn.rollback()
         log.error("Notes update failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        if conn:
-            put_conn(conn)
     finally:
         if conn:
             put_conn(conn)
