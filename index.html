@@ -475,6 +475,7 @@ section{padding-block:clamp(60px,8vw,90px)}
 .field input[type="text"],
 .field input[type="email"],
 .field input[type="tel"],
+.field input[type="number"],
 .field select{
   width:100%;padding:12px 14px;
   background:var(--surface);
@@ -491,7 +492,16 @@ section{padding-block:clamp(60px,8vw,90px)}
 .field__error{font-size:12px;color:var(--danger);font-weight:600;display:none;margin-top:2px}
 .field.has-error .field__error{display:block}
 
-.field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230c1a2b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%236b7785' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 16px center;
+  background-size:12px;
+  appearance:none;
+  -webkit-appearance:none;
+  padding-right:44px;
+  cursor:pointer;
+}
 
 /* Course selection (radio cards) */
 .course-radio-group{display:grid;grid-template-columns:1fr 1fr;gap:10px}
