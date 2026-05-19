@@ -480,10 +480,10 @@ async def students(user=Depends(require_admin)):
                 "course_code": row[7],
                 "status": row[8],
                 "files": files_data,
-                "workplace_id": row[9],
-                "workplace_other": row[10],
-                "position": row[11],
-                "experience_years": row[12],
+                "workplace_id": row[10],
+                "workplace_other": row[11],
+                "position": row[12],
+                "experience_years": row[13],
             })
         return result
     except Exception as e:
