@@ -52,7 +52,7 @@ a:hover{text-decoration:underline}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 input,select,textarea{font:inherit;color:inherit}
 
-/* ============= HEADER (no-print) ============= */
+/* ============= HEADER ============= */
 .top-bar{
   background:var(--surface);
   border-bottom:1px solid var(--border);
@@ -85,8 +85,10 @@ input,select,textarea{font:inherit;color:inherit}
   font-weight:600;font-size:13px;
   border:1px solid var(--border-strong);background:var(--surface);
   transition:.15s;
+  font-family:inherit;
 }
 .btn:hover{background:var(--surface-2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
 .btn-primary:hover{background:var(--primary-700)}
 .btn svg{width:14px;height:14px}
@@ -117,11 +119,9 @@ input,select,textarea{font:inherit;color:inherit}
 }
 .card__head p{font-size:13px;color:var(--muted);margin:0}
 .card__body{padding:20px}
-.card__body--tight{padding:8px}
 
 /* ============= INFO LIST ============= */
 .info-list{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.info-list--single{grid-template-columns:1fr}
 .info-item{display:flex;flex-direction:column;gap:2px;min-width:0}
 .info-item dt{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
 .info-item dd{margin:0;font-weight:500;font-size:14px;word-break:break-word}
@@ -129,43 +129,71 @@ input,select,textarea{font:inherit;color:inherit}
 .info-item.full{grid-column:1/-1}
 .info-item dd a{font-weight:500}
 
-/* ============= STATUS ============= */
+/* ============= STATUS — vivid colors ============= */
 .status-pill{
   display:inline-flex;align-items:center;gap:6px;
-  padding:4px 12px;border-radius:999px;
-  font-size:12px;font-weight:600;letter-spacing:.2px;
-  width:max-content;
+  padding:5px 14px;border-radius:999px;
+  font-size:12px;font-weight:700;letter-spacing:.3px;
+  width:max-content;color:#fff;
+  text-transform:uppercase;
 }
-.status-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
-.status-pending  {background:var(--warn-soft);color:var(--warn)}
-.status-approved {background:var(--success-soft);color:var(--success)}
-.status-rejected {background:var(--danger-soft);color:var(--danger)}
-.status-contacted{background:var(--info-soft);color:var(--info)}
+.status-pill .dot{width:7px;height:7px;border-radius:50%;background:#fff;opacity:.85}
+.status-pending  {background:var(--warn)}
+.status-approved {background:var(--success)}
+.status-rejected {background:var(--danger)}
+.status-contacted{background:var(--info)}
 
+/* Status action buttons */
 .status-actions{display:flex;flex-direction:column;gap:8px}
 .status-btn{
   display:flex;align-items:center;gap:10px;
-  padding:10px 14px;border-radius:var(--radius-sm);
-  border:1px solid var(--border);background:var(--surface);
+  padding:11px 14px;border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);background:var(--surface);
   font-weight:500;font-size:13.5px;text-align:left;
   transition:.15s;
+  position:relative;
+  font-family:inherit;
 }
-.status-btn:hover{background:var(--surface-2)}
-.status-btn.is-active{background:var(--primary-50);border-color:var(--primary);color:var(--primary);font-weight:600}
+.status-btn:hover:not(:disabled){background:var(--surface-2);border-color:var(--border-strong)}
+.status-btn:disabled{opacity:.6;cursor:wait}
 .status-btn .icon{
-  width:24px;height:24px;flex:0 0 24px;
+  width:26px;height:26px;flex:0 0 26px;
   display:grid;place-items:center;border-radius:50%;
   background:var(--surface-2);
+  color:var(--ink-soft);
+  transition:.15s;
 }
 .status-btn .icon svg{width:13px;height:13px}
-.status-btn.is-active .icon{background:var(--primary);color:#fff}
+.status-btn .label{flex:1}
+.status-btn .spinner{
+  display:none;
+  width:14px;height:14px;
+  border:2px solid var(--border);border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+.status-btn.is-loading{cursor:wait}
+.status-btn.is-loading .spinner{display:inline-block}
+
+/* Active state per status */
+.status-btn[data-status="pending"].is-active   {background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.status-btn[data-status="pending"].is-active .icon  {background:var(--warn);color:#fff}
+.status-btn[data-status="contacted"].is-active {background:var(--info-soft);border-color:var(--info);color:var(--info)}
+.status-btn[data-status="contacted"].is-active .icon{background:var(--info);color:#fff}
+.status-btn[data-status="approved"].is-active  {background:var(--success-soft);border-color:var(--success);color:var(--success)}
+.status-btn[data-status="approved"].is-active .icon {background:var(--success);color:#fff}
+.status-btn[data-status="rejected"].is-active  {background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.status-btn[data-status="rejected"].is-active .icon {background:var(--danger);color:#fff}
+
+.status-btn.is-active{font-weight:700}
 
 /* ============= NOTES ============= */
+.notes-form{display:flex;flex-direction:column;gap:10px}
 .notes-textarea{
   width:100%;
-  min-height:120px;
-  padding:12px 14px;
-  border:1px solid var(--border-strong);
+  min-height:90px;
+  padding:11px 14px;
+  border:1.5px solid var(--border-strong);
   border-radius:var(--radius-sm);
   background:var(--surface);
   font-size:14px;
@@ -175,8 +203,63 @@ input,select,textarea{font:inherit;color:inherit}
 }
 .notes-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-50)}
 
-.notes-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-.notes-foot small{font-size:12px;color:var(--muted)}
+.notes-foot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.notes-foot small{font-size:11.5px;color:var(--muted)}
+.notes-foot kbd{
+  font-family:'JetBrains Mono','Courier New',monospace;
+  font-size:10.5px;
+  padding:1px 5px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:3px;
+}
+
+.notes-list{display:flex;flex-direction:column;gap:10px;margin-top:14px;max-height:400px;overflow-y:auto}
+.note-item{
+  padding:12px 14px;
+  background:var(--surface-2);
+  border-left:3px solid var(--accent);
+  border-radius:var(--radius-sm);
+}
+.note-item__head{
+  display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  margin-bottom:6px;
+}
+.note-item__author{font-weight:600;font-size:12.5px;color:var(--ink)}
+.note-item__date{font-size:11px;color:var(--muted);white-space:nowrap}
+.note-item__content{font-size:13.5px;color:var(--ink-soft);white-space:pre-wrap;word-wrap:break-word}
+
+.notes-empty{
+  text-align:center;padding:24px 16px;color:var(--muted);
+  font-size:13px;
+}
+
+/* ============= AUDIT LOG ============= */
+.audit-list{display:flex;flex-direction:column}
+.audit-item{
+  display:flex;gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.audit-item:last-child{border-bottom:0}
+.audit-icon{
+  width:32px;height:32px;flex:0 0 32px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--surface-2);
+  color:var(--ink-soft);
+}
+.audit-icon svg{width:14px;height:14px}
+.audit-icon--status_changed{background:var(--primary-50);color:var(--primary)}
+.audit-icon--note_added{background:var(--accent-soft);color:var(--accent)}
+.audit-icon--file_viewed{background:var(--info-soft);color:var(--info)}
+
+.audit-body{flex:1;min-width:0}
+.audit-body__line{font-size:13.5px;color:var(--ink);line-height:1.45}
+.audit-body__line strong{font-weight:600}
+.audit-body__meta{font-size:11.5px;color:var(--muted);margin-top:3px}
+
+.audit-empty{text-align:center;padding:24px 16px;color:var(--muted);font-size:13px}
 
 /* ============= FILES ============= */
 .file-tabs{
@@ -191,6 +274,7 @@ input,select,textarea{font:inherit;color:inherit}
   white-space:nowrap;
   transition:.15s;
   border:1px solid transparent;
+  font-family:inherit;
 }
 .file-tab:hover{background:var(--surface-2)}
 .file-tab.is-active{background:var(--primary);color:#fff;border-color:var(--primary)}
@@ -230,6 +314,8 @@ input,select,textarea{font:inherit;color:inherit}
   font-size:13.5px;font-weight:500;
   opacity:0;transform:translateY(20px);pointer-events:none;
   transition:.25s;
+  max-width:340px;
+  box-shadow:0 12px 32px -8px rgba(0,0,0,.3);
 }
 .toast.is-show{opacity:1;transform:translateY(0)}
 .toast.is-success{background:var(--success)}
@@ -248,14 +334,11 @@ input,select,textarea{font:inherit;color:inherit}
 }
 .error-screen h2{font-family:'Fraunces',serif;color:var(--danger);margin:0 0 10px}
 
-/* ============= PRINT VIEW (only visible when printing) ============= */
+/* ============= PRINT VIEW ============= */
 .print-view{display:none}
 
-/* ============= PRINT STYLES ============= */
 @media print{
-  /* Hide everything except print view */
   .top-bar, .wrap{display:none !important}
-
   .print-view{
     display:block !important;
     padding:0;
@@ -263,16 +346,13 @@ input,select,textarea{font:inherit;color:inherit}
     font-size:11pt;
     line-height:1.45;
   }
-
   @page{margin:18mm 16mm}
-
   body{
     background:#fff;
     margin:0;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
   }
-
   .print-view{font-family:'Manrope',sans-serif;color:#000}
 
   .pv-header{
@@ -322,25 +402,28 @@ input,select,textarea{font:inherit;color:inherit}
 
   .pv-status{
     display:inline-block;padding:2pt 10pt;
-    border-radius:3pt;font-weight:600;font-size:10pt;
-    border:1px solid #003b6f;
+    border-radius:3pt;font-weight:700;font-size:10pt;
+    color:#fff;
   }
-  .pv-status--approved{background:#d1fadf;color:#0e7c4a;border-color:#0e7c4a}
-  .pv-status--rejected{background:#fee4e2;color:#b42318;border-color:#b42318}
-  .pv-status--pending {background:#fef0c7;color:#b54708;border-color:#b54708}
-  .pv-status--contacted{background:#d1e9ff;color:#0e639a;border-color:#0e639a}
+  .pv-status--approved {background:#0e7c4a}
+  .pv-status--rejected {background:#b42318}
+  .pv-status--pending  {background:#b54708}
+  .pv-status--contacted{background:#0e639a}
 
   .pv-files{padding-left:14pt;margin:0}
   .pv-files li{margin-bottom:3pt;font-size:9.5pt}
   .pv-files a{color:#003b6f;text-decoration:underline;word-break:break-all}
 
-  .pv-notes{
+  .pv-notes-print{
     background:#f9f6ef;border:1px solid #d3cdbf;
     border-radius:4pt;padding:8pt 10pt;
-    font-size:10pt;white-space:pre-wrap;
-    min-height:40pt;
+    font-size:10pt;
   }
-  .pv-notes--empty{color:#888;font-style:italic}
+  .pv-notes-print--empty{color:#888;font-style:italic}
+  .pv-note-item{padding:6pt 0;border-bottom:1px dotted #d3cdbf}
+  .pv-note-item:last-child{border-bottom:0}
+  .pv-note-item__head{font-size:9pt;color:#444;margin-bottom:2pt;font-weight:600}
+  .pv-note-item__content{font-size:10pt;white-space:pre-wrap}
 
   .pv-foot{
     margin-top:30pt;
@@ -373,7 +456,7 @@ input,select,textarea{font:inherit;color:inherit}
     </div>
   </div>
   <div class="top-bar__right">
-    <button class="btn" onclick="window.print()">
+    <button class="btn" id="btnPrint" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
       Çap et
     </button>
@@ -382,12 +465,12 @@ input,select,textarea{font:inherit;color:inherit}
 
 <!-- ============= MAIN VIEW ============= -->
 <div class="wrap" id="mainView">
-  <div class="loading-screen" id="loadingScreen">
+  <div class="loading-screen" id="loadingScreen" style="grid-column:1/-1">
     <span class="loader"></span> Yüklənir...
   </div>
 </div>
 
-<!-- ============= PRINT VIEW (yalnız çap zamanı görünür) ============= -->
+<!-- ============= PRINT VIEW ============= -->
 <div class="print-view" id="printView"></div>
 
 <div class="toast" id="toast"></div>
@@ -399,7 +482,8 @@ const params = new URLSearchParams(location.search);
 const enrollmentId = parseInt(params.get('id'));
 
 let currentData = null;
-let saveTimeout = null;
+let currentNotes = [];
+let currentAudit = [];
 
 const STATUS_LABELS = {
   pending:   'Gözləyir',
@@ -441,6 +525,7 @@ const WORKPLACE_LABELS = {
 
 /* ============= UTILITIES ============= */
 function $(sel){return document.querySelector(sel)}
+function $$(sel){return document.querySelectorAll(sel)}
 
 function escapeHtml(s){
   if(s==null)return '';
@@ -455,11 +540,24 @@ function formatDate(iso){
   return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+function formatDateRelative(iso){
+  if(!iso)return '—';
+  const d=new Date(iso);
+  if(isNaN(d))return iso;
+  const diff=(Date.now()-d.getTime())/1000;
+  if(diff<60)return 'indi';
+  if(diff<3600)return `${Math.floor(diff/60)} dəq əvvəl`;
+  if(diff<86400)return `${Math.floor(diff/3600)} saat əvvəl`;
+  if(diff<604800)return `${Math.floor(diff/86400)} gün əvvəl`;
+  return formatDate(iso);
+}
+
 function showToast(msg, type=''){
   const t=$('#toast');
   t.textContent=msg;
   t.className='toast is-show '+(type?'is-'+type:'');
-  setTimeout(()=>t.classList.remove('is-show'),2500);
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('is-show'),2800);
 }
 
 function parseFiles(files){
@@ -469,7 +567,7 @@ function parseFiles(files){
 }
 
 function workplaceText(d){
-  if(d.workplace_id && d.workplace_other) return d.workplace_other;
+  if(d.workplace_id==='other' && d.workplace_other) return d.workplace_other;
   if(d.workplace_id) return WORKPLACE_LABELS[d.workplace_id] || d.workplace_id;
   return '—';
 }
@@ -479,11 +577,26 @@ function positionText(d){
   return POSITION_LABELS[d.position] || d.position;
 }
 
+function fileLabel(key){
+  return FILE_LABELS[key] || key;
+}
+
 /* ============= API ============= */
 async function apiGet(path){
   const r=await fetch(API_BASE+path,{credentials:'include'});
   if(r.status===401){location.href='/login.html';throw new Error('Unauthorized')}
   if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  return await r.json();
+}
+
+async function apiPost(path, body){
+  const r=await fetch(API_BASE+path,{
+    method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body||{})
+  });
+  if(r.status===401){location.href='/login.html';throw new Error('Unauthorized')}
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.detail||`HTTP ${r.status}`)}
   return await r.json();
 }
 
@@ -513,176 +626,124 @@ async function loadEnrollment(){
       return;
     }
     currentData=item;
-    render();
+
+    // Paralel olaraq notes və audit-i yüklə
+    const [notes, audit] = await Promise.all([
+      apiGet(`/enrollments/${enrollmentId}/notes`).catch(()=>[]),
+      apiGet(`/enrollments/${enrollmentId}/audit`).catch(()=>[])
+    ]);
+    currentNotes = notes;
+    currentAudit = audit;
+
+    renderSkeleton();
+    renderInfo();
+    renderStatus();
+    renderFiles();
+    renderNotes();
+    renderAudit();
+    renderPrintView();
   }catch(err){
     $('#mainView').innerHTML=`<div class="error-screen" style="grid-column:1/-1"><h2>Xəta</h2><p>${escapeHtml(err.message)}</p></div>`;
   }
 }
 
-/* ============= RENDER ============= */
-function render(){
+/* ============= RENDER (skeleton — bir dəfə qurulur) ============= */
+function renderSkeleton(){
+  $('#mainView').innerHTML=`
+    <div class="col-main">
+      <div class="card" id="cardInfo"></div>
+      <div class="card" id="cardFiles"></div>
+      <div class="card" id="cardAudit"></div>
+    </div>
+    <div class="col-side">
+      <div class="card" id="cardStatus"></div>
+      <div class="card" id="cardNotes"></div>
+    </div>
+  `;
   const d=currentData;
   $('#topRegNo').textContent=`№ ${d.id}`;
   document.title=`Müraciət #${d.id} — ${d.student_name} · ADDA Admin`;
+}
 
-  const files=parseFiles(d.files);
-  const fileEntries=Object.entries(files);
-
-  $('#mainView').innerHTML=`
-    <div class="col-main">
-      <div class="card">
-        <div class="card__head">
-          <div>
-            <h2>Tələbə məlumatları</h2>
-            <p>Müraciət qeydiyyatı — ${formatDate(d.created_at)}</p>
-          </div>
-          <span class="status-pill status-${d.status}"><span class="dot"></span>${STATUS_LABELS[d.status]||d.status}</span>
-        </div>
-        <div class="card__body">
-          <dl class="info-list">
-            <div class="info-item full">
-              <dt>Ad-Soyad</dt>
-              <dd style="font-size:18px;font-weight:600">${escapeHtml(d.student_name)}</dd>
-            </div>
-            <div class="info-item">
-              <dt>FİN kod</dt>
-              <dd class="mono">${escapeHtml(d.fin||'—')}</dd>
-            </div>
-            <div class="info-item">
-              <dt>Telefon</dt>
-              <dd><a href="tel:${escapeHtml(d.phone||'')}">${escapeHtml(d.phone||'—')}</a></dd>
-            </div>
-            <div class="info-item full">
-              <dt>Email</dt>
-              <dd><a href="mailto:${escapeHtml(d.email||'')}">${escapeHtml(d.email||'—')}</a></dd>
-            </div>
-            <div class="info-item">
-              <dt>İş yeri</dt>
-              <dd>${escapeHtml(workplaceText(d))}</dd>
-            </div>
-            <div class="info-item">
-              <dt>Vəzifə</dt>
-              <dd>${escapeHtml(positionText(d))}</dd>
-            </div>
-            <div class="info-item">
-              <dt>İş təcrübəsi</dt>
-              <dd>${d.experience_years!=null ? d.experience_years+' il' : '—'}</dd>
-            </div>
-            <div class="info-item">
-              <dt>Qeydiyyat tarixi</dt>
-              <dd>${formatDate(d.created_at)}</dd>
-            </div>
-            <div class="info-item full">
-              <dt>Kurs</dt>
-              <dd style="font-size:16px;font-weight:600">${escapeHtml(d.course_name)} <small style="color:var(--muted);font-weight:500">(${escapeHtml(d.course_code||'')})</small></dd>
-            </div>
-          </dl>
-        </div>
+/* ============= INFO CARD ============= */
+function renderInfo(){
+  const d=currentData;
+  $('#cardInfo').innerHTML=`
+    <div class="card__head">
+      <div>
+        <h2>Tələbə məlumatları</h2>
+        <p>Müraciət qeydiyyatı — ${formatDate(d.created_at)}</p>
       </div>
-
-      <div class="card">
-        <div class="card__head">
-          <div>
-            <h2>Yüklənmiş sənədlər</h2>
-            <p>${fileEntries.length} fayl — kliklə baxış</p>
-          </div>
+      <span class="status-pill status-${d.status}" id="statusPill"><span class="dot"></span>${STATUS_LABELS[d.status]||d.status}</span>
+    </div>
+    <div class="card__body">
+      <dl class="info-list">
+        <div class="info-item full">
+          <dt>Ad-Soyad</dt>
+          <dd style="font-size:18px;font-weight:600">${escapeHtml(d.student_name)}</dd>
         </div>
-        ${fileEntries.length===0 ? `
-          <div class="file-viewer">
-            <div class="file-viewer__empty">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <h3>Sənəd yoxdur</h3>
-              <p>Bu müraciətdə fayl yüklənməyib.</p>
-            </div>
-          </div>
-        ` : `
-          <div class="file-tabs" id="fileTabs">
-            ${fileEntries.map(([key,url],i)=>`
-              <button class="file-tab ${i===0?'is-active':''}" data-key="${escapeHtml(key)}" data-url="${escapeHtml(url)}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                ${escapeHtml(FILE_LABELS[key]||key)}
-              </button>
-            `).join('')}
-          </div>
-          <div class="file-viewer" id="fileViewer">
-            <div class="file-viewer__actions">
-              <a class="file-viewer__btn" id="fileOpenNew" href="${escapeHtml(fileEntries[0][1])}" target="_blank" rel="noopener">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Yeni səhifədə
-              </a>
-              <a class="file-viewer__btn" id="fileDownload" href="${escapeHtml(fileEntries[0][1])}" download>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Yüklə
-              </a>
-            </div>
-            <embed id="fileEmbed" src="${escapeHtml(fileEntries[0][1])}" type="application/pdf">
-          </div>
-        `}
+        <div class="info-item">
+          <dt>FİN kod</dt>
+          <dd class="mono">${escapeHtml(d.fin||'—')}</dd>
+        </div>
+        <div class="info-item">
+          <dt>Telefon</dt>
+          <dd><a href="tel:${escapeHtml(d.phone||'')}">${escapeHtml(d.phone||'—')}</a></dd>
+        </div>
+        <div class="info-item full">
+          <dt>Email</dt>
+          <dd><a href="mailto:${escapeHtml(d.email||'')}">${escapeHtml(d.email||'—')}</a></dd>
+        </div>
+        <div class="info-item">
+          <dt>İş yeri</dt>
+          <dd>${escapeHtml(workplaceText(d))}</dd>
+        </div>
+        <div class="info-item">
+          <dt>Vəzifə</dt>
+          <dd>${escapeHtml(positionText(d))}</dd>
+        </div>
+        <div class="info-item">
+          <dt>İş təcrübəsi</dt>
+          <dd>${d.experience_years!=null ? d.experience_years+' il' : '—'}</dd>
+        </div>
+        <div class="info-item">
+          <dt>Qeydiyyat tarixi</dt>
+          <dd>${formatDate(d.created_at)}</dd>
+        </div>
+        <div class="info-item full">
+          <dt>Kurs</dt>
+          <dd style="font-size:16px;font-weight:600">${escapeHtml(d.course_name)} <small style="color:var(--muted);font-weight:500">(${escapeHtml(d.course_code||'')})</small></dd>
+        </div>
+      </dl>
+    </div>
+  `;
+}
+
+/* ============= STATUS CARD (optimistic UI) ============= */
+function renderStatus(){
+  const d=currentData;
+  $('#cardStatus').innerHTML=`
+    <div class="card__head">
+      <div>
+        <h2>Status</h2>
+        <p>Müraciətin vəziyyəti</p>
       </div>
     </div>
-
-    <div class="col-side">
-      <div class="card">
-        <div class="card__head">
-          <div>
-            <h2>Status</h2>
-            <p>Müraciətin vəziyyəti</p>
-          </div>
-        </div>
-        <div class="card__body">
-          <div class="status-actions">
-            ${['pending','contacted','approved','rejected'].map(s=>`
-              <button class="status-btn ${d.status===s?'is-active':''}" data-status="${s}" onclick="changeStatus('${s}')">
-                <span class="icon">${statusIcon(s)}</span>
-                <span>${STATUS_LABELS[s]}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card__head">
-          <div>
-            <h2>Admin qeydləri</h2>
-            <p>Daxili — yalnız admin görür</p>
-          </div>
-        </div>
-        <div class="card__body">
-          <textarea class="notes-textarea" id="notesArea" placeholder="Müraciət haqqında qeydlərinizi buraya yazın...">${escapeHtml(d.notes||'')}</textarea>
-          <div class="notes-foot">
-            <small id="notesStatus">Avtomatik saxlanılır</small>
-            <button class="btn btn-primary" onclick="saveNotes(true)">Saxla</button>
-          </div>
-        </div>
+    <div class="card__body">
+      <div class="status-actions" id="statusActions">
+        ${['pending','contacted','approved','rejected'].map(s=>`
+          <button class="status-btn ${d.status===s?'is-active':''}" data-status="${s}" type="button">
+            <span class="icon">${statusIcon(s)}</span>
+            <span class="label">${STATUS_LABELS[s]}</span>
+            <span class="spinner"></span>
+          </button>
+        `).join('')}
       </div>
     </div>
   `;
-
-  // File tabs event handler
-  document.querySelectorAll('.file-tab').forEach(tab=>{
-    tab.addEventListener('click',()=>{
-      document.querySelectorAll('.file-tab').forEach(t=>t.classList.remove('is-active'));
-      tab.classList.add('is-active');
-      const url=tab.dataset.url;
-      document.getElementById('fileEmbed').src=url;
-      document.getElementById('fileOpenNew').href=url;
-      document.getElementById('fileDownload').href=url;
-    });
+  document.querySelectorAll('#statusActions .status-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>changeStatus(btn.dataset.status, btn));
   });
-
-  // Notes auto-save
-  const notesArea=$('#notesArea');
-  if(notesArea){
-    notesArea.addEventListener('input',()=>{
-      $('#notesStatus').textContent='Yazılır...';
-      clearTimeout(saveTimeout);
-      saveTimeout=setTimeout(()=>saveNotes(false),1200);
-    });
-  }
-
-  // Print view-i da hazırla
-  renderPrintView();
 }
 
 function statusIcon(s){
@@ -695,33 +756,271 @@ function statusIcon(s){
   return icons[s]||'';
 }
 
-/* ============= ACTIONS ============= */
-async function changeStatus(newStatus){
+async function changeStatus(newStatus, clickedBtn){
   if(newStatus===currentData.status)return;
+
+  const oldStatus = currentData.status;
+
+  // Optimistik UI: bütün düymələri disable et, spinneri göstər
+  const allBtns = document.querySelectorAll('#statusActions .status-btn');
+  allBtns.forEach(b=>b.disabled=true);
+  clickedBtn.classList.add('is-loading');
+
   try{
     await apiPatch(`/enrollments/${currentData.id}/status`,{status:newStatus});
     currentData.status=newStatus;
-    render();
-    showToast(`Status dəyişdirildi: ${STATUS_LABELS[newStatus]}`,'success');
+
+    // YALNIZ status pill və düymələri yenilə, qalan səhifə qalır
+    allBtns.forEach(b=>{
+      b.classList.toggle('is-active', b.dataset.status===newStatus);
+      b.disabled=false;
+      b.classList.remove('is-loading');
+    });
+
+    // Pill-i yenilə
+    const pill = $('#statusPill');
+    if(pill){
+      pill.className = `status-pill status-${newStatus}`;
+      pill.innerHTML = `<span class="dot"></span>${STATUS_LABELS[newStatus]}`;
+    }
+
+    // Audit log-u yenidən yüklə
+    apiGet(`/enrollments/${currentData.id}/audit`).then(audit=>{
+      currentAudit = audit;
+      renderAudit();
+      renderPrintView();
+    }).catch(()=>{});
+
+    showToast(`Status: ${STATUS_LABELS[oldStatus]} → ${STATUS_LABELS[newStatus]}`,'success');
   }catch(err){
+    allBtns.forEach(b=>{b.disabled=false;b.classList.remove('is-loading')});
     showToast('Status yenilənmədi: '+err.message,'error');
   }
 }
 
-async function saveNotes(manual){
-  const text=$('#notesArea').value;
-  if(text===(currentData.notes||''))return;
-  try{
-    $('#notesStatus').textContent='Saxlanılır...';
-    await apiPatch(`/enrollments/${currentData.id}/notes`,{notes:text});
-    currentData.notes=text;
-    $('#notesStatus').textContent='Saxlanıldı ✓';
-    if(manual)showToast('Qeydlər saxlanıldı','success');
-    renderPrintView();
-  }catch(err){
-    $('#notesStatus').textContent='Saxlanmadı: '+err.message;
-    if(manual)showToast('Qeydlər saxlanmadı: '+err.message,'error');
+/* ============= NOTES CARD ============= */
+function renderNotes(){
+  $('#cardNotes').innerHTML=`
+    <div class="card__head">
+      <div>
+        <h2>Admin qeydləri</h2>
+        <p>Daxili — yalnız adminlər görür</p>
+      </div>
+    </div>
+    <div class="card__body">
+      <div class="notes-form">
+        <textarea class="notes-textarea" id="notesArea" placeholder="Müraciət haqqında qeydinizi buraya yazın..."></textarea>
+        <div class="notes-foot">
+          <small><kbd>Ctrl</kbd>+<kbd>Enter</kbd> ilə əlavə et</small>
+          <button class="btn btn-primary" id="btnAddNote" type="button" disabled>Əlavə et</button>
+        </div>
+      </div>
+      <div class="notes-list" id="notesList"></div>
+    </div>
+  `;
+
+  const textarea = $('#notesArea');
+  const btn = $('#btnAddNote');
+
+  textarea.addEventListener('input',()=>{
+    btn.disabled = !textarea.value.trim();
+  });
+  textarea.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && (e.ctrlKey||e.metaKey)){
+      e.preventDefault();
+      addNote();
+    }
+  });
+  btn.addEventListener('click', addNote);
+
+  renderNotesList();
+}
+
+function renderNotesList(){
+  const list = $('#notesList');
+  if(!list)return;
+  if(currentNotes.length===0){
+    list.innerHTML = '<div class="notes-empty">Hələ qeyd yoxdur</div>';
+    return;
   }
+  list.innerHTML = currentNotes.map(n=>`
+    <div class="note-item">
+      <div class="note-item__head">
+        <span class="note-item__author">${escapeHtml(n.author_name||n.author_email)}</span>
+        <span class="note-item__date" title="${escapeHtml(formatDate(n.created_at))}">${escapeHtml(formatDateRelative(n.created_at))}</span>
+      </div>
+      <div class="note-item__content">${escapeHtml(n.content)}</div>
+    </div>
+  `).join('');
+}
+
+async function addNote(){
+  const textarea = $('#notesArea');
+  const btn = $('#btnAddNote');
+  const content = textarea.value.trim();
+  if(!content)return;
+
+  btn.disabled=true;
+  btn.textContent='Əlavə edilir...';
+
+  try{
+    const newNote = await apiPost(`/enrollments/${currentData.id}/notes`,{content});
+    currentNotes = [newNote, ...currentNotes];
+    textarea.value='';
+    renderNotesList();
+    showToast('Qeyd əlavə edildi','success');
+
+    // Audit log-u yenidən yüklə
+    apiGet(`/enrollments/${currentData.id}/audit`).then(audit=>{
+      currentAudit = audit;
+      renderAudit();
+      renderPrintView();
+    }).catch(()=>{});
+  }catch(err){
+    showToast('Qeyd əlavə edilmədi: '+err.message,'error');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Əlavə et';
+  }
+}
+
+/* ============= AUDIT CARD ============= */
+function renderAudit(){
+  $('#cardAudit').innerHTML=`
+    <div class="card__head">
+      <div>
+        <h2>Tarixçə</h2>
+        <p>Bu müraciət üzərində ediləən bütün dəyişikliklər</p>
+      </div>
+    </div>
+    <div class="card__body">
+      ${currentAudit.length===0 ?
+        '<div class="audit-empty">Hələ heç bir hərəkət qeydə alınmayıb</div>' :
+        '<div class="audit-list">' + currentAudit.map(a=>auditItemHtml(a)).join('') + '</div>'
+      }
+    </div>
+  `;
+}
+
+function auditItemHtml(a){
+  const auditIcons={
+    status_changed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+    note_added: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    file_viewed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+  };
+
+  let line='';
+  const author = escapeHtml(a.admin_name||a.admin_email);
+  if(a.action==='status_changed'){
+    const from = STATUS_LABELS[a.details.from] || a.details.from || '—';
+    const to = STATUS_LABELS[a.details.to] || a.details.to || '—';
+    line = `<strong>${author}</strong> statusu dəyişdi: <strong>${escapeHtml(from)}</strong> → <strong>${escapeHtml(to)}</strong>`;
+  }else if(a.action==='note_added'){
+    const preview = a.details.preview || '';
+    line = `<strong>${author}</strong> qeyd əlavə etdi${preview ? `: <em style="color:var(--muted)">"${escapeHtml(preview.slice(0,80))}${preview.length>80?'…':''}"</em>` : ''}`;
+  }else if(a.action==='file_viewed'){
+    line = `<strong>${author}</strong> sənədə baxdı: <strong>${escapeHtml(fileLabel(a.details.file))}</strong>`;
+  }else{
+    line = `<strong>${author}</strong> hərəkət: ${escapeHtml(a.action)}`;
+  }
+
+  return `
+    <div class="audit-item">
+      <div class="audit-icon audit-icon--${escapeHtml(a.action)}">${auditIcons[a.action]||''}</div>
+      <div class="audit-body">
+        <div class="audit-body__line">${line}</div>
+        <div class="audit-body__meta">${escapeHtml(formatDate(a.created_at))} · ${escapeHtml(a.admin_email)}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ============= FILES CARD ============= */
+function renderFiles(){
+  const d=currentData;
+  const files=parseFiles(d.files);
+  const fileEntries=Object.entries(files);
+
+  $('#cardFiles').innerHTML=`
+    <div class="card__head">
+      <div>
+        <h2>Yüklənmiş sənədlər</h2>
+        <p>${fileEntries.length} fayl — kliklə baxış</p>
+      </div>
+    </div>
+    ${fileEntries.length===0 ? `
+      <div class="file-viewer">
+        <div class="file-viewer__empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <h3>Sənəd yoxdur</h3>
+          <p>Bu müraciətdə fayl yüklənməyib.</p>
+        </div>
+      </div>
+    ` : `
+      <div class="file-tabs" id="fileTabs">
+        ${fileEntries.map(([key,url],i)=>`
+          <button class="file-tab ${i===0?'is-active':''}" data-key="${escapeHtml(key)}" data-url="${escapeHtml(url)}" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            ${escapeHtml(fileLabel(key))}
+          </button>
+        `).join('')}
+      </div>
+      <div class="file-viewer" id="fileViewer">
+        <div class="file-viewer__actions">
+          <a class="file-viewer__btn" id="fileOpenNew" href="${escapeHtml(fileEntries[0][1])}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Yeni səhifədə
+          </a>
+          <a class="file-viewer__btn" id="fileDownload" href="${escapeHtml(fileEntries[0][1])}" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Yüklə
+          </a>
+        </div>
+        <embed id="fileEmbed" src="${escapeHtml(fileEntries[0][1])}" type="application/pdf">
+      </div>
+    `}
+  `;
+
+  // İlk faylı view kimi qeyd et
+  if(fileEntries.length>0){
+    logFileView(fileEntries[0][0]);
+  }
+
+  // Tab handlers
+  document.querySelectorAll('.file-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.file-tab').forEach(t=>t.classList.remove('is-active'));
+      tab.classList.add('is-active');
+      const url=tab.dataset.url;
+      const key=tab.dataset.key;
+      document.getElementById('fileEmbed').src=url;
+      document.getElementById('fileOpenNew').href=url;
+      document.getElementById('fileDownload').href=url;
+      logFileView(key);
+    });
+  });
+}
+
+/* Track file views (fire-and-forget) */
+const viewedFiles = new Set();
+function logFileView(fileKey){
+  // Eyni faylı bir səssiyyada bir dəfə log et
+  const sessionKey = `${currentData.id}_${fileKey}`;
+  if(viewedFiles.has(sessionKey))return;
+  viewedFiles.add(sessionKey);
+
+  apiPost(`/enrollments/${currentData.id}/file-view`,{file_key:fileKey})
+    .then(()=>{
+      // 2 saniyə sonra audit-i yenilə (UI spam-ı olmasın)
+      clearTimeout(window._auditRefresh);
+      window._auditRefresh = setTimeout(()=>{
+        apiGet(`/enrollments/${currentData.id}/audit`).then(audit=>{
+          currentAudit = audit;
+          renderAudit();
+        }).catch(()=>{});
+      }, 2000);
+    })
+    .catch(()=>{});
 }
 
 /* ============= PRINT VIEW ============= */
@@ -731,6 +1030,14 @@ function renderPrintView(){
   const fileEntries=Object.entries(files);
   const today=new Date();
   const todayStr=`${String(today.getDate()).padStart(2,'0')}.${String(today.getMonth()+1).padStart(2,'0')}.${today.getFullYear()}`;
+
+  const notesHtml = currentNotes.length===0
+    ? '<div class="pv-notes-print pv-notes-print--empty">Qeyd yoxdur.</div>'
+    : `<div class="pv-notes-print">${currentNotes.map(n=>`
+        <div class="pv-note-item">
+          <div class="pv-note-item__head">${escapeHtml(n.author_name||n.author_email)} · ${escapeHtml(formatDate(n.created_at))}</div>
+          <div class="pv-note-item__content">${escapeHtml(n.content)}</div>
+        </div>`).join('')}</div>`;
 
   $('#printView').innerHTML=`
     <div class="pv-header">
@@ -783,13 +1090,13 @@ function renderPrintView(){
     <div class="pv-section">
       <h2 class="pv-section__title">Yüklənmiş sənədlər (${fileEntries.length})</h2>
       ${fileEntries.length===0 ? '<p style="font-size:9.5pt;color:#888;font-style:italic">Sənəd yüklənməyib.</p>' :
-        `<ul class="pv-files">${fileEntries.map(([key,url])=>`<li><strong>${escapeHtml(FILE_LABELS[key]||key)}:</strong> <a href="${escapeHtml(url)}">${escapeHtml(url)}</a></li>`).join('')}</ul>`
+        `<ul class="pv-files">${fileEntries.map(([key,url])=>`<li><strong>${escapeHtml(fileLabel(key))}:</strong> <a href="${escapeHtml(url)}">${escapeHtml(url)}</a></li>`).join('')}</ul>`
       }
     </div>
 
     <div class="pv-section">
-      <h2 class="pv-section__title">Admin qeydləri</h2>
-      <div class="pv-notes ${!d.notes?'pv-notes--empty':''}">${d.notes ? escapeHtml(d.notes) : 'Qeyd yoxdur.'}</div>
+      <h2 class="pv-section__title">Admin qeydləri (${currentNotes.length})</h2>
+      ${notesHtml}
     </div>
 
     <div class="pv-foot">
@@ -803,6 +1110,16 @@ function renderPrintView(){
 }
 
 /* ============= INIT ============= */
+$('#btnPrint').addEventListener('click', ()=>{
+  // Print-dən əvvəl PrintView təzələ
+  if(currentData){
+    renderPrintView();
+    setTimeout(()=>window.print(), 100);
+  }else{
+    window.print();
+  }
+});
+
 loadEnrollment();
 </script>
 

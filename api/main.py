@@ -453,7 +453,7 @@ async def students(user=Depends(require_admin)):
         cur.execute(
             """
             SELECT id, created_at, student_name, fin, phone, email,
-                   course_name, course_code, status, files, notes,
+                   course_name, course_code, status, files,
                    workplace_id, workplace_other, position, experience_years
             FROM enrollments
             ORDER BY id DESC
@@ -480,11 +480,10 @@ async def students(user=Depends(require_admin)):
                 "course_code": row[7],
                 "status": row[8],
                 "files": files_data,
-                "notes": row[10],
-                "workplace_id": row[11],
-                "workplace_other": row[12],
-                "position": row[13],
-                "experience_years": row[14],
+                "workplace_id": row[9],
+                "workplace_other": row[10],
+                "position": row[11],
+                "experience_years": row[12],
             })
         return result
     except Exception as e:
@@ -509,12 +508,26 @@ async def update_status(enrollment_id: int, body: StatusUpdate, user=Depends(req
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-            "UPDATE enrollments SET status = %s WHERE id = %s RETURNING id",
+            "SELECT status FROM enrollments WHERE id = %s",
+            (enrollment_id,)
+        )
+        old_row = cur.fetchone()
+        if old_row is None:
+            raise HTTPException(status_code=404, detail="Enrollment not found")
+        old_status = old_row[0]
+
+        cur.execute(
+            "UPDATE enrollments SET status = %s WHERE id = %s",
             (body.status, enrollment_id),
         )
-        row = cur.fetchone()
-        if row is None:
-            raise HTTPException(status_code=404, detail="Enrollment not found")
+
+        cur.execute(
+            """INSERT INTO enrollment_audit_log
+               (enrollment_id, admin_email, admin_name, action, details)
+               VALUES (%s, %s, %s, %s, %s::jsonb)""",
+            (enrollment_id, user["email"], user.get("name", ""), "status_changed",
+             json.dumps({"from": old_status, "to": body.status}))
+        )
         conn.commit()
         cur.close()
         log.info("Status updated by %s: enrollment %s -> %s", user["email"], enrollment_id, body.status)
@@ -526,34 +539,158 @@ async def update_status(enrollment_id: int, body: StatusUpdate, user=Depends(req
             conn.rollback()
         log.error("Status update failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
-class NotesUpdate(BaseModel):
-    notes: str
+    finally:
+        if conn:
+            put_conn(conn)
 
-@app.patch("/enrollments/{enrollment_id}/notes")
-async def update_notes(enrollment_id: int, body: NotesUpdate, user=Depends(require_admin)):
-    """Admin — müraciətə qeyd əlavə et."""
+
+class NoteCreate(BaseModel):
+    content: str
+
+
+@app.get("/enrollments/{enrollment_id}/notes")
+async def get_notes(enrollment_id: int, user=Depends(require_admin)):
     conn = None
     try:
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-            "UPDATE enrollments SET notes = %s WHERE id = %s RETURNING id",
-            (body.notes, enrollment_id),
+            """SELECT id, author_email, author_name, content, created_at
+               FROM enrollment_notes
+               WHERE enrollment_id = %s
+               ORDER BY created_at DESC""",
+            (enrollment_id,)
         )
-        row = cur.fetchone()
-        if row is None:
+        rows = cur.fetchall()
+        cur.close()
+        return [
+            {
+                "id": r[0],
+                "author_email": r[1],
+                "author_name": r[2],
+                "content": r[3],
+                "created_at": r[4].isoformat() if r[4] else None,
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        log.error("Notes fetch failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+@app.post("/enrollments/{enrollment_id}/notes")
+async def create_note(enrollment_id: int, body: NoteCreate, user=Depends(require_admin)):
+    if not body.content.strip():
+        raise HTTPException(status_code=400, detail="Note content cannot be empty")
+
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        cur.execute("SELECT id FROM enrollments WHERE id = %s", (enrollment_id,))
+        if cur.fetchone() is None:
             raise HTTPException(status_code=404, detail="Enrollment not found")
+
+        cur.execute(
+            """INSERT INTO enrollment_notes
+               (enrollment_id, author_email, author_name, content)
+               VALUES (%s, %s, %s, %s)
+               RETURNING id, created_at""",
+            (enrollment_id, user["email"], user.get("name", ""), body.content.strip())
+        )
+        note_row = cur.fetchone()
+
+        cur.execute(
+            """INSERT INTO enrollment_audit_log
+               (enrollment_id, admin_email, admin_name, action, details)
+               VALUES (%s, %s, %s, %s, %s::jsonb)""",
+            (enrollment_id, user["email"], user.get("name", ""), "note_added",
+             json.dumps({"note_id": note_row[0], "preview": body.content.strip()[:100]}))
+        )
         conn.commit()
         cur.close()
-        log.info("Notes updated by %s for enrollment %s", user["email"], enrollment_id)
-        return {"status": "success", "id": enrollment_id}
+        return {
+            "id": note_row[0],
+            "author_email": user["email"],
+            "author_name": user.get("name", ""),
+            "content": body.content.strip(),
+            "created_at": note_row[1].isoformat()
+        }
     except HTTPException:
         raise
     except Exception as e:
         if conn:
             conn.rollback()
-        log.error("Notes update failed: %s", e)
+        log.error("Note create failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+@app.get("/enrollments/{enrollment_id}/audit")
+async def get_audit(enrollment_id: int, user=Depends(require_admin)):
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            """SELECT id, admin_email, admin_name, action, details, created_at
+               FROM enrollment_audit_log
+               WHERE enrollment_id = %s
+               ORDER BY created_at DESC
+               LIMIT 200""",
+            (enrollment_id,)
+        )
+        rows = cur.fetchall()
+        cur.close()
+        return [
+            {
+                "id": r[0],
+                "admin_email": r[1],
+                "admin_name": r[2],
+                "action": r[3],
+                "details": r[4] if isinstance(r[4], dict) else (json.loads(r[4]) if r[4] else {}),
+                "created_at": r[5].isoformat() if r[5] else None,
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        log.error("Audit fetch failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+class FileView(BaseModel):
+    file_key: str
+
+
+@app.post("/enrollments/{enrollment_id}/file-view")
+async def log_file_view(enrollment_id: int, body: FileView, user=Depends(require_admin)):
+    """Log when admin views a file. Fire-and-forget."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            """INSERT INTO enrollment_audit_log
+               (enrollment_id, admin_email, admin_name, action, details)
+               VALUES (%s, %s, %s, %s, %s::jsonb)""",
+            (enrollment_id, user["email"], user.get("name", ""), "file_viewed",
+             json.dumps({"file": body.file_key}))
+        )
+        conn.commit()
+        cur.close()
+        return {"status": "ok"}
+    except Exception as e:
+        log.error("File view log failed: %s", e)
+        return {"status": "ok"}
     finally:
         if conn:
             put_conn(conn)
