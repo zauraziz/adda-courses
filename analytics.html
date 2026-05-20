@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Analitika · ADDA Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Chart.js + date adapter -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- SheetJS for Excel export -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+:root{
+  --bg:#fafaf6;
+  --surface:#ffffff;
+  --surface-2:#f4f1ea;
+  --ink:#0c1a2b;
+  --ink-soft:#3a4a5e;
+  --muted:#6b7785;
+  --border:#e6e1d6;
+  --border-strong:#d3cdbf;
+  --primary:#003b6f;
+  --primary-700:#002a52;
+  --primary-50:#eaf1f9;
+  --accent:#b88746;
+  --accent-soft:#e9d9bf;
+  --success:#0e7c4a;
+  --success-soft:#d1fadf;
+  --warn:#b54708;
+  --warn-soft:#fef0c7;
+  --danger:#b42318;
+  --danger-soft:#fee4e2;
+  --info:#0e639a;
+  --info-soft:#d1e9ff;
+  --radius-sm:6px;
+  --radius:10px;
+  --radius-lg:14px;
+  --shadow-sm:0 1px 2px rgba(12,26,43,.04),0 1px 3px rgba(12,26,43,.06);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Manrope',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select{font:inherit;color:inherit}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ============= LAYOUT ============= */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+@media (max-width:880px){.layout{grid-template-columns:1fr}}
+
+/* ============= SIDEBAR ============= */
+.sidebar{
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:24px 16px;
+  display:flex;flex-direction:column;gap:8px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+@media (max-width:880px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--border)}}
+
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px 18px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.brand__mark{
+  width:42px;height:42px;flex:0 0 42px;
+  display:grid;place-items:center;
+  background:var(--primary);
+  border-radius:50%;
+  box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--accent);
+}
+.brand__mark svg{width:24px;height:24px;color:#fff}
+.brand__text{display:flex;flex-direction:column;line-height:1.15}
+.brand__name{font-family:'Fraunces',serif;font-weight:600;font-size:15px}
+.brand__sub{font-size:10.5px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+
+.nav-group{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.nav-group__label{font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 12px 4px}
+
+.nav-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-radius:var(--radius-sm);
+  color:var(--ink-soft);font-weight:500;font-size:14px;
+  transition:.15s;cursor:pointer;
+  text-decoration:none;
+}
+.nav-item:hover{background:var(--surface-2);color:var(--ink);text-decoration:none}
+.nav-item.is-active{background:var(--primary);color:#fff}
+.nav-item__left{display:flex;align-items:center;gap:10px}
+.nav-item svg{width:18px;height:18px;flex:0 0 18px}
+
+/* ============= MAIN ============= */
+.main{padding:28px clamp(20px,3vw,40px);min-width:0}
+
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.page-head__title{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.page-head h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;letter-spacing:-.01em;margin:0}
+.page-head__sub{color:var(--muted);font-size:14px;margin:0}
+
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:999px;
+  font-size:12px;font-weight:600;letter-spacing:.2px;
+  background:var(--success-soft);color:var(--success);
+}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+.page-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* ============= FILTERS ============= */
+.filter-bar{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  margin-bottom:20px;padding:14px 18px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+.filter-label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+
+.range-btn-group{display:inline-flex;border:1px solid var(--border-strong);border-radius:var(--radius-sm);overflow:hidden}
+.range-btn{
+  padding:7px 14px;
+  background:var(--surface);
+  font-size:13px;font-weight:500;
+  border-right:1px solid var(--border);
+  transition:.15s;
+}
+.range-btn:last-child{border-right:0}
+.range-btn:hover{background:var(--surface-2)}
+.range-btn.is-active{background:var(--primary);color:#fff}
+
+.date-input{
+  padding:7px 10px;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface);
+  font-size:13px;
+  font-family:inherit;
+}
+.date-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-50)}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:var(--radius-sm);
+  font-weight:600;font-size:13px;
+  border:1px solid var(--border-strong);background:var(--surface);
+  transition:.15s;
+  font-family:inherit;
+}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-700)}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-accent:hover{filter:brightness(.92)}
+.btn svg{width:14px;height:14px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ============= STATS GRID (KPI) ============= */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
+.stat{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow-sm);
+  position:relative;overflow:hidden;
+}
+.stat::before{
+  content:"";position:absolute;top:0;left:0;width:4px;height:100%;
+  background:var(--primary);
+}
+.stat--success::before{background:var(--success)}
+.stat--warn::before{background:var(--warn)}
+.stat--accent::before{background:var(--accent)}
+
+.stat__head{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;font-weight:600;margin-bottom:10px}
+.stat__head svg{width:14px;height:14px}
+.stat__value{font-family:'Fraunces',serif;font-weight:600;font-size:34px;line-height:1;letter-spacing:-.02em;color:var(--ink)}
+.stat__sub{font-size:13px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:6px}
+.stat__sub.up{color:var(--success)}
+.stat__sub.down{color:var(--danger)}
+.stat__sub svg{width:12px;height:12px}
+
+/* ============= CHARTS GRID ============= */
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+@media (max-width:1100px){.charts-grid{grid-template-columns:1fr}}
+
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media (max-width:1100px){.charts-row{grid-template-columns:1fr}}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-sm);
+}
+.card__head{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.card__title{display:flex;flex-direction:column;gap:2px;min-width:0}
+.card__title h2{font-family:'Fraunces',serif;font-weight:600;font-size:17px;margin:0}
+.card__title p{font-size:13px;color:var(--muted);margin:0}
+.card__actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.card__body{padding:20px}
+.card__body--chart{padding:16px 20px 20px;position:relative;height:340px}
+.card__body--chart-sm{padding:16px 20px 20px;position:relative;height:280px}
+
+/* ============= AUDIT FEED ============= */
+.audit-feed{display:flex;flex-direction:column;max-height:420px;overflow-y:auto}
+.audit-row{
+  display:flex;gap:12px;
+  padding:12px 18px;
+  border-bottom:1px solid var(--border);
+  transition:.15s;
+}
+.audit-row:last-child{border-bottom:0}
+.audit-row:hover{background:var(--surface-2)}
+.audit-icon{
+  width:30px;height:30px;flex:0 0 30px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--surface-2);
+  color:var(--ink-soft);
+}
+.audit-icon svg{width:14px;height:14px}
+.audit-icon--status_changed{background:var(--primary-50);color:var(--primary)}
+.audit-icon--note_added{background:var(--accent-soft);color:var(--accent)}
+.audit-icon--file_viewed{background:var(--info-soft);color:var(--info)}
+.audit-body{flex:1;min-width:0;font-size:13px;line-height:1.4}
+.audit-body strong{font-weight:600}
+.audit-body a{font-weight:600}
+.audit-body__meta{font-size:11.5px;color:var(--muted);margin-top:3px}
+
+/* ============= ADMIN ACTIVITY TABLE ============= */
+.activity-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.activity-table th{
+  text-align:left;font-weight:600;font-size:11px;letter-spacing:.4px;text-transform:uppercase;
+  color:var(--muted);padding:10px 18px;background:var(--surface-2);
+}
+.activity-table td{padding:11px 18px;border-bottom:1px solid var(--border)}
+.activity-table tr:last-child td{border-bottom:0}
+.activity-table tr:hover td{background:var(--surface-2)}
+.activity-name{font-weight:600}
+.activity-email{font-size:12px;color:var(--muted)}
+.activity-count{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:30px;padding:3px 8px;border-radius:999px;
+  background:var(--primary-50);color:var(--primary);
+  font-weight:700;font-size:12px;
+}
+
+/* ============= LOADING ============= */
+.loader{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-cover{
+  position:absolute;inset:0;
+  background:rgba(255,255,255,.7);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:13px;color:var(--muted);
+  z-index:5;
+}
+.loading-cover.is-hidden{display:none}
+
+.empty-msg{text-align:center;padding:30px 20px;color:var(--muted);font-size:13.5px}
+
+/* ============= TOAST ============= */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:200;
+  background:var(--ink);color:#fff;
+  padding:12px 18px;border-radius:var(--radius-sm);
+  font-size:13.5px;font-weight:500;
+  opacity:0;transform:translateY(20px);pointer-events:none;
+  transition:.25s;
+}
+.toast.is-show{opacity:1;transform:translateY(0)}
+.toast.is-success{background:var(--success)}
+.toast.is-error{background:var(--danger)}
+
+.user-box{
+  margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid var(--border);
+}
+.user-box__info{padding:8px 12px;border-radius:var(--radius-sm);background:var(--surface-2);display:none}
+.user-box__info--shown{display:block}
+.user-box__name{font-size:12.5px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-box__email{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-logout{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:var(--radius-sm);
+  background:var(--surface);border:1px solid var(--border-strong);
+  font-size:13px;font-weight:500;color:var(--ink-soft);transition:.15s;
+}
+.btn-logout:hover{background:var(--surface-2)}
+.btn-logout svg{width:15px;height:15px}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+  <!-- ============= SIDEBAR ============= -->
+  <aside class="sidebar">
+    <a class="brand" href="/admin.html">
+      <span class="brand__mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 14 12 12 22 10 12Z"/><path d="M2 12 12 14 22 12 12 10Z"/></svg>
+      </span>
+      <span class="brand__text">
+        <span class="brand__name">ADDA Admin</span>
+        <span class="brand__sub">Tədris idarəetməsi</span>
+      </span>
+    </a>
+
+    <div class="nav-group">
+      <span class="nav-group__label">Əsas</span>
+      <a class="nav-item" href="/admin.html">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span>Ana səhifə</span>
+        </span>
+      </a>
+      <a class="nav-item" href="/admin.html#courses">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Kurslar</span>
+        </span>
+      </a>
+      <a class="nav-item" href="/admin.html#enrollments">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Qeydiyyatlar</span>
+        </span>
+      </a>
+      <a class="nav-item is-active" href="/analytics.html">
+        <span class="nav-item__left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analitika</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="user-box">
+      <div class="user-box__info" id="userBox">
+        <div class="user-box__name" id="userName">—</div>
+        <div class="user-box__email" id="userEmail">—</div>
+      </div>
+      <button class="btn-logout" id="btnLogout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Çıxış
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============= MAIN ============= -->
+  <main class="main">
+    <div class="page-head">
+      <div class="page-head__title">
+        <h1>Analitika</h1>
+        <span class="badge"><span class="dot"></span>Real-time</span>
+      </div>
+      <div class="page-actions">
+        <button class="btn" id="btnRefresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Yenilə
+        </button>
+        <button class="btn btn-accent" id="btnExport">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Excel yüklə
+        </button>
+      </div>
+    </div>
+
+    <!-- ============= FILTERS ============= -->
+    <div class="filter-bar">
+      <span class="filter-label">Tarix aralığı</span>
+      <div class="range-btn-group" id="rangeGroup">
+        <button class="range-btn" data-range="7">Son 7 gün</button>
+        <button class="range-btn is-active" data-range="30">Son 30 gün</button>
+        <button class="range-btn" data-range="90">Son 90 gün</button>
+        <button class="range-btn" data-range="all">Hamısı</button>
+      </div>
+      <span style="color:var(--muted);font-size:12px">və ya</span>
+      <input type="date" class="date-input" id="dateFrom">
+      <span style="color:var(--muted);font-size:12px">—</span>
+      <input type="date" class="date-input" id="dateTo">
+      <button class="btn" id="btnApplyDates">Tətbiq et</button>
+    </div>
+
+    <!-- ============= KPI CARDS ============= -->
+    <div class="stats" id="statsGrid">
+      <div class="stat">
+        <div class="stat__head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Ümumi müraciət
+        </div>
+        <div class="stat__value" id="kpiTotal">—</div>
+        <div class="stat__sub" id="kpiTotalSub">—</div>
+      </div>
+
+      <div class="stat stat--success">
+        <div class="stat__head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Təsdiqlənmə nisbəti
+        </div>
+        <div class="stat__value" id="kpiApprovalRate">—</div>
+        <div class="stat__sub" id="kpiApprovalSub">—</div>
+      </div>
+
+      <div class="stat stat--warn">
+        <div class="stat__head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Orta cavab vaxtı
+        </div>
+        <div class="stat__value" id="kpiResponseTime">—</div>
+        <div class="stat__sub" id="kpiResponseSub">qeydiyyatdan status dəyişikliyinə</div>
+      </div>
+
+      <div class="stat stat--accent">
+        <div class="stat__head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Bu ay yeni
+        </div>
+        <div class="stat__value" id="kpiThisMonth">—</div>
+        <div class="stat__sub" id="kpiThisMonthSub">—</div>
+      </div>
+    </div>
+
+    <!-- ============= LARGE CHART + STATUS DONUT ============= -->
+    <div class="charts-grid">
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Müraciətlər zamana görə</h2>
+            <p id="chartTimelineDesc">Seçilmiş dövr üzrə gündəlik dinamika</p>
+          </div>
+        </div>
+        <div class="card__body--chart">
+          <div class="loading-cover" id="loaderTimeline"><span class="loader"></span> Yüklənir</div>
+          <canvas id="chartTimeline"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Status paylanması</h2>
+            <p>Bütün müraciətlərin vəziyyəti</p>
+          </div>
+        </div>
+        <div class="card__body--chart">
+          <div class="loading-cover" id="loaderStatus"><span class="loader"></span> Yüklənir</div>
+          <canvas id="chartStatus"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= COURSES + WORKPLACE ============= -->
+    <div class="charts-row">
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Kurs üzrə müraciətlər</h2>
+            <p>Ən populyar kurslar</p>
+          </div>
+        </div>
+        <div class="card__body--chart">
+          <div class="loading-cover" id="loaderCourses"><span class="loader"></span> Yüklənir</div>
+          <canvas id="chartCourses"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>İş yerinə görə</h2>
+            <p>Hansı şirkətdən neçə müraciət</p>
+          </div>
+        </div>
+        <div class="card__body--chart">
+          <div class="loading-cover" id="loaderWorkplace"><span class="loader"></span> Yüklənir</div>
+          <canvas id="chartWorkplace"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= POSITION + EXPERIENCE ============= -->
+    <div class="charts-row">
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Vəzifə üzrə</h2>
+            <p>Müraciət edənlərin peşə bölgüsü</p>
+          </div>
+        </div>
+        <div class="card__body--chart-sm">
+          <div class="loading-cover" id="loaderPosition"><span class="loader"></span> Yüklənir</div>
+          <canvas id="chartPosition"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>İş təcrübəsi</h2>
+            <p>Təcrübə illərinə görə paylanma</p>
+          </div>
+        </div>
+        <div class="card__body--chart-sm">
+          <div class="loading-cover" id="loaderExperience"><span class="loader"></span> Yüklənir</div>
+          <canvas id="chartExperience"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= ADMIN ACTIVITY + AUDIT FEED ============= -->
+    <div class="charts-row">
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Admin aktivliyi</h2>
+            <p>Son 7 gündə kim ən çox dəyişiklik edib</p>
+          </div>
+        </div>
+        <div id="activityTableWrap">
+          <div class="empty-msg"><span class="loader"></span> Yüklənir</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">
+            <h2>Son hadisələr</h2>
+            <p>Bütün audit log canlı feed</p>
+          </div>
+        </div>
+        <div class="audit-feed" id="auditFeed">
+          <div class="empty-msg"><span class="loader"></span> Yüklənir</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = '/api';
+
+const STATUS_LABELS = {
+  pending: 'Gözləyir',
+  approved: 'Təsdiqlənib',
+  rejected: 'Rədd edilib',
+  contacted: 'Əlaqə saxlanılıb'
+};
+const STATUS_COLORS = {
+  pending: '#b54708',
+  approved: '#0e7c4a',
+  rejected: '#b42318',
+  contacted: '#0e639a'
+};
+const FILE_LABELS = {
+  id_file:'Şəxsiyyət vəsiqəsi', diploma_file:'Diplom', work_file:'İşçi diplomu',
+  medical_file:'Tibbi kitabça', application_file:'Ərizə', receipt_file:'Ödəniş çeki'
+};
+const POSITION_LABELS = {
+  captain:'Kapitan', chief_officer:'Baş köməkçi', officer:'Növbə zabiti',
+  chief_engineer:'Baş mexanik', second_engineer:'İkinci mexanik', engineer:'Növbə mexaniki',
+  electrical_officer:'Elektrotexniki zabit', cadet:'Kursant', other:'Digər'
+};
+const WORKPLACE_LABELS = {
+  asco:'ASCO', cms:'Caspian Marine Services', cdc:'Caspian Drilling Company',
+  socar_marine:'SOCAR Marine', bp_agt:'BP-AGT', none:'İşləmir', other:'Digər'
+};
+
+let allEnrollments = [];
+let allAudit = [];
+let activeRange = 30;
+let customFrom = null, customTo = null;
+
+const charts = {};
+
+/* ============= UTILS ============= */
+function $(s){return document.querySelector(s)}
+function $$(s){return document.querySelectorAll(s)}
+
+function escapeHtml(s){
+  if(s==null)return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function formatDate(iso){
+  if(!iso)return '—';
+  const d=new Date(iso);
+  if(isNaN(d))return iso;
+  const pad=n=>String(n).padStart(2,'0');
+  return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function formatDateRel(iso){
+  if(!iso)return '—';
+  const d=new Date(iso);
+  if(isNaN(d))return iso;
+  const diff=(Date.now()-d.getTime())/1000;
+  if(diff<60)return 'indi';
+  if(diff<3600)return `${Math.floor(diff/60)} dəq`;
+  if(diff<86400)return `${Math.floor(diff/3600)} saat`;
+  if(diff<604800)return `${Math.floor(diff/86400)} gün`;
+  return formatDate(iso);
+}
+
+function showToast(msg, type=''){
+  const t=$('#toast');
+  t.textContent=msg;
+  t.className='toast is-show '+(type?'is-'+type:'');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('is-show'),2800);
+}
+
+function workplaceText(d){
+  if(d.workplace_id==='other' && d.workplace_other) return d.workplace_other;
+  if(d.workplace_id) return WORKPLACE_LABELS[d.workplace_id] || d.workplace_id;
+  return null;
+}
+
+function positionText(d){
+  if(!d.position) return null;
+  return POSITION_LABELS[d.position] || d.position;
+}
+
+/* ============= API ============= */
+async function apiGet(path){
+  const r=await fetch(API_BASE+path,{credentials:'include'});
+  if(r.status===401){location.href='/login.html';throw new Error('Unauthorized')}
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  return await r.json();
+}
+
+async function apiPost(path, body){
+  const r=await fetch(API_BASE+path,{
+    method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:body?JSON.stringify(body):null
+  });
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  return await r.json();
+}
+
+/* ============= DATE FILTERING ============= */
+function getDateRange(){
+  if(customFrom && customTo){
+    return {from: new Date(customFrom), to: new Date(customTo+'T23:59:59')};
+  }
+  const now = new Date();
+  let from;
+  if(activeRange === 'all'){
+    from = new Date(2020,0,1);
+  } else {
+    from = new Date(now.getTime() - activeRange*24*60*60*1000);
+  }
+  return {from, to: now};
+}
+
+function filterByDate(items, dateField='created_at'){
+  const {from, to} = getDateRange();
+  return items.filter(e => {
+    if(!e[dateField]) return false;
+    const d = new Date(e[dateField]);
+    return d >= from && d <= to;
+  });
+}
+
+/* ============= LOAD ============= */
+async function loadAll(){
+  showLoaders(true);
+  try {
+    const [enrollments, audit] = await Promise.all([
+      apiGet('/students'),
+      apiGet('/audit/recent').catch(()=>[])
+    ]);
+    allEnrollments = enrollments || [];
+    allAudit = audit || [];
+    renderAll();
+  } catch(err){
+    showToast('Yükləmə xətası: '+err.message,'error');
+  } finally {
+    showLoaders(false);
+  }
+}
+
+function showLoaders(show){
+  ['loaderTimeline','loaderStatus','loaderCourses','loaderWorkplace','loaderPosition','loaderExperience']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.classList.toggle('is-hidden', !show);
+    });
+}
+
+/* ============= RENDER ============= */
+function renderAll(){
+  const filtered = filterByDate(allEnrollments);
+
+  renderKPIs(filtered);
+  renderTimeline(filtered);
+  renderStatusChart(filtered);
+  renderCoursesChart(filtered);
+  renderWorkplaceChart(filtered);
+  renderPositionChart(filtered);
+  renderExperienceChart(filtered);
+  renderAuditFeed();
+  renderAdminActivity();
+}
+
+/* ============= KPI ============= */
+function renderKPIs(filtered){
+  const total = filtered.length;
+  $('#kpiTotal').textContent = total;
+
+  // Last 30d vs prev 30d
+  const now = Date.now();
+  const last30 = allEnrollments.filter(e => new Date(e.created_at) >= new Date(now - 30*24*3600*1000)).length;
+  const prev30 = allEnrollments.filter(e => {
+    const d = new Date(e.created_at).getTime();
+    return d >= now - 60*24*3600*1000 && d < now - 30*24*3600*1000;
+  }).length;
+  const delta = last30 - prev30;
+  const sub = $('#kpiTotalSub');
+  if(prev30 === 0){
+    sub.textContent = `Son 30 gündə: ${last30}`;
+    sub.className = 'stat__sub';
+  } else {
+    const pct = Math.round((delta/prev30)*100);
+    const arrow = delta >= 0 ? '↑' : '↓';
+    sub.textContent = `${arrow} ${Math.abs(pct)}% (əvvəlki 30 günə nisbətən)`;
+    sub.className = 'stat__sub ' + (delta >= 0 ? 'up' : 'down');
+  }
+
+  // Approval rate
+  const approved = filtered.filter(e => e.status === 'approved').length;
+  const decided = filtered.filter(e => ['approved','rejected'].includes(e.status)).length;
+  const rate = decided > 0 ? Math.round((approved/decided)*100) : 0;
+  $('#kpiApprovalRate').textContent = decided > 0 ? rate+'%' : '—';
+  $('#kpiApprovalSub').textContent = decided > 0
+    ? `${approved} / ${decided} qərar verilmiş`
+    : 'Hələ qərar verilməmiş';
+
+  // Avg response time
+  const responseTimes = [];
+  filtered.forEach(e => {
+    if(e.status !== 'pending'){
+      const auditForEnrollment = allAudit.filter(a => a.enrollment_id === e.id && a.action === 'status_changed');
+      if(auditForEnrollment.length > 0){
+        const firstChange = auditForEnrollment[auditForEnrollment.length-1];
+        const diff = (new Date(firstChange.created_at) - new Date(e.created_at)) / (1000*3600);
+        if(diff >= 0) responseTimes.push(diff);
+      }
+    }
+  });
+  if(responseTimes.length > 0){
+    const avg = responseTimes.reduce((a,b)=>a+b,0) / responseTimes.length;
+    if(avg < 1) $('#kpiResponseTime').textContent = Math.round(avg*60)+' dəq';
+    else if(avg < 24) $('#kpiResponseTime').textContent = avg.toFixed(1)+' saat';
+    else $('#kpiResponseTime').textContent = (avg/24).toFixed(1)+' gün';
+  } else {
+    $('#kpiResponseTime').textContent = '—';
+  }
+
+  // This month
+  const now2 = new Date();
+  const monthStart = new Date(now2.getFullYear(), now2.getMonth(), 1);
+  const thisMonth = allEnrollments.filter(e => new Date(e.created_at) >= monthStart).length;
+  $('#kpiThisMonth').textContent = thisMonth;
+  $('#kpiThisMonthSub').textContent = now2.toLocaleDateString('az-Latn',{month:'long',year:'numeric'});
+}
+
+/* ============= TIMELINE CHART ============= */
+function renderTimeline(filtered){
+  const {from, to} = getDateRange();
+  const daysCount = Math.max(1, Math.ceil((to - from) / (1000*3600*24)));
+  $('#chartTimelineDesc').textContent = `Son ${daysCount} gün üzrə dinamika`;
+
+  // Group by day
+  const buckets = {};
+  for(let d = new Date(from); d <= to; d.setDate(d.getDate()+1)){
+    const key = d.toISOString().slice(0,10);
+    buckets[key] = 0;
+  }
+  filtered.forEach(e => {
+    const key = new Date(e.created_at).toISOString().slice(0,10);
+    if(buckets[key] != null) buckets[key]++;
+  });
+
+  const labels = Object.keys(buckets);
+  const data = Object.values(buckets);
+
+  const labelsFormatted = labels.map(l => {
+    const d = new Date(l);
+    return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
+  });
+
+  destroyChart('timeline');
+  const ctx = document.getElementById('chartTimeline').getContext('2d');
+  charts.timeline = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labelsFormatted,
+      datasets: [{
+        label: 'Müraciət sayı',
+        data: data,
+        backgroundColor: 'rgba(0, 59, 111, 0.85)',
+        borderRadius: 4,
+        maxBarThickness: 30
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display: false} },
+      scales: {
+        x: { grid: {display: false}, ticks: {font:{family:'Manrope',size:11}, maxRotation:0, autoSkipPadding:10}},
+        y: { beginAtZero: true, ticks: {precision:0, font:{family:'Manrope',size:11}}}
+      }
+    }
+  });
+}
+
+/* ============= STATUS DONUT ============= */
+function renderStatusChart(filtered){
+  const counts = {pending:0, contacted:0, approved:0, rejected:0};
+  filtered.forEach(e => { if(counts[e.status]!=null) counts[e.status]++; });
+
+  const labels = Object.keys(counts).map(k => STATUS_LABELS[k]);
+  const data = Object.values(counts);
+  const colors = Object.keys(counts).map(k => STATUS_COLORS[k]);
+
+  destroyChart('status');
+  const ctx = document.getElementById('chartStatus').getContext('2d');
+  charts.status = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: { position: 'bottom', labels: { font:{family:'Manrope',size:12}, padding:10, usePointStyle:true } }
+      }
+    }
+  });
+}
+
+/* ============= COURSES BAR ============= */
+function renderCoursesChart(filtered){
+  const counts = {};
+  filtered.forEach(e => {
+    const k = e.course_code || 'unknown';
+    if(!counts[k]) counts[k] = {label: e.course_name || k, count: 0};
+    counts[k].count++;
+  });
+  const sorted = Object.values(counts).sort((a,b) => b.count - a.count);
+
+  destroyChart('courses');
+  const ctx = document.getElementById('chartCourses').getContext('2d');
+  charts.courses = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(c => c.label),
+      datasets: [{
+        label: 'Müraciət sayı',
+        data: sorted.map(c => c.count),
+        backgroundColor: 'rgba(184, 135, 70, 0.85)',
+        borderRadius: 4,
+        maxBarThickness: 28
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: {precision:0, font:{family:'Manrope',size:11}}, grid: {display: false} },
+        y: { ticks: {font:{family:'Manrope',size:11}} }
+      }
+    }
+  });
+}
+
+/* ============= WORKPLACE ============= */
+function renderWorkplaceChart(filtered){
+  const counts = {};
+  filtered.forEach(e => {
+    const wp = workplaceText(e) || 'Qeyd olunmayıb';
+    counts[wp] = (counts[wp] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 10);
+
+  destroyChart('workplace');
+  const ctx = document.getElementById('chartWorkplace').getContext('2d');
+  charts.workplace = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(s => s[0]),
+      datasets: [{
+        label: 'Müraciət sayı',
+        data: sorted.map(s => s[1]),
+        backgroundColor: 'rgba(14, 99, 154, 0.85)',
+        borderRadius: 4,
+        maxBarThickness: 28
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: {precision:0, font:{family:'Manrope',size:11}}, grid: {display: false} },
+        y: { ticks: {font:{family:'Manrope',size:11}} }
+      }
+    }
+  });
+}
+
+/* ============= POSITION PIE ============= */
+function renderPositionChart(filtered){
+  const counts = {};
+  filtered.forEach(e => {
+    const p = positionText(e) || 'Qeyd olunmayıb';
+    counts[p] = (counts[p] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+
+  const palette = ['#003b6f','#b88746','#0e7c4a','#b54708','#0e639a','#b42318','#6b7785','#3a4a5e','#e9d9bf'];
+
+  destroyChart('position');
+  const ctx = document.getElementById('chartPosition').getContext('2d');
+  charts.position = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: sorted.map(s => s[0]),
+      datasets: [{
+        data: sorted.map(s => s[1]),
+        backgroundColor: sorted.map((_,i) => palette[i % palette.length]),
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font:{family:'Manrope',size:11}, padding:8, boxWidth:12, boxHeight:12 } }
+      }
+    }
+  });
+}
+
+/* ============= EXPERIENCE HISTOGRAM ============= */
+function renderExperienceChart(filtered){
+  const buckets = {'0-2 il':0, '3-5 il':0, '6-10 il':0, '11-15 il':0, '16+ il':0, 'Qeyd olunmayıb':0};
+  filtered.forEach(e => {
+    const y = e.experience_years;
+    if(y == null) buckets['Qeyd olunmayıb']++;
+    else if(y <= 2) buckets['0-2 il']++;
+    else if(y <= 5) buckets['3-5 il']++;
+    else if(y <= 10) buckets['6-10 il']++;
+    else if(y <= 15) buckets['11-15 il']++;
+    else buckets['16+ il']++;
+  });
+
+  destroyChart('experience');
+  const ctx = document.getElementById('chartExperience').getContext('2d');
+  charts.experience = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(buckets),
+      datasets: [{
+        label: 'Müraciət sayı',
+        data: Object.values(buckets),
+        backgroundColor: ['#003b6f','#0e639a','#0e7c4a','#b88746','#b54708','#9ca3af'],
+        borderRadius: 4,
+        maxBarThickness: 38
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: {display: false}, ticks: {font:{family:'Manrope',size:11}} },
+        y: { beginAtZero: true, ticks: {precision:0, font:{family:'Manrope',size:11}} }
+      }
+    }
+  });
+}
+
+/* ============= AUDIT FEED ============= */
+function renderAuditFeed(){
+  const feed = $('#auditFeed');
+  if(allAudit.length === 0){
+    feed.innerHTML = '<div class="empty-msg">Audit log boşdur</div>';
+    return;
+  }
+  const items = allAudit.slice(0, 30);
+  feed.innerHTML = items.map(a => {
+    const author = escapeHtml(a.admin_name || a.admin_email);
+    let line = '';
+    let icon = '';
+    if(a.action === 'status_changed'){
+      const from = STATUS_LABELS[a.details?.from] || a.details?.from || '—';
+      const to = STATUS_LABELS[a.details?.to] || a.details?.to || '—';
+      line = `<strong>${author}</strong> #${a.enrollment_id} statusu: ${escapeHtml(from)} → <strong>${escapeHtml(to)}</strong>`;
+      icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>';
+    } else if(a.action === 'note_added'){
+      const preview = a.details?.preview || '';
+      line = `<strong>${author}</strong> #${a.enrollment_id}-ə qeyd əlavə etdi${preview ? `: <em style="color:var(--muted)">"${escapeHtml(preview.slice(0,60))}${preview.length>60?'…':''}"</em>` : ''}`;
+      icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+    } else if(a.action === 'file_viewed'){
+      line = `<strong>${author}</strong> #${a.enrollment_id} sənədinə baxdı: ${escapeHtml(FILE_LABELS[a.details?.file] || a.details?.file || '')}`;
+      icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    } else {
+      line = `<strong>${author}</strong> #${a.enrollment_id}: ${escapeHtml(a.action)}`;
+    }
+    return `
+      <div class="audit-row">
+        <div class="audit-icon audit-icon--${escapeHtml(a.action)}">${icon}</div>
+        <div class="audit-body">
+          <a href="/enrollment.html?id=${a.enrollment_id}" style="color:inherit;text-decoration:none">${line}</a>
+          <div class="audit-body__meta">${escapeHtml(formatDateRel(a.created_at))} əvvəl · ${escapeHtml(a.admin_email)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============= ADMIN ACTIVITY TABLE ============= */
+function renderAdminActivity(){
+  const now = Date.now();
+  const week = allAudit.filter(a => new Date(a.created_at).getTime() >= now - 7*24*3600*1000);
+
+  const byAdmin = {};
+  week.forEach(a => {
+    const key = a.admin_email;
+    if(!byAdmin[key]) byAdmin[key] = {
+      email: a.admin_email,
+      name: a.admin_name || a.admin_email,
+      statusChanges: 0, notes: 0, fileViews: 0, total: 0
+    };
+    if(a.action === 'status_changed') byAdmin[key].statusChanges++;
+    else if(a.action === 'note_added') byAdmin[key].notes++;
+    else if(a.action === 'file_viewed') byAdmin[key].fileViews++;
+    byAdmin[key].total++;
+  });
+
+  const sorted = Object.values(byAdmin).sort((a,b) => b.total - a.total);
+  const wrap = $('#activityTableWrap');
+
+  if(sorted.length === 0){
+    wrap.innerHTML = '<div class="empty-msg">Son 7 gündə fəaliyyət olmayıb</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="activity-table">
+      <thead>
+        <tr>
+          <th>Admin</th>
+          <th style="text-align:center">Status</th>
+          <th style="text-align:center">Qeyd</th>
+          <th style="text-align:center">Baxış</th>
+          <th style="text-align:center">Cəmi</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map(a => `
+          <tr>
+            <td>
+              <div class="activity-name">${escapeHtml(a.name)}</div>
+              <div class="activity-email">${escapeHtml(a.email)}</div>
+            </td>
+            <td style="text-align:center">${a.statusChanges}</td>
+            <td style="text-align:center">${a.notes}</td>
+            <td style="text-align:center">${a.fileViews}</td>
+            <td style="text-align:center"><span class="activity-count">${a.total}</span></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+/* ============= EXCEL EXPORT ============= */
+function exportExcel(){
+  const filtered = filterByDate(allEnrollments);
+  if(filtered.length === 0){
+    showToast('Eksport ediləcək məlumat yoxdur','error');
+    return;
+  }
+
+  const rows = filtered.map(e => ({
+    'ID': e.id,
+    'Qeydiyyat tarixi': formatDate(e.created_at),
+    'Ad-Soyad': e.student_name || '',
+    'FİN': e.fin || '',
+    'Telefon': e.phone || '',
+    'Email': e.email || '',
+    'Kurs': e.course_name || '',
+    'Kurs kodu': e.course_code || '',
+    'Status': STATUS_LABELS[e.status] || e.status || '',
+    'İş yeri': workplaceText(e) || '',
+    'Vəzifə': positionText(e) || '',
+    'Təcrübə (il)': e.experience_years != null ? e.experience_years : '',
+    'Sənəd sayı': e.files ? Object.keys(typeof e.files === 'string' ? JSON.parse(e.files) : e.files).length : 0
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  // Sütun enini avtomatik
+  ws['!cols'] = [
+    {wch:6}, {wch:18}, {wch:25}, {wch:10}, {wch:16}, {wch:28},
+    {wch:34}, {wch:10}, {wch:14}, {wch:32}, {wch:18}, {wch:12}, {wch:10}
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Müraciətlər');
+
+  const today = new Date();
+  const fname = `ADDA_muraciatlar_${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}.xlsx`;
+  XLSX.writeFile(wb, fname);
+
+  showToast(`${rows.length} qeyd ${fname} faylına eksport edildi`,'success');
+}
+
+/* ============= CHART CLEANUP ============= */
+function destroyChart(key){
+  if(charts[key]){ charts[key].destroy(); delete charts[key]; }
+}
+
+/* ============= AUTH ============= */
+async function checkAuth(){
+  try{
+    const me = await apiGet('/auth/me');
+    $('#userName').textContent = me.name || me.email;
+    $('#userEmail').textContent = me.email;
+    $('#userBox').classList.add('user-box__info--shown');
+    return true;
+  } catch(e){ return false; }
+}
+
+async function logout(){
+  try{ await apiPost('/auth/logout'); }catch{}
+  location.href = '/login.html';
+}
+
+/* ============= INIT ============= */
+$$('#rangeGroup .range-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('#rangeGroup .range-btn').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    customFrom = null; customTo = null;
+    $('#dateFrom').value = ''; $('#dateTo').value = '';
+    const r = btn.dataset.range;
+    activeRange = r === 'all' ? 'all' : parseInt(r);
+    renderAll();
+  });
+});
+
+$('#btnApplyDates').addEventListener('click', () => {
+  const from = $('#dateFrom').value;
+  const to = $('#dateTo').value;
+  if(!from || !to){
+    showToast('Hər iki tarix seçilməlidir','error');
+    return;
+  }
+  if(new Date(from) > new Date(to)){
+    showToast('Başlanğıc tarixi son tarixdən kiçik olmalıdır','error');
+    return;
+  }
+  customFrom = from; customTo = to;
+  $$('#rangeGroup .range-btn').forEach(b => b.classList.remove('is-active'));
+  renderAll();
+});
+
+$('#btnRefresh').addEventListener('click', () => loadAll().then(() => showToast('Yeniləndi','success')));
+$('#btnExport').addEventListener('click', exportExcel);
+$('#btnLogout').addEventListener('click', logout);
+
+(async () => {
+  const ok = await checkAuth();
+  if(!ok) return;
+  await loadAll();
+})();
+</script>
+
+</body>
+</html>

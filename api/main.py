@@ -694,3 +694,38 @@ async def log_file_view(enrollment_id: int, body: FileView, user=Depends(require
     finally:
         if conn:
             put_conn(conn)
+
+
+@app.get("/audit/recent")
+async def get_recent_audit(user=Depends(require_admin)):
+    """Get last 200 audit log entries across all enrollments — used by analytics dashboard."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            """SELECT id, enrollment_id, admin_email, admin_name, action, details, created_at
+               FROM enrollment_audit_log
+               ORDER BY created_at DESC
+               LIMIT 200"""
+        )
+        rows = cur.fetchall()
+        cur.close()
+        return [
+            {
+                "id": r[0],
+                "enrollment_id": r[1],
+                "admin_email": r[2],
+                "admin_name": r[3],
+                "action": r[4],
+                "details": r[5] if isinstance(r[5], dict) else (json.loads(r[5]) if r[5] else {}),
+                "created_at": r[6].isoformat() if r[6] else None,
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        log.error("Recent audit fetch failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
