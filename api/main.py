@@ -336,7 +336,8 @@ async def courses(include_inactive: bool = False, user_data: dict = None):
         cur.execute(
             f"""
             SELECT id, code, name, level, stcw, subtitle,
-                   duration_weeks, hours, price, currency, price_note, active, sort_order
+                   duration_weeks, hours, price, currency, price_note, active, sort_order,
+                   topics, icon
             FROM courses
             {where_clause}
             ORDER BY sort_order ASC, name ASC
@@ -351,6 +352,8 @@ async def courses(include_inactive: bool = False, user_data: dict = None):
                 "hours": row[7], "price": float(row[8]) if row[8] is not None else None,
                 "currency": row[9], "price_note": row[10], "active": row[11],
                 "sort_order": row[12],
+                "topics": row[13] if isinstance(row[13], list) else (json.loads(row[13]) if row[13] else []),
+                "icon": row[14] or "compass",
             }
             for row in rows
         ]
@@ -745,6 +748,8 @@ class CourseInput(BaseModel):
     price_note: str = ""
     sort_order: int = 0
     active: bool = True
+    topics: list[str] = []
+    icon: str = "compass"
 
 
 @app.post("/courses")
@@ -762,12 +767,13 @@ async def create_course(body: CourseInput, user=Depends(require_admin)):
 
         cur.execute(
             """INSERT INTO courses
-               (code, name, level, stcw, subtitle, duration_weeks, hours, price, currency, price_note, sort_order, active)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+               (code, name, level, stcw, subtitle, duration_weeks, hours, price, currency, price_note, sort_order, active, topics, icon)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s)
                RETURNING id""",
             (body.code, body.name, body.level, body.stcw, body.subtitle,
              body.duration_weeks, body.hours, body.price, body.currency,
-             body.price_note, body.sort_order, body.active)
+             body.price_note, body.sort_order, body.active,
+             json.dumps(body.topics), body.icon)
         )
         new_id = cur.fetchone()[0]
 
@@ -815,11 +821,13 @@ async def update_course(code: str, body: CourseInput, user=Depends(require_admin
             """UPDATE courses
                SET name = %s, level = %s, stcw = %s, subtitle = %s,
                    duration_weeks = %s, hours = %s, price = %s, currency = %s,
-                   price_note = %s, sort_order = %s, active = %s
+                   price_note = %s, sort_order = %s, active = %s,
+                   topics = %s::jsonb, icon = %s
                WHERE code = %s""",
             (body.name, body.level, body.stcw, body.subtitle,
              body.duration_weeks, body.hours, body.price, body.currency,
-             body.price_note, body.sort_order, body.active, code)
+             body.price_note, body.sort_order, body.active,
+             json.dumps(body.topics), body.icon, code)
         )
 
         # Build change log

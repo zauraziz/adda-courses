@@ -880,155 +880,15 @@ footer{
 
     <div class="courses__grid">
 
-      <!-- 1 -->
-      <article class="course-card" data-level="management" data-reveal data-course="ngm" data-name="Gəmi sürücülüyü (İdarəetmə səviyyəsi)">
-        <div class="course-card__head">
-          <span class="course-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 14 12 12 22 10 12Z"/><path d="M2 12 12 14 22 12 12 10Z"/></svg>
-          </span>
-          <span class="course-card__badge">İdarəetmə səviyyəsi</span>
+      <!-- Dynamic courses container (children participate in .courses__grid layout) -->
+      <div id="coursesGridDynamic" style="display:contents" data-reveal>
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">
+          <span style="display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite"></span>
+          Kurslar yüklənir...
         </div>
-        <h3>Gəmi sürücülüyü</h3>
-        <p class="course-card__sub">STCW A-II/2 · Kapitan və baş köməkçi üçün</p>
-        <ul class="course-card__topics">
-          <li>Reys planlaşdırılması və naviqasiya təhlükəsizliyi</li>
-          <li>ECDIS və müasir naviqasiya sistemləri</li>
-          <li>Gəminin idarə edilməsi və manevr</li>
-          <li>Yük əməliyyatları və gəminin dayanıqlığı</li>
-        </ul>
-        <dl class="course-card__meta">
-          <div><dt>Müddət</dt><dd>4 həftə</dd></div>
-          <div><dt>Saat</dt><dd>140 saat</dd></div>
-        </dl>
-        <div class="course-card__price">
-          <div><span class="course-card__price-val">450</span><span class="course-card__price-currency">AZN</span></div>
-          <div class="course-card__price-note">ASCO əməkdaşları<br>üçün güzəştli</div>
-        </div>
-        <button class="course-card__cta" data-register="ngm">
-          Bu kursa qeydiyyat
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-      </article>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
-      <!-- 2 -->
-      <article class="course-card" data-level="operational" data-reveal data-course="ngo" data-name="Gəmi sürücülüyü (İstismar səviyyəsi)">
-        <div class="course-card__head">
-          <span class="course-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-          </span>
-          <span class="course-card__badge">İstismar səviyyəsi</span>
-        </div>
-        <h3>Gəmi sürücülüyü</h3>
-        <p class="course-card__sub">STCW A-II/1 · Növbə zabiti üçün</p>
-        <ul class="course-card__topics">
-          <li>Naviqasiya növbəsinin aparılması</li>
-          <li>GMDSS rabitə əməliyyatları</li>
-          <li>Hava şəraiti və okeanoqrafiya</li>
-          <li>Beynəlxalq COLREG qaydaları</li>
-        </ul>
-        <dl class="course-card__meta">
-          <div><dt>Müddət</dt><dd>3 həftə</dd></div>
-          <div><dt>Saat</dt><dd>108 saat</dd></div>
-        </dl>
-        <div class="course-card__price">
-          <div><span class="course-card__price-val">320</span><span class="course-card__price-currency">AZN</span></div>
-          <div class="course-card__price-note">Tam kurs<br>+ simulyator</div>
-        </div>
-        <button class="course-card__cta" data-register="ngo">
-          Bu kursa qeydiyyat
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-      </article>
-
-      <!-- 3 -->
-      <article class="course-card" data-level="management" data-reveal data-course="mem" data-name="Gəmi mexanikləri (İdarəetmə səviyyəsi)">
-        <div class="course-card__head">
-          <span class="course-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          </span>
-          <span class="course-card__badge">İdarəetmə səviyyəsi</span>
-        </div>
-        <h3>Gəmi mexanikləri</h3>
-        <p class="course-card__sub">STCW A-III/2 · Baş mexanik və 2-ci mexanik</p>
-        <ul class="course-card__topics">
-          <li>Gəmi enerji qurğularının idarə edilməsi</li>
-          <li>Mühərrik və yardımçı mexanizmlərin texniki istismarı</li>
-          <li>Yanacaq, yağ və sistem analizi</li>
-          <li>Gəmi heyətinin idarə edilməsi və risk təhlili</li>
-        </ul>
-        <dl class="course-card__meta">
-          <div><dt>Müddət</dt><dd>4 həftə</dd></div>
-          <div><dt>Saat</dt><dd>140 saat</dd></div>
-        </dl>
-        <div class="course-card__price">
-          <div><span class="course-card__price-val">450</span><span class="course-card__price-currency">AZN</span></div>
-          <div class="course-card__price-note">Mühərrik otağı<br>simulyatoru daxil</div>
-        </div>
-        <button class="course-card__cta" data-register="mem">
-          Bu kursa qeydiyyat
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-      </article>
-
-      <!-- 4 -->
-      <article class="course-card" data-level="operational" data-reveal data-course="meo" data-name="Gəmi mexanikləri (İstismar səviyyəsi)">
-        <div class="course-card__head">
-          <span class="course-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          </span>
-          <span class="course-card__badge">İstismar səviyyəsi</span>
-        </div>
-        <h3>Gəmi mexanikləri</h3>
-        <p class="course-card__sub">STCW A-III/1 · Növbə mexaniki üçün</p>
-        <ul class="course-card__topics">
-          <li>Mexaniki növbənin aparılması qaydaları</li>
-          <li>Gəmi mühərriki və köməkçi sistemlər</li>
-          <li>Avtomatlaşdırılmış idarəetmə sistemləri</li>
-          <li>Texniki təhlükəsizlik və yanğından mühafizə</li>
-        </ul>
-        <dl class="course-card__meta">
-          <div><dt>Müddət</dt><dd>3 həftə</dd></div>
-          <div><dt>Saat</dt><dd>108 saat</dd></div>
-        </dl>
-        <div class="course-card__price">
-          <div><span class="course-card__price-val">320</span><span class="course-card__price-currency">AZN</span></div>
-          <div class="course-card__price-note">Praktiki məşğələ<br>+ test imtahanı</div>
-        </div>
-        <button class="course-card__cta" data-register="meo">
-          Bu kursa qeydiyyat
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-      </article>
-
-      <!-- 5 -->
-      <article class="course-card" data-level="management" data-reveal data-course="eem" data-name="Gəmi elektromexanikləri (İdarəetmə səviyyəsi)">
-        <div class="course-card__head">
-          <span class="course-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </span>
-          <span class="course-card__badge">İdarəetmə səviyyəsi</span>
-        </div>
-        <h3>Gəmi elektromexanikləri</h3>
-        <p class="course-card__sub">STCW A-III/6 · Elektrotexniki zabit üçün</p>
-        <ul class="course-card__topics">
-          <li>Gəmi elektrik təchizatı sistemləri</li>
-          <li>Yüksəkgərginlikli avadanlıq və idarəetmə</li>
-          <li>Elektronika və avtomatlaşdırma</li>
-          <li>Texniki təhlükəsizlik və qoruyucu vasitələr</li>
-        </ul>
-        <dl class="course-card__meta">
-          <div><dt>Müddət</dt><dd>4 həftə</dd></div>
-          <div><dt>Saat</dt><dd>140 saat</dd></div>
-        </dl>
-        <div class="course-card__price">
-          <div><span class="course-card__price-val">480</span><span class="course-card__price-currency">AZN</span></div>
-          <div class="course-card__price-note">İxtisaslaşmış<br>laboratoriya daxil</div>
-        </div>
-        <button class="course-card__cta" data-register="eem">
-          Bu kursa qeydiyyat
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-      </article>
 
       <!-- 6 (Konsultasiya kartı – ümumi məlumat) -->
       <article class="course-card" style="background:linear-gradient(135deg,#f7f3ea,#fcfaf4);border-color:var(--accent-soft)" data-reveal>
@@ -1898,6 +1758,89 @@ document.getElementById('phone').addEventListener('input',e=>{
 document.getElementById('fin').addEventListener('input',e=>{
   e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);
 });
+
+/* ============= DYNAMIC COURSE LOADER ============= */
+const COURSE_ICONS = {
+  compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 14 12 12 22 10 12Z"/><path d="M2 12 12 14 22 12 12 10Z"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  wrench: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+  gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  ship: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 10v4"/><path d="M12 2v3"/></svg>',
+  radio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>',
+  anchor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>'
+};
+
+function escapeHtmlPub(s){
+  if(s==null)return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function loadDynamicCourses(){
+  const container = document.getElementById('coursesGridDynamic');
+  if(!container) return;
+
+  try {
+    const response = await fetch('/api/courses');
+    if(!response.ok) throw new Error('HTTP ' + response.status);
+    const courses = await response.json();
+
+    if(!courses || courses.length === 0){
+      container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">Hazırda aktiv kurs yoxdur.</div>';
+      return;
+    }
+
+    container.innerHTML = courses.map(c => {
+      const level = (c.level || '').toLowerCase().includes('idarə') ? 'management' : 'operational';
+      const iconSvg = COURSE_ICONS[c.icon] || COURSE_ICONS.compass;
+      const topics = Array.isArray(c.topics) ? c.topics : [];
+      const priceNote = (c.price_note || '').replace(/\n/g, '<br>');
+
+      return `
+        <article class="course-card" data-level="${level}" data-reveal data-course="${escapeHtmlPub(c.code)}" data-name="${escapeHtmlPub(c.name + ' (' + (c.level||'') + ')')}">
+          <div class="course-card__head">
+            <span class="course-card__icon">${iconSvg}</span>
+            <span class="course-card__badge">${escapeHtmlPub(c.level || '')}</span>
+          </div>
+          <h3>${escapeHtmlPub(c.name)}</h3>
+          <p class="course-card__sub">${escapeHtmlPub(c.stcw || '')}${c.stcw && c.subtitle ? ' · ' : ''}${escapeHtmlPub(c.subtitle || '')}</p>
+          <ul class="course-card__topics">
+            ${topics.map(t => `<li>${escapeHtmlPub(t)}</li>`).join('')}
+          </ul>
+          <dl class="course-card__meta">
+            <div><dt>Müddət</dt><dd>${c.duration_weeks ? c.duration_weeks + ' həftə' : '—'}</dd></div>
+            <div><dt>Saat</dt><dd>${c.hours ? c.hours + ' saat' : '—'}</dd></div>
+          </dl>
+          <div class="course-card__price">
+            <div><span class="course-card__price-val">${c.price != null ? c.price : '—'}</span><span class="course-card__price-currency">${escapeHtmlPub(c.currency || 'AZN')}</span></div>
+            <div class="course-card__price-note">${priceNote}</div>
+          </div>
+          <button class="course-card__cta" data-register="${escapeHtmlPub(c.code)}">
+            Bu kursa qeydiyyat
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </article>
+      `;
+    }).join('');
+
+    // Re-bind register buttons: tick the matching radio (id="r-<code>") and scroll to form
+    container.querySelectorAll('[data-register]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const code = btn.dataset.register;
+        const radio = document.getElementById('r-' + code);
+        if(radio){ radio.checked = true; radio.dispatchEvent(new Event('change', {bubbles:true})); }
+        const formSection = document.getElementById('qeydiyyat') || document.querySelector('form');
+        if(formSection) formSection.scrollIntoView({behavior:'smooth',block:'start'});
+      });
+    });
+  } catch(err) {
+    console.error('Course load error:', err);
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--danger)">Kurslar yüklənmədi. Səhifəni yeniləyin.</div>';
+  }
+}
+
+// Load on page ready
+loadDynamicCourses();
 </script>
 </body>
 </html>

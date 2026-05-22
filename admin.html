@@ -1038,6 +1038,8 @@ function openCourseModal(course){
   document.getElementById('cf_price_note').value = course?.price_note || '';
   document.getElementById('cf_sort_order').value = course?.sort_order ?? 0;
   document.getElementById('cf_active').checked = course?.active ?? true;
+  document.getElementById('cf_topics').value = course?.topics ? course.topics.join('\n') : '';
+  document.getElementById('cf_icon').value = course?.icon || 'compass';
   document.getElementById('courseModal').style.display = 'flex';
 }
 
@@ -1064,7 +1066,9 @@ async function saveCourse(e){
     currency: 'AZN',
     price_note: document.getElementById('cf_price_note').value.trim(),
     sort_order: parseInt(document.getElementById('cf_sort_order').value) || 0,
-    active: document.getElementById('cf_active').checked
+    active: document.getElementById('cf_active').checked,
+    topics: document.getElementById('cf_topics').value.split('\n').map(s => s.trim()).filter(s => s.length > 0),
+    icon: document.getElementById('cf_icon').value
   };
 
   try {
@@ -1201,6 +1205,24 @@ document.getElementById('btnNewCourse').addEventListener('click', () => openCour
         <div style="grid-column:1/-1">
           <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Qiymət qeydi *</label>
           <input id="cf_price_note" required maxlength="200" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px" placeholder="məs: ödəniş tələbə vasitəsilə">
+        </div>
+        <div style="grid-column:1/-1">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Mövzular *</label>
+          <textarea id="cf_topics" required rows="4" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px;line-height:1.5;resize:vertical" placeholder="Hər sətirdə bir mövzu yazın&#10;Məs:&#10;Reys planlaşdırılması&#10;ECDIS sistemləri"></textarea>
+          <small style="font-size:11px;color:var(--muted)">Hər sətir bir mövzu olmalıdır</small>
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">İkon *</label>
+          <select id="cf_icon" required style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px;background:#fff">
+            <option value="compass">🧭 Kompas (sürücülük)</option>
+            <option value="eye">👁 Göz (müşahidə)</option>
+            <option value="wrench">🔧 Açar (mexanika)</option>
+            <option value="gear">⚙ Dişli (mexanizm)</option>
+            <option value="bolt">⚡ İldırım (elektrika)</option>
+            <option value="ship">🚢 Gəmi</option>
+            <option value="radio">📡 Radio</option>
+            <option value="anchor">⚓ Lövbər</option>
+          </select>
         </div>
       </div>
 
