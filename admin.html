@@ -530,8 +530,24 @@ td.cell-files{white-space:nowrap}
         </div>
       </div>
 
-      <div id="coursesGrid" class="courses-grid">
-        <div class="empty-state" style="grid-column:1/-1"><span class="loader"></span> Yüklənir...</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div></div>
+        <button class="btn btn-primary" id="btnNewCourse" type="button">
+          + Yeni kurs
+        </button>
+      </div>
+
+      <div class="card">
+        <div style="padding:0 20px;overflow-x:auto">
+          <table>
+            <thead>
+              <tr><th>Kod</th><th>Ad</th><th>Səviyyə</th><th>Müddət</th><th>Qiymət</th><th>Status</th><th>Əməliyyat</th></tr>
+            </thead>
+            <tbody id="coursesTableBody">
+              <tr><td colspan="7"><div class="empty-state"><span class="loader"></span> Yüklənir...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -822,38 +838,40 @@ function renderCourses() {
 
   // Filter dropdown
   const select = $('#filterCourse');
-  const currentVal = select.value;
-  select.innerHTML = '<option value="">Bütün kurslar</option>' +
-    allCourses.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name || c.code)}${c.level ? ' · ' + escapeHtml(c.level) : ''}</option>`).join('');
-  select.value = currentVal;
+  if (select) {
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">Bütün kurslar</option>' +
+      allCourses.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name || c.code)}${c.level ? ' · ' + escapeHtml(c.level) : ''}</option>`).join('');
+    select.value = currentVal;
+  }
 
-  const grid = $('#coursesGrid');
+  const tbody = $('#coursesTableBody');
   if (allCourses.length === 0) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      <h3>Kurs yoxdur</h3><p>Bazada heç bir aktiv kurs tapılmadı.</p>
-    </div>`;
+      <h3>Kurs yoxdur</h3><p>Bazada heç bir kurs tapılmadı.</p>
+    </div></td></tr>`;
     return;
   }
 
-  grid.innerHTML = allCourses.map(c => `
-    <div class="course-card">
-      <div class="course-card__head">
-        <span class="course-card__code">${escapeHtml(c.code || '—')}</span>
-        <span class="course-card__level">${escapeHtml(c.level || '')}</span>
-      </div>
-      <h3>${escapeHtml(c.name || '—')}</h3>
-      <p class="course-card__sub">${escapeHtml(c.stcw || '')}${c.subtitle ? ' · ' + escapeHtml(c.subtitle) : ''}</p>
-      <dl class="course-card__meta">
-        <div><dt>Müddət</dt><dd>${c.duration_weeks ? c.duration_weeks + ' həftə' : '—'}</dd></div>
-        <div><dt>Saat</dt><dd>${c.hours || '—'}</dd></div>
-        <div><dt>Qeydiyyat</dt><dd>${countEnrollmentsForCourse(c.code)}</dd></div>
-      </dl>
-      <div class="course-card__price">
-        <span class="course-card__price-val">${c.price != null ? c.price : '—'}</span>
-        <span class="course-card__price-cur">${escapeHtml(c.currency || 'AZN')}</span>
-      </div>
-    </div>
+  tbody.innerHTML = allCourses.map(c => `
+    <tr>
+      <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px">${escapeHtml(c.code)}</code></td>
+      <td>${escapeHtml(c.name)}</td>
+      <td>${escapeHtml(c.level || '—')}</td>
+      <td>${c.duration_weeks ? c.duration_weeks + ' həftə' : '—'}</td>
+      <td>${c.price != null ? c.price + ' ' + (c.currency || 'AZN') : '—'}</td>
+      <td>
+        <span class="status-pill" style="background:${c.active ? 'var(--success)' : 'var(--muted)'};color:#fff;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700">
+          ${c.active ? 'Aktiv' : 'Deaktiv'}
+        </span>
+      </td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn" style="padding:5px 10px;font-size:12px" onclick='openCourseModal(${JSON.stringify(c).replace(/'/g, "&#39;")})'>Redaktə</button>
+        <button class="btn" style="padding:5px 10px;font-size:12px" onclick="toggleCourseActive('${escapeHtml(c.code)}', ${!c.active})">${c.active ? 'Deaktiv et' : 'Aktivləşdir'}</button>
+        <button class="btn" style="padding:5px 10px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteCourse('${escapeHtml(c.code)}')">Sil</button>
+      </td>
+    </tr>
   `).join('');
 }
 
@@ -955,13 +973,13 @@ async function loadEnrollments() {
 
 async function loadCourses() {
   try {
-    allCourses = await apiGet('/courses');
+    allCourses = await apiGet('/courses?include_inactive=true');
     renderCourses();
   } catch (err) {
     showToast('Kurslar yüklənmədi: ' + err.message, 'error');
-    $('#coursesGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+    $('#coursesTableBody').innerHTML = `<tr><td colspan="7"><div class="empty-state">
       <h3>Xəta</h3><p>${escapeHtml(err.message)}</p>
-    </div>`;
+    </div></td></tr>`;
   }
 }
 
@@ -1001,6 +1019,118 @@ $('#filterSearch').addEventListener('input', renderEnrollments);
 $('#filterStatus').addEventListener('change', renderEnrollments);
 $('#filterCourse').addEventListener('change', renderEnrollments);
 
+/* ============= COURSE CMS ============= */
+let editingCode = null;
+
+function openCourseModal(course){
+  editingCode = course ? course.code : null;
+  document.getElementById('courseModalTitle').textContent = course ? 'Kursu redaktə et' : 'Yeni kurs';
+  document.getElementById('cf_original_code').value = course?.code || '';
+  document.getElementById('cf_code').value = course?.code || '';
+  document.getElementById('cf_code').disabled = !!course;  // Code can't change once created
+  document.getElementById('cf_name').value = course?.name || '';
+  document.getElementById('cf_level').value = course?.level || '';
+  document.getElementById('cf_stcw').value = course?.stcw || '';
+  document.getElementById('cf_subtitle').value = course?.subtitle || '';
+  document.getElementById('cf_duration_weeks').value = course?.duration_weeks || '';
+  document.getElementById('cf_hours').value = course?.hours || '';
+  document.getElementById('cf_price').value = course?.price || '';
+  document.getElementById('cf_price_note').value = course?.price_note || '';
+  document.getElementById('cf_sort_order').value = course?.sort_order ?? 0;
+  document.getElementById('cf_active').checked = course?.active ?? true;
+  document.getElementById('courseModal').style.display = 'flex';
+}
+
+function closeCourseModal(){
+  document.getElementById('courseModal').style.display = 'none';
+  editingCode = null;
+}
+
+async function saveCourse(e){
+  e.preventDefault();
+  const btn = document.getElementById('btnSaveCourse');
+  btn.disabled = true;
+  btn.textContent = 'Saxlanılır...';
+
+  const data = {
+    code: document.getElementById('cf_code').value.trim(),
+    name: document.getElementById('cf_name').value.trim(),
+    level: document.getElementById('cf_level').value,
+    stcw: document.getElementById('cf_stcw').value.trim(),
+    subtitle: document.getElementById('cf_subtitle').value.trim(),
+    duration_weeks: parseInt(document.getElementById('cf_duration_weeks').value),
+    hours: parseInt(document.getElementById('cf_hours').value),
+    price: parseFloat(document.getElementById('cf_price').value),
+    currency: 'AZN',
+    price_note: document.getElementById('cf_price_note').value.trim(),
+    sort_order: parseInt(document.getElementById('cf_sort_order').value) || 0,
+    active: document.getElementById('cf_active').checked
+  };
+
+  try {
+    if(editingCode){
+      const r = await fetch(API_BASE + '/courses/' + encodeURIComponent(editingCode), {
+        method: 'PATCH', credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      if(!r.ok){ const e = await r.json().catch(()=>({})); throw new Error(e.detail || `HTTP ${r.status}`); }
+      showToast('Kurs yeniləndi', 'success');
+    } else {
+      const r = await fetch(API_BASE + '/courses', {
+        method: 'POST', credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      if(!r.ok){ const e = await r.json().catch(()=>({})); throw new Error(e.detail || `HTTP ${r.status}`); }
+      showToast('Kurs yaradıldı', 'success');
+    }
+    closeCourseModal();
+    await loadCourses();
+  } catch(err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Saxla';
+  }
+}
+
+async function toggleCourseActive(code, newActive){
+  const all = await apiGet('/courses?include_inactive=true');
+  const c = all.find(x => x.code === code);
+  if(!c) return;
+  c.active = newActive;
+
+  try {
+    const r = await fetch(API_BASE + '/courses/' + encodeURIComponent(code), {
+      method: 'PATCH', credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(c)
+    });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    showToast(newActive ? 'Kurs aktivləşdirildi' : 'Kurs deaktiv edildi', 'success');
+    await loadCourses();
+  } catch(err) {
+    showToast('Xəta: ' + err.message, 'error');
+  }
+}
+
+async function deleteCourse(code){
+  if(!confirm(`"${code}" kursunu silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.`)) return;
+  try {
+    const r = await fetch(API_BASE + '/courses/' + encodeURIComponent(code), {
+      method: 'DELETE', credentials: 'include'
+    });
+    if(!r.ok){ const e = await r.json().catch(()=>({})); throw new Error(e.detail || `HTTP ${r.status}`); }
+    showToast('Kurs silindi', 'success');
+    await loadCourses();
+  } catch(err) {
+    showToast(err.message, 'error');
+  }
+}
+
+document.getElementById('btnNewCourse').addEventListener('click', () => openCourseModal(null));
+
 (async () => {
   const ok = await checkAuth();
   if (!ok) return;
@@ -1008,5 +1138,78 @@ $('#filterCourse').addEventListener('change', renderEnrollments);
   checkHealth();
 })();
 </script>
+
+<!-- ===== COURSE MODAL ===== -->
+<div class="modal-backdrop" id="courseModal" style="display:none;position:fixed;inset:0;background:rgba(12,26,43,.5);z-index:100;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:14px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px -20px rgba(12,26,43,.3)">
+    <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <h2 id="courseModalTitle" style="font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:0">Yeni kurs</h2>
+      <button type="button" onclick="closeCourseModal()" style="background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted)">×</button>
+    </div>
+    <form id="courseForm" onsubmit="saveCourse(event)" style="padding:20px 24px">
+      <input type="hidden" id="cf_original_code" value="">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Kurs kodu *</label>
+          <input id="cf_code" required maxlength="20" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px" placeholder="məs: ngm">
+          <small style="font-size:11px;color:var(--muted)">Unikal, qısa, ingilis hərfləri</small>
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Səviyyə *</label>
+          <select id="cf_level" required style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px;background:#fff">
+            <option value="">Seçin</option>
+            <option value="idarəetmə">İdarəetmə</option>
+            <option value="əməliyyat">Əməliyyat</option>
+          </select>
+        </div>
+        <div style="grid-column:1/-1">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Ad *</label>
+          <input id="cf_name" required maxlength="200" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px" placeholder="məs: Gəmi sürücülüyü (İdarəetmə səviyyəsi)">
+        </div>
+        <div style="grid-column:1/-1">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Alt başlıq *</label>
+          <input id="cf_subtitle" required maxlength="300" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px" placeholder="qısa təsvir">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">STCW kodu *</label>
+          <input id="cf_stcw" required maxlength="30" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px" placeholder="məs: A-II/2">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Sıralama *</label>
+          <input id="cf_sort_order" type="number" required min="0" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px" placeholder="0">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Müddət (həftə) *</label>
+          <input id="cf_duration_weeks" type="number" required min="1" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Saat sayı *</label>
+          <input id="cf_hours" type="number" required min="1" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Qiymət (AZN) *</label>
+          <input id="cf_price" type="number" required min="0" step="0.01" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Status</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 0">
+            <input type="checkbox" id="cf_active" checked style="width:18px;height:18px;cursor:pointer">
+            <span style="font-size:14px">Aktivdir (formada görsənir)</span>
+          </label>
+        </div>
+        <div style="grid-column:1/-1">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Qiymət qeydi *</label>
+          <input id="cf_price_note" required maxlength="200" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-family:inherit;font-size:14px" placeholder="məs: ödəniş tələbə vasitəsilə">
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:24px;padding-top:18px;border-top:1px solid var(--border)">
+        <button type="button" class="btn" onclick="closeCourseModal()">Ləğv et</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveCourse">Saxla</button>
+      </div>
+    </form>
+  </div>
+</div>
 </body>
 </html>

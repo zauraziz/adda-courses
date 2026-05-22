@@ -327,37 +327,29 @@ async def health():
         return {"status": "error", "database": str(e)}
 
 @app.get("/courses")
-async def courses():
-    """Public — index.html bunu çağırır."""
+async def courses(include_inactive: bool = False, user_data: dict = None):
     conn = None
     try:
         conn = get_conn()
         cur = conn.cursor()
+        where_clause = "" if include_inactive else "WHERE active = true"
         cur.execute(
-            """
+            f"""
             SELECT id, code, name, level, stcw, subtitle,
                    duration_weeks, hours, price, currency, price_note, active, sort_order
             FROM courses
-            WHERE active = true
-            ORDER BY sort_order ASC
+            {where_clause}
+            ORDER BY sort_order ASC, name ASC
             """
         )
         rows = cur.fetchall()
         cur.close()
         return [
             {
-                "id": row[0],
-                "code": row[1],
-                "name": row[2],
-                "level": row[3],
-                "stcw": row[4],
-                "subtitle": row[5],
-                "duration_weeks": row[6],
-                "hours": row[7],
-                "price": float(row[8]) if row[8] is not None else None,
-                "currency": row[9],
-                "price_note": row[10],
-                "active": row[11],
+                "id": row[0], "code": row[1], "name": row[2], "level": row[3],
+                "stcw": row[4], "subtitle": row[5], "duration_weeks": row[6],
+                "hours": row[7], "price": float(row[8]) if row[8] is not None else None,
+                "currency": row[9], "price_note": row[10], "active": row[11],
                 "sort_order": row[12],
             }
             for row in rows
@@ -417,17 +409,24 @@ async def enroll(
     try:
         conn = get_conn()
         cur = conn.cursor()
+
+        # Snapshot the current course price
+        cur.execute("SELECT price FROM courses WHERE code = %s", (course_code,))
+        price_row = cur.fetchone()
+        snapshot_price = price_row[0] if price_row else None
+
         cur.execute(
             """
             INSERT INTO enrollments
               (student_name, phone, fin, email, course_name, course_code, files, status,
-               workplace_id, workplace_other, position, experience_years)
+               workplace_id, workplace_other, position, experience_years, price_at_enrollment)
             VALUES (%s, %s, %s, %s, %s, %s, %s::jsonb, 'pending',
-                    %s, %s, %s, %s)
+                    %s, %s, %s, %s, %s)
             """,
             (name, phone, fin, email, course_name, course_code, json.dumps(files),
              workplace_id or None, workplace_other or None, position or None,
-             int(experience_years) if experience_years.strip().isdigit() else None),
+             int(experience_years) if experience_years.strip().isdigit() else None,
+             snapshot_price),
         )
         conn.commit()
         cur.close()
@@ -454,7 +453,8 @@ async def students(user=Depends(require_admin)):
             """
             SELECT id, created_at, student_name, fin, phone, email,
                    course_name, course_code, status, files,
-                   workplace_id, workplace_other, position, experience_years
+                   workplace_id, workplace_other, position, experience_years,
+                   price_at_enrollment
             FROM enrollments
             ORDER BY id DESC
             """
@@ -484,6 +484,7 @@ async def students(user=Depends(require_admin)):
                 "workplace_other": row[11],
                 "position": row[12],
                 "experience_years": row[13],
+                "price_at_enrollment": float(row[14]) if row[14] is not None else None,
             })
         return result
     except Exception as e:
@@ -725,6 +726,166 @@ async def get_recent_audit(user=Depends(require_admin)):
         ]
     except Exception as e:
         log.error("Recent audit fetch failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+class CourseInput(BaseModel):
+    code: str
+    name: str
+    level: str = ""
+    stcw: str = ""
+    subtitle: str = ""
+    duration_weeks: int
+    hours: int
+    price: float
+    currency: str = "AZN"
+    price_note: str = ""
+    sort_order: int = 0
+    active: bool = True
+
+
+@app.post("/courses")
+async def create_course(body: CourseInput, user=Depends(require_admin)):
+    """Admin - create a new course."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        # Check code uniqueness
+        cur.execute("SELECT id FROM courses WHERE code = %s", (body.code,))
+        if cur.fetchone() is not None:
+            raise HTTPException(status_code=409, detail=f"Course code '{body.code}' already exists")
+
+        cur.execute(
+            """INSERT INTO courses
+               (code, name, level, stcw, subtitle, duration_weeks, hours, price, currency, price_note, sort_order, active)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+               RETURNING id""",
+            (body.code, body.name, body.level, body.stcw, body.subtitle,
+             body.duration_weeks, body.hours, body.price, body.currency,
+             body.price_note, body.sort_order, body.active)
+        )
+        new_id = cur.fetchone()[0]
+
+        # Audit log
+        cur.execute(
+            """INSERT INTO course_audit_log (course_code, admin_email, admin_name, action, details)
+               VALUES (%s, %s, %s, %s, %s::jsonb)""",
+            (body.code, user["email"], user.get("name", ""), "course_created",
+             json.dumps({"name": body.name, "price": body.price}))
+        )
+        conn.commit()
+        cur.close()
+        return {"status": "success", "id": new_id, "code": body.code}
+    except HTTPException:
+        raise
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        log.error("Course create failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+@app.patch("/courses/{code}")
+async def update_course(code: str, body: CourseInput, user=Depends(require_admin)):
+    """Admin - edit existing course."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        # Get current values for audit
+        cur.execute(
+            "SELECT name, price, active FROM courses WHERE code = %s",
+            (code,)
+        )
+        old_row = cur.fetchone()
+        if old_row is None:
+            raise HTTPException(status_code=404, detail="Course not found")
+        old_name, old_price, old_active = old_row
+
+        cur.execute(
+            """UPDATE courses
+               SET name = %s, level = %s, stcw = %s, subtitle = %s,
+                   duration_weeks = %s, hours = %s, price = %s, currency = %s,
+                   price_note = %s, sort_order = %s, active = %s
+               WHERE code = %s""",
+            (body.name, body.level, body.stcw, body.subtitle,
+             body.duration_weeks, body.hours, body.price, body.currency,
+             body.price_note, body.sort_order, body.active, code)
+        )
+
+        # Build change log
+        changes = {}
+        if old_name != body.name: changes["name"] = {"from": old_name, "to": body.name}
+        if float(old_price or 0) != float(body.price): changes["price"] = {"from": float(old_price or 0), "to": body.price}
+        if old_active != body.active: changes["active"] = {"from": old_active, "to": body.active}
+
+        if changes:
+            cur.execute(
+                """INSERT INTO course_audit_log (course_code, admin_email, admin_name, action, details)
+                   VALUES (%s, %s, %s, %s, %s::jsonb)""",
+                (code, user["email"], user.get("name", ""), "course_updated",
+                 json.dumps(changes))
+            )
+
+        conn.commit()
+        cur.close()
+        return {"status": "success"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        log.error("Course update failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+@app.delete("/courses/{code}")
+async def delete_course(code: str, user=Depends(require_admin)):
+    """Admin - delete course (only if no enrollments exist)."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        # Check enrollments
+        cur.execute("SELECT COUNT(*) FROM enrollments WHERE course_code = %s", (code,))
+        count = cur.fetchone()[0]
+        if count > 0:
+            raise HTTPException(
+                status_code=409,
+                detail=f"Bu kursun {count} müraciəti var. Silmək əvəzinə deaktiv edin."
+            )
+
+        cur.execute("DELETE FROM courses WHERE code = %s RETURNING id", (code,))
+        if cur.fetchone() is None:
+            raise HTTPException(status_code=404, detail="Course not found")
+
+        cur.execute(
+            """INSERT INTO course_audit_log (course_code, admin_email, admin_name, action, details)
+               VALUES (%s, %s, %s, %s, %s::jsonb)""",
+            (code, user["email"], user.get("name", ""), "course_deleted", json.dumps({}))
+        )
+        conn.commit()
+        cur.close()
+        return {"status": "success"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        log.error("Course delete failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         if conn:

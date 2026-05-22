@@ -714,6 +714,10 @@ function renderInfo(){
           <dt>Kurs</dt>
           <dd style="font-size:16px;font-weight:600">${escapeHtml(d.course_name)} <small style="color:var(--muted);font-weight:500">(${escapeHtml(d.course_code||'')})</small></dd>
         </div>
+        <div class="info-item">
+          <dt>Müraciət vaxtındakı qiymət</dt>
+          <dd style="font-weight:600">${d.price_at_enrollment != null ? d.price_at_enrollment + ' AZN' : '—'}</dd>
+        </div>
       </dl>
     </div>
   `;
