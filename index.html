@@ -878,14 +878,12 @@ footer{
       <p>Hər ixtisas üzrə kurslar STCW konvensiyasının A-II və A-III bölmələrinin müvafiq qaydalarına və ADDA-nın təsdiqlənmiş tədris planlarına uyğun aparılır. Kursu seçin — qeydiyyat formasında ixtisas avtomatik seçiləcək.</p>
     </div>
 
-    <div class="courses__grid">
+    <div class="courses__grid" id="coursesGridDynamic">
 
-      <!-- Dynamic courses container (children participate in .courses__grid layout) -->
-      <div id="coursesGridDynamic" style="display:contents" data-reveal>
-        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">
-          <span style="display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite"></span>
-          Kurslar yüklənir...
-        </div>
+      <!-- Dynamic course cards will be injected here, BEFORE the consultation card -->
+      <div id="coursesLoading" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">
+        <span style="display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite"></span>
+        Kurslar yüklənir...
       </div>
       <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
@@ -1785,19 +1783,29 @@ async function loadDynamicCourses(){
     if(!response.ok) throw new Error('HTTP ' + response.status);
     const courses = await response.json();
 
+    // Remove loading indicator
+    const loadingEl = document.getElementById('coursesLoading');
+    if(loadingEl) loadingEl.remove();
+
+    // Find the consultation card (kept at end of grid)
+    const consultCard = container.querySelector('article.course-card[style*="gradient"]');
+
     if(!courses || courses.length === 0){
-      container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">Hazırda aktiv kurs yoxdur.</div>';
+      const empty = '<div id="coursesEmpty" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">Hazırda aktiv kurs yoxdur.</div>';
+      if(consultCard) consultCard.insertAdjacentHTML('beforebegin', empty);
+      else container.insertAdjacentHTML('beforeend', empty);
       return;
     }
 
-    container.innerHTML = courses.map(c => {
+    // Generate new course HTML (no data-reveal — we force visible right after insertion)
+    const newCardsHTML = courses.map(c => {
       const level = (c.level || '').toLowerCase().includes('idarə') ? 'management' : 'operational';
       const iconSvg = COURSE_ICONS[c.icon] || COURSE_ICONS.compass;
       const topics = Array.isArray(c.topics) ? c.topics : [];
       const priceNote = (c.price_note || '').replace(/\n/g, '<br>');
 
       return `
-        <article class="course-card" data-level="${level}" data-reveal data-course="${escapeHtmlPub(c.code)}" data-name="${escapeHtmlPub(c.name + ' (' + (c.level||'') + ')')}">
+        <article class="course-card" data-level="${level}" data-course="${escapeHtmlPub(c.code)}" data-name="${escapeHtmlPub(c.name + ' (' + (c.level||'') + ')')}">
           <div class="course-card__head">
             <span class="course-card__icon">${iconSvg}</span>
             <span class="course-card__badge">${escapeHtmlPub(c.level || '')}</span>
@@ -1823,6 +1831,21 @@ async function loadDynamicCourses(){
       `;
     }).join('');
 
+    // Insert new cards BEFORE consultation card (or at end if none)
+    if(consultCard){
+      consultCard.insertAdjacentHTML('beforebegin', newCardsHTML);
+    } else {
+      container.insertAdjacentHTML('beforeend', newCardsHTML);
+    }
+
+    // Force-show dynamically inserted cards in case the IntersectionObserver
+    // doesn't pick them up (it ran at page load before these existed).
+    container.querySelectorAll('.course-card:not([style*="gradient"])').forEach(card => {
+      card.classList.add('is-revealed');
+      card.style.opacity = '1';
+      card.style.transform = 'none';
+    });
+
     // Re-bind register buttons: tick the matching radio (id="r-<code>") and scroll to form
     container.querySelectorAll('[data-register]').forEach(btn => {
       btn.addEventListener('click', e => {
@@ -1835,7 +1858,12 @@ async function loadDynamicCourses(){
     });
   } catch(err) {
     console.error('Course load error:', err);
-    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--danger)">Kurslar yüklənmədi. Səhifəni yeniləyin.</div>';
+    const loadingEl = document.getElementById('coursesLoading');
+    if(loadingEl) loadingEl.remove();
+    const consultCard = container.querySelector('article.course-card[style*="gradient"]');
+    const errHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--danger)">Kurslar yüklənmədi. Səhifəni yeniləyin.</div>';
+    if(consultCard) consultCard.insertAdjacentHTML('beforebegin', errHTML);
+    else container.insertAdjacentHTML('beforeend', errHTML);
   }
 }
 
