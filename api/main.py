@@ -42,6 +42,11 @@ CLIENT_SECRET     = os.getenv("AZURE_CLIENT_SECRET", "")
 ADMIN_GROUP_ID    = os.getenv("AZURE_ADMIN_GROUP_ID", "")
 SESSION_SECRET    = os.getenv("SESSION_SECRET", "")
 
+# Email sender configuration
+EMAIL_FROM = os.getenv("EMAIL_FROM", "zaur.aziz@adda.edu.az")
+EMAIL_FROM_NAME = os.getenv("EMAIL_FROM_NAME", "ADDA Tədris Şöbəsi")
+GRAPH_BASE_URL = "https://graph.microsoft.com/v1.0"
+
 # Computed
 AUTHORITY         = f"https://login.microsoftonline.com/{TENANT_ID}"
 AUTHORIZE_URL     = f"{AUTHORITY}/oauth2/v2.0/authorize"
@@ -75,6 +80,160 @@ def get_origin(request: Request) -> str:
     host = request.headers.get("x-forwarded-host") or request.headers.get("host", "")
     proto = request.headers.get("x-forwarded-proto", "https")
     return f"{proto}://{host}"
+
+
+# ============= EMAIL (Microsoft Graph) =============
+async def get_graph_token() -> Optional[str]:
+    """Get Microsoft Graph access token using client credentials flow."""
+    if not (TENANT_ID and CLIENT_ID and CLIENT_SECRET):
+        log.error("Microsoft Graph credentials not configured")
+        return None
+
+    token_url = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            res = await client.post(
+                token_url,
+                data={
+                    "client_id": CLIENT_ID,
+                    "client_secret": CLIENT_SECRET,
+                    "scope": "https://graph.microsoft.com/.default",
+                    "grant_type": "client_credentials",
+                }
+            )
+            res.raise_for_status()
+            return res.json().get("access_token")
+    except Exception as e:
+        log.error("Graph token fetch failed: %s", e)
+        return None
+
+
+def render_template(body: str, variables: dict) -> str:
+    """Replace {{key}} placeholders in template body."""
+    result = body
+    for k, v in variables.items():
+        result = result.replace("{{" + k + "}}", str(v) if v is not None else "")
+    return result
+
+
+async def send_email_via_graph(to_email: str, to_name: str, subject: str, body_html: str):
+    """Send email via Microsoft Graph API. Returns (success, error_message)."""
+    token = await get_graph_token()
+    if not token:
+        return False, "Failed to obtain Graph token"
+
+    url = f"{GRAPH_BASE_URL}/users/{EMAIL_FROM}/sendMail"
+    payload = {
+        "message": {
+            "subject": subject,
+            "body": {"contentType": "HTML", "content": body_html},
+            "toRecipients": [
+                {"emailAddress": {"address": to_email, "name": to_name or to_email}}
+            ],
+            "from": {
+                "emailAddress": {"address": EMAIL_FROM, "name": EMAIL_FROM_NAME}
+            }
+        },
+        "saveToSentItems": True
+    }
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            res = await client.post(url, json=payload, headers=headers)
+            if res.status_code in (200, 202):
+                return True, ""
+            error_text = res.text[:500] if res.text else f"HTTP {res.status_code}"
+            log.error("Graph sendMail failed: %s - %s", res.status_code, error_text)
+            return False, f"HTTP {res.status_code}: {error_text}"
+    except Exception as e:
+        log.error("Graph sendMail exception: %s", e)
+        return False, str(e)
+
+
+async def send_enrollment_email(enrollment_id: int, template_key: str, sent_by: str = "system") -> dict:
+    """Load template, render with enrollment data, send via Graph, log to DB."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        cur.execute(
+            """SELECT id, student_name, email, course_name, course_code,
+                      price_at_enrollment, created_at
+               FROM enrollments WHERE id = %s""",
+            (enrollment_id,)
+        )
+        e = cur.fetchone()
+        if not e:
+            cur.close()
+            return {"success": False, "error": "Enrollment not found"}
+
+        e_id, e_name, e_email, e_course_name, e_course_code, e_price, e_created = e
+
+        if not e_email:
+            cur.close()
+            return {"success": False, "error": "Enrollment has no email"}
+
+        cur.execute(
+            "SELECT subject, body_html, auto_send FROM email_templates WHERE template_key = %s",
+            (template_key,)
+        )
+        t = cur.fetchone()
+        if not t:
+            cur.close()
+            return {"success": False, "error": f"Template '{template_key}' not found"}
+
+        subject_tpl, body_tpl, auto_send = t
+
+        if sent_by == "system" and not auto_send:
+            cur.close()
+            return {"success": False, "error": "Auto-send disabled for this template", "skipped": True}
+
+        date_str = ""
+        if e_created:
+            date_str = f"{e_created.day:02d}.{e_created.month:02d}.{e_created.year}"
+
+        variables = {
+            "name": e_name or "",
+            "course_name": e_course_name or "",
+            "course_code": e_course_code or "",
+            "registration_number": str(e_id),
+            "price": f"{e_price:.2f}" if e_price else "—",
+            "date": date_str,
+            "email": e_email,
+        }
+
+        subject = render_template(subject_tpl, variables)
+        body = render_template(body_tpl, variables)
+
+        success, error_msg = await send_email_via_graph(e_email, e_name, subject, body)
+
+        cur.execute(
+            """INSERT INTO email_log (enrollment_id, template_key, to_email, to_name, subject, body_preview, status, error_message, sent_by)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+               RETURNING id""",
+            (enrollment_id, template_key, e_email, e_name, subject, body[:200],
+             "sent" if success else "failed", error_msg if not success else None, sent_by)
+        )
+        log_id = cur.fetchone()[0]
+        conn.commit()
+        cur.close()
+
+        return {
+            "success": success,
+            "log_id": log_id,
+            "error": error_msg if not success else None
+        }
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        log.error("send_enrollment_email failed: %s", e)
+        return {"success": False, "error": str(e)}
+    finally:
+        if conn:
+            put_conn(conn)
+
 
 def create_session_token(user_data: dict) -> str:
     """7 günlük session token yaradır."""
@@ -425,15 +584,26 @@ async def enroll(
                workplace_id, workplace_other, position, experience_years, price_at_enrollment)
             VALUES (%s, %s, %s, %s, %s, %s, %s::jsonb, 'pending',
                     %s, %s, %s, %s, %s)
+            RETURNING id
             """,
             (name, phone, fin, email, course_name, course_code, json.dumps(files),
              workplace_id or None, workplace_other or None, position or None,
              int(experience_years) if experience_years.strip().isdigit() else None,
              snapshot_price),
         )
+        new_id = cur.fetchone()[0]
         conn.commit()
         cur.close()
-        log.info("Enrollment saved: %s %s", name, course_code)
+        log.info("Enrollment saved: id=%s %s %s", new_id, name, course_code)
+
+        # Trigger auto-email (do not fail enrollment if email fails)
+        try:
+            email_result = await send_enrollment_email(new_id, "received", sent_by="system")
+            if not email_result.get("success") and not email_result.get("skipped"):
+                log.warning("Auto-email failed for new enrollment %s: %s", new_id, email_result.get("error"))
+        except Exception as ee:
+            log.warning("Auto-email exception for new enrollment %s: %s", new_id, ee)
+
         return {"status": "success", "message": "Qeydiyyat uğurla tamamlandı!"}
     except Exception as e:
         if conn:
@@ -535,6 +705,22 @@ async def update_status(enrollment_id: int, body: StatusUpdate, user=Depends(req
         conn.commit()
         cur.close()
         log.info("Status updated by %s: enrollment %s -> %s", user["email"], enrollment_id, body.status)
+
+        # Trigger auto-email based on new status
+        template_map = {
+            "contacted": "contacted",
+            "approved": "approved",
+            "rejected": "rejected",
+        }
+        template_key = template_map.get(body.status)
+        if template_key:
+            try:
+                email_result = await send_enrollment_email(enrollment_id, template_key, sent_by="system")
+                if not email_result.get("success") and not email_result.get("skipped"):
+                    log.warning("Auto-email failed for enrollment %s: %s", enrollment_id, email_result.get("error"))
+            except Exception as ee:
+                log.warning("Auto-email exception for enrollment %s: %s", enrollment_id, ee)
+
         return {"status": "success", "id": enrollment_id, "new_status": body.status}
     except HTTPException:
         raise
@@ -894,6 +1080,117 @@ async def delete_course(code: str, user=Depends(require_admin)):
         if conn:
             conn.rollback()
         log.error("Course delete failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+class SendEmailRequest(BaseModel):
+    template_key: str
+
+
+@app.post("/enrollments/{enrollment_id}/send-email")
+async def send_email_manual(enrollment_id: int, body: SendEmailRequest, user=Depends(require_admin)):
+    """Admin manually sends an email to enrollment."""
+    result = await send_enrollment_email(enrollment_id, body.template_key, sent_by=user["email"])
+    if not result["success"]:
+        raise HTTPException(status_code=500, detail=result.get("error", "Email send failed"))
+    return result
+
+
+@app.get("/enrollments/{enrollment_id}/emails")
+async def get_enrollment_emails(enrollment_id: int, user=Depends(require_admin)):
+    """Get email history for an enrollment."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            """SELECT id, template_key, to_email, subject, body_preview, status,
+                      error_message, sent_by, sent_at
+               FROM email_log
+               WHERE enrollment_id = %s
+               ORDER BY sent_at DESC""",
+            (enrollment_id,)
+        )
+        rows = cur.fetchall()
+        cur.close()
+        return [
+            {
+                "id": r[0], "template_key": r[1], "to_email": r[2], "subject": r[3],
+                "body_preview": r[4], "status": r[5], "error_message": r[6],
+                "sent_by": r[7], "sent_at": r[8].isoformat() if r[8] else None,
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        log.error("Email log fetch failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+@app.get("/email-templates")
+async def list_templates(user=Depends(require_admin)):
+    """List all email templates."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            """SELECT template_key, subject, body_html, auto_send, updated_at, updated_by
+               FROM email_templates ORDER BY id"""
+        )
+        rows = cur.fetchall()
+        cur.close()
+        return [
+            {
+                "template_key": r[0], "subject": r[1], "body_html": r[2],
+                "auto_send": r[3],
+                "updated_at": r[4].isoformat() if r[4] else None,
+                "updated_by": r[5],
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            put_conn(conn)
+
+
+class TemplateUpdate(BaseModel):
+    subject: str
+    body_html: str
+    auto_send: bool = True
+
+
+@app.patch("/email-templates/{template_key}")
+async def update_template(template_key: str, body: TemplateUpdate, user=Depends(require_admin)):
+    """Update an email template."""
+    conn = None
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            """UPDATE email_templates
+               SET subject = %s, body_html = %s, auto_send = %s,
+                   updated_at = NOW(), updated_by = %s
+               WHERE template_key = %s""",
+            (body.subject, body.body_html, body.auto_send, user["email"], template_key)
+        )
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Template not found")
+        conn.commit()
+        cur.close()
+        return {"status": "success"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        if conn:
+            conn.rollback()
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         if conn:
