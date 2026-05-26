@@ -737,10 +737,6 @@ footer{
 @media print{.site-header,.topbar,footer,.register{display:none}}
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
-<script type="module">
-  // Preload Vercel Blob client for browser-side uploads
-  window.__blobClient = await import('https://esm.sh/@vercel/blob@0.27.0/client');
-</script>
 </head>
 <body>
 
@@ -1645,13 +1641,6 @@ form.addEventListener('submit', async e => {
     'Kurs':course.value,
   };
 
-  // Wait for Blob client to load (preloaded in <head>)
-  let blobClient = window.__blobClient;
-  if (!blobClient) {
-    blobClient = await import('https://esm.sh/@vercel/blob@0.27.0/client');
-    window.__blobClient = blobClient;
-  }
-
   const finValue = document.getElementById('fin').value.trim();
   const courseCodeValue = course.id.replace('r-', '');
   const prefix = `${finValue}_${courseCodeValue}`;
@@ -1661,26 +1650,43 @@ form.addEventListener('submit', async e => {
   const setBtn = (txt) => {
     submitBtn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite"></span> ${txt}</span>`;
   };
-  setBtn('Fayllar yüklənir...');
+  setBtn('Hazırlanır...');
+
+  // Collect files to upload (each goes in its own request — no 4.5MB combined limit)
+  const FILE_LABELS = {
+    id_file: 'Şəxsiyyət vəsiqəsi',
+    diploma_file: 'Diplom',
+    work_file: 'İşçi diplomu',
+    medical_file: 'Tibbi kitabça',
+    application_file: 'Ərizə',
+    receipt_file: 'Ödəniş çeki',
+  };
+  const fileInputs = Array.from(form.querySelectorAll('input[type="file"]'))
+    .filter(input => input.files && input.files.length > 0);
 
   try {
-    // 1) Upload each file directly to Vercel Blob from the browser
+    // 1) Upload each file individually via /api/upload-file
     const uploadedFiles = {};
-    const fileInputs = form.querySelectorAll('input[type="file"]');
-    for (const input of fileInputs) {
-      if (input.files && input.files.length > 0) {
-        const file = input.files[0];
-        const fieldName = input.name.replace('doc-', '') + '_file'; // doc-id -> id_file
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const pathname = `enrollments/${prefix}_${fieldName}_${safeName}`;
+    for (let i = 0; i < fileInputs.length; i++) {
+      const input = fileInputs[i];
+      const file = input.files[0];
+      const fieldName = input.name.replace('doc-', '') + '_file'; // doc-id -> id_file
+      const label = FILE_LABELS[fieldName] || fieldName;
 
-        setBtn(`Yüklənir: ${fieldName}`);
-        const result = await blobClient.upload(pathname, file, {
-          access: 'public',
-          handleUploadUrl: '/api/upload-token',
-        });
-        uploadedFiles[fieldName] = result.url;
+      setBtn(`${i + 1}/${fileInputs.length}: ${label}`);
+
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('prefix', prefix);
+      fd.append('field', fieldName);
+
+      const uploadRes = await fetch('/api/upload-file', { method: 'POST', body: fd });
+      if (!uploadRes.ok) {
+        const errBody = await uploadRes.text();
+        throw new Error(`${label} yüklənmədi: ${uploadRes.status} - ${errBody.slice(0, 200)}`);
       }
+      const uploadResult = await uploadRes.json();
+      uploadedFiles[fieldName] = uploadResult.url;
     }
 
     // 2) Submit metadata + URLs as JSON

@@ -537,61 +537,32 @@ class EnrollRequest(BaseModel):
     files: dict = {}  # {field_name: url}
 
 
-@app.post("/upload-token")
-async def handle_blob_upload(request: Request):
-    """Vercel Blob client-upload protocol — issue signed tokens for browser-side uploads."""
+@app.post("/upload-file")
+async def upload_single_file(
+    file: UploadFile = File(...),
+    prefix: str = Form(...),
+    field: str = Form(...)
+):
+    """Upload a single file to Vercel Blob. Public — used by registration form before /enroll."""
+    if not file or not file.filename:
+        raise HTTPException(status_code=400, detail="No file provided")
+
+    allowed_fields = {"id_file", "diploma_file", "work_file", "medical_file", "application_file", "receipt_file"}
+    if field not in allowed_fields:
+        raise HTTPException(status_code=400, detail=f"Invalid field: {field}")
+
+    content_type = (file.content_type or "").lower()
+    if not (content_type == "application/pdf" or file.filename.lower().endswith(".pdf")):
+        raise HTTPException(status_code=400, detail="Yalnız PDF faylları qəbul edilir")
+
+    safe_prefix = "".join(c for c in prefix if c.isalnum() or c in "-_")[:50]
+
     try:
-        body = await request.json()
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid JSON")
-
-    blob_token = os.getenv("BLOB_READ_WRITE_TOKEN")
-    if not blob_token:
-        raise HTTPException(status_code=500, detail="Blob storage not configured")
-
-    event_type = body.get("type")
-
-    if event_type == "blob.generate-client-token":
-        payload_data = body.get("payload", {})
-        pathname = payload_data.get("pathname", "")
-
-        if not pathname.startswith("enrollments/"):
-            raise HTTPException(status_code=400, detail="Invalid pathname")
-
-        try:
-            import time
-            async with httpx.AsyncClient(timeout=10.0) as client:
-                res = await client.post(
-                    "https://blob.vercel-storage.com/generate-client-token",
-                    headers={
-                        "Authorization": f"Bearer {blob_token}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "pathname": pathname,
-                        "callbackUrl": str(request.url),
-                        "allowedContentTypes": ["application/pdf"],
-                        "maximumSizeInBytes": 10 * 1024 * 1024,  # 10 MB per file
-                        "validUntil": int(time.time() * 1000) + 60 * 60 * 1000,  # 1h
-                        "addRandomSuffix": True,
-                        "access": "public",
-                    }
-                )
-                res.raise_for_status()
-                return res.json()
-        except httpx.HTTPStatusError as e:
-            log.error("Blob token generation failed: %s %s", e.response.status_code, e.response.text[:200])
-            raise HTTPException(status_code=500, detail="Token generation failed")
-        except Exception as e:
-            log.error("Blob token exception: %s", e)
-            raise HTTPException(status_code=500, detail=str(e))
-
-    elif event_type == "blob.upload-completed":
-        log.info("Blob upload completed: %s", body.get("payload", {}).get("blob", {}).get("pathname"))
-        return {"response": "ok"}
-
-    else:
-        raise HTTPException(status_code=400, detail=f"Unknown event type: {event_type}")
+        url = await upload_to_blob(file, f"{safe_prefix}_{field}")
+        return {"status": "success", "url": url, "field": field}
+    except Exception as e:
+        log.error("Single file upload failed (%s): %s", field, e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/enroll")
