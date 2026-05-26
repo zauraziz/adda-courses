@@ -523,49 +523,82 @@ async def courses(include_inactive: bool = False, user_data: dict = None):
         if conn:
             put_conn(conn)
 
+class EnrollRequest(BaseModel):
+    name: str
+    phone: str
+    fin: str
+    email: str
+    course_name: str
+    course_code: str
+    workplace_id: str = ""
+    workplace_other: str = ""
+    position: str = ""
+    experience_years: str = ""
+    files: dict = {}  # {field_name: url}
+
+
+@app.post("/upload-token")
+async def handle_blob_upload(request: Request):
+    """Vercel Blob client-upload protocol — issue signed tokens for browser-side uploads."""
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON")
+
+    blob_token = os.getenv("BLOB_READ_WRITE_TOKEN")
+    if not blob_token:
+        raise HTTPException(status_code=500, detail="Blob storage not configured")
+
+    event_type = body.get("type")
+
+    if event_type == "blob.generate-client-token":
+        payload_data = body.get("payload", {})
+        pathname = payload_data.get("pathname", "")
+
+        if not pathname.startswith("enrollments/"):
+            raise HTTPException(status_code=400, detail="Invalid pathname")
+
+        try:
+            import time
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                res = await client.post(
+                    "https://blob.vercel-storage.com/generate-client-token",
+                    headers={
+                        "Authorization": f"Bearer {blob_token}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "pathname": pathname,
+                        "callbackUrl": str(request.url),
+                        "allowedContentTypes": ["application/pdf"],
+                        "maximumSizeInBytes": 10 * 1024 * 1024,  # 10 MB per file
+                        "validUntil": int(time.time() * 1000) + 60 * 60 * 1000,  # 1h
+                        "addRandomSuffix": True,
+                        "access": "public",
+                    }
+                )
+                res.raise_for_status()
+                return res.json()
+        except httpx.HTTPStatusError as e:
+            log.error("Blob token generation failed: %s %s", e.response.status_code, e.response.text[:200])
+            raise HTTPException(status_code=500, detail="Token generation failed")
+        except Exception as e:
+            log.error("Blob token exception: %s", e)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    elif event_type == "blob.upload-completed":
+        log.info("Blob upload completed: %s", body.get("payload", {}).get("blob", {}).get("pathname"))
+        return {"response": "ok"}
+
+    else:
+        raise HTTPException(status_code=400, detail=f"Unknown event type: {event_type}")
+
+
 @app.post("/enroll")
-async def enroll(
-    name: str = Form(...),
-    phone: str = Form(...),
-    fin: str = Form(...),
-    email: str = Form(...),
-    course_name: str = Form(...),
-    course_code: str = Form(...),
-    workplace_id: str = Form(""),
-    workplace_other: str = Form(""),
-    position: str = Form(""),
-    experience_years: str = Form(""),
-    id_file: UploadFile = File(None),
-    diploma_file: UploadFile = File(None),
-    work_file: UploadFile = File(None),
-    medical_file: UploadFile = File(None),
-    application_file: UploadFile = File(None),
-    receipt_file: UploadFile = File(None),
-):
-    """Public — form qeydiyyatı."""
-    log.info("Enroll: name=%s fin=%s course=%s", name, fin, course_code)
-
-    file_fields = {
-        "id_file": id_file,
-        "diploma_file": diploma_file,
-        "work_file": work_file,
-        "medical_file": medical_file,
-        "application_file": application_file,
-        "receipt_file": receipt_file,
-    }
-
-    files: dict[str, str] = {}
-    prefix = f"{fin}_{course_code}"
-
-    for field_name, file in file_fields.items():
-        if file and file.filename:
-            try:
-                url = await upload_to_blob(file, f"{prefix}_{field_name}")
-                files[field_name] = url
-                log.info("Uploaded %s -> %s", field_name, url)
-            except Exception as e:
-                log.error("Failed to upload %s: %s", field_name, e)
-                return {"status": "error", "message": f"Fayl yükləmə xətası ({field_name}): {str(e)}"}
+async def enroll(body: EnrollRequest):
+    """Public — form qeydiyyatı. JSON body with pre-uploaded Blob URLs."""
+    log.info("Enroll: name=%s fin=%s course=%s files=%s",
+             body.name, body.fin, body.course_code, list(body.files.keys()))
 
     conn = None
     try:
@@ -573,9 +606,13 @@ async def enroll(
         cur = conn.cursor()
 
         # Snapshot the current course price
-        cur.execute("SELECT price FROM courses WHERE code = %s", (course_code,))
+        cur.execute("SELECT price FROM courses WHERE code = %s", (body.course_code,))
         price_row = cur.fetchone()
         snapshot_price = price_row[0] if price_row else None
+
+        exp_years = None
+        if body.experience_years and body.experience_years.strip().isdigit():
+            exp_years = int(body.experience_years.strip())
 
         cur.execute(
             """
@@ -586,15 +623,15 @@ async def enroll(
                     %s, %s, %s, %s, %s)
             RETURNING id
             """,
-            (name, phone, fin, email, course_name, course_code, json.dumps(files),
-             workplace_id or None, workplace_other or None, position or None,
-             int(experience_years) if experience_years.strip().isdigit() else None,
-             snapshot_price),
+            (body.name, body.phone, body.fin, body.email, body.course_name, body.course_code,
+             json.dumps(body.files),
+             body.workplace_id or None, body.workplace_other or None, body.position or None,
+             exp_years, snapshot_price),
         )
         new_id = cur.fetchone()[0]
         conn.commit()
         cur.close()
-        log.info("Enrollment saved: id=%s %s %s", new_id, name, course_code)
+        log.info("Enrollment saved: id=%s %s %s", new_id, body.name, body.course_code)
 
         # Trigger auto-email (do not fail enrollment if email fails)
         try:
@@ -604,12 +641,12 @@ async def enroll(
         except Exception as ee:
             log.warning("Auto-email exception for new enrollment %s: %s", new_id, ee)
 
-        return {"status": "success", "message": "Qeydiyyat uğurla tamamlandı!"}
+        return {"status": "success", "message": "Qeydiyyat uğurla tamamlandı!", "id": new_id}
     except Exception as e:
         if conn:
             conn.rollback()
         log.error("DB insert failed: %s", e)
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         if conn:
             put_conn(conn)

@@ -735,7 +735,12 @@ footer{
 
 /* Print */
 @media print{.site-header,.topbar,footer,.register{display:none}}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
+<script type="module">
+  // Preload Vercel Blob client for browser-side uploads
+  window.__blobClient = await import('https://esm.sh/@vercel/blob@0.27.0/client');
+</script>
 </head>
 <body>
 
@@ -1640,81 +1645,107 @@ form.addEventListener('submit', async e => {
     'Kurs':course.value,
   };
 
-  const payload = new FormData();
-  payload.append('name', data['Ad-Soyad']);
-  payload.append('phone', data['Telefon']);
-  payload.append('fin', document.getElementById('fin').value.trim());
-  payload.append('email', document.getElementById('email').value.trim());
-  payload.append('course_name', data['Kurs']);
-  payload.append('course_code', course.id.replace('r-', ''));
-payload.append('fin', document.getElementById('fin').value.trim());
-  payload.append('email', document.getElementById('email').value.trim());
-  payload.append('course_code', course.id);
-  payload.append('workplace_id', document.getElementById('workplace_id').value);
-  payload.append('workplace_other', document.getElementById('workplace_other').value.trim());
-  payload.append('position', document.getElementById('position').value);
-  payload.append('experience_years', document.getElementById('experience_years').value);
+  // Wait for Blob client to load (preloaded in <head>)
+  let blobClient = window.__blobClient;
+  if (!blobClient) {
+    blobClient = await import('https://esm.sh/@vercel/blob@0.27.0/client');
+    window.__blobClient = blobClient;
+  }
 
-  // Faylları əlavə et
-  const fileInputs = form.querySelectorAll('input[type="file"]');
-  fileInputs.forEach(input => {
-    if (input.files && input.files.length > 0) {
-      const fieldName = input.name.replace('doc-', '') + '_file'; // doc-id -> id_file
-      payload.append(fieldName, input.files[0]);
-    }
-  });
+  const finValue = document.getElementById('fin').value.trim();
+  const courseCodeValue = course.id.replace('r-', '');
+  const prefix = `${finValue}_${courseCodeValue}`;
 
   // Loading state
   submitBtn.disabled = true;
-  submitBtn.textContent = '⏳ Göndərilir...';
+  const setBtn = (txt) => {
+    submitBtn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite"></span> ${txt}</span>`;
+  };
+  setBtn('Fayllar yüklənir...');
 
   try {
-    console.log('Payload gönderiliyor:', Array.from(payload.entries()));
+    // 1) Upload each file directly to Vercel Blob from the browser
+    const uploadedFiles = {};
+    const fileInputs = form.querySelectorAll('input[type="file"]');
+    for (const input of fileInputs) {
+      if (input.files && input.files.length > 0) {
+        const file = input.files[0];
+        const fieldName = input.name.replace('doc-', '') + '_file'; // doc-id -> id_file
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const pathname = `enrollments/${prefix}_${fieldName}_${safeName}`;
+
+        setBtn(`Yüklənir: ${fieldName}`);
+        const result = await blobClient.upload(pathname, file, {
+          access: 'public',
+          handleUploadUrl: '/api/upload-token',
+        });
+        uploadedFiles[fieldName] = result.url;
+      }
+    }
+
+    // 2) Submit metadata + URLs as JSON
+    setBtn('Qeydiyyat tamamlanır...');
+    const enrollPayload = {
+      name: data['Ad-Soyad'],
+      phone: data['Telefon'],
+      fin: finValue,
+      email: document.getElementById('email').value.trim(),
+      course_name: data['Kurs'],
+      course_code: courseCodeValue,
+      workplace_id: document.getElementById('workplace_id') ? document.getElementById('workplace_id').value : '',
+      workplace_other: document.getElementById('workplace_other') ? document.getElementById('workplace_other').value.trim() : '',
+      position: document.getElementById('position') ? document.getElementById('position').value : '',
+      experience_years: document.getElementById('experience_years') ? document.getElementById('experience_years').value : '',
+      files: uploadedFiles,
+    };
+
+    console.log('Enroll payload:', enrollPayload);
     const response = await fetch('/api/enroll', {
       method: 'POST',
-      body: payload
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(enrollPayload),
     });
     console.log('Response status:', response.status);
-    
+
     let result;
     try {
       result = await response.json();
     } catch (parseErr) {
-      console.error('JSON parse error:', parseErr);
+      const errText = await response.text().catch(() => '');
+      console.error('JSON parse error:', parseErr, errText);
       throw new Error('Server cavabı oxunmadı: ' + response.statusText);
     }
-    
-    console.log('Response body:', result);
-    
+
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${result.message || 'Bilinmeyen hata'}`);
+      throw new Error(`HTTP ${response.status}: ${result.detail || result.message || 'Bilinmeyen hata'}`);
     }
     if (result.status !== 'success') {
       throw new Error(result.message || 'Server xətası');
     }
-    console.log('Qeydiyyat uğurla tamamlandı');
-    
+    console.log('Qeydiyyat uğurla tamamlandı, id:', result.id);
+
     // Success - show modal
-    const regNum='ADDA-'+Date.now().toString().slice(-7);
-    const summary={
-      'Qeydiyyat №':regNum,
-      'Ad-Soyad':data['Ad-Soyad'],
-      'Telefon':data['Telefon'],
-      'Kurs':data['Kurs'],
+    const regNum = result.id ? `ADDA-${result.id}` : 'ADDA-' + Date.now().toString().slice(-7);
+    const summary = {
+      'Qeydiyyat №': regNum,
+      'Ad-Soyad': data['Ad-Soyad'],
+      'Telefon': data['Telefon'],
+      'Kurs': data['Kurs'],
       'Vəziyyət': '✅ Qəbul olundu'
     };
 
-    const detailsEl=document.getElementById('modalDetails');
-    detailsEl.innerHTML=Object.entries(summary).map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join('');
+    const detailsEl = document.getElementById('modalDetails');
+    detailsEl.innerHTML = Object.entries(summary).map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('');
 
     document.getElementById('successModal').classList.add('is-open');
-    document.body.style.overflow='hidden';
-    
+    document.body.style.overflow = 'hidden';
+
   } catch (err) {
     console.error('Enroll error details:', err);
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalBtnText;
     alert('❌ Qeydiyyat tamamlanmadı:\n' + err.message + '\n\nZəhmət olmasa tarayıcı konsolu (F12) kontrol edin.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalBtnText;
   }
 });
 
